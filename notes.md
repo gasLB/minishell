@@ -105,6 +105,12 @@ Alternative to termios
 
 --- 
 
+## GENERAL STEPS
+
+### tokenisation 
+
+identify each token's type
+
 ## Crash Test list
 
 test with bash --posix
