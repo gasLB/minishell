@@ -13,6 +13,8 @@
 #include "../libftprintf/libft/libft.h"
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
+#include <unistd.h>
+#include <stdlib.h>
 
 int	is_n_option(char *s)
 {
@@ -30,4 +32,14 @@ int	is_n_option(char *s)
 		i++;
 	}
 	return (1);
+}
+
+void	change_directories(char *path)
+{
+	if (chdir(path) != 0)
+	{
+		ft_printf("minishell: cd: %s: No such file or directory\n", path);
+		exit(1);
+	}
+	exit(0);
 }
