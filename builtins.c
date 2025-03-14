@@ -87,13 +87,13 @@ void	ft_cd(int ac, char **args)
 		(ft_printf("minishell: cd: too many arguments\n"), exit(1));
 	else if (ac == 1)
 	{
-		path = getenv("HOME");
+		path = ft_getenv("HOME");
 		if (!path)
 			(ft_printf("minishell: cd: HOME not set\n"), exit(1));
 	}
 	else if (ft_strlen(args[1]) == 1 && args[1][0] == '-')
 	{
-		path = getenv("OLDPWD");
+		path = ft_getenv("OLDPWD");
 		if (!path)
 			(ft_printf("minishell: cd: OLDPWD not set\n"), exit(1));
 	}
@@ -103,17 +103,20 @@ void	ft_cd(int ac, char **args)
 	exit(1);
 }
 
-// ENVIRONMENT:
-//
-// Seems that I was wrong about environment
-// other guys have basically implemented their own environment structure : linked list or realloc
-// So maybe using getenv() isn't a good idea, should have our own
-// Maybe then use getenv() to initialize it with global environment
-// 
-// non-exported variables: only visible to the shell itself and not child processes
-
 void	ft_export(int ac, char **args)
 {
+	// what is the format of args? 
+	// some parsing is required
+	// should I handle "" and '' and $ inside this ?
+	//
+	// minishell: export: '...': not a valid identifier
+	// -> wrong syntax of the variable name: non-authorized character
+	// -> no '=' or '=' at the end or at the wrong place (end or beginning)
+	// if one name is not valit, all the previous ones are exported nontheless
+	//
+	// if no arguments: list all the exported variables
+	// -> understand the difference between 'exported' variables and non-exported
+	// maybe it should be implemented into minishell
 }
 
 int	main(int ac, char **av, char **env)
@@ -130,4 +133,6 @@ int	main(int ac, char **av, char **env)
 // before executing each function ?
 //
 // printf_err() -> writes on stdr AND can format
+//
+// next I need to handle $ and "" and '' and any combination of them
 //

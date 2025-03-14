@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:50:00 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/11 18:14:36 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/14 19:51:09 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,3 +43,45 @@ void	change_directories(char *path)
 	}
 	exit(0);
 }
+
+char	*ft_getenv(char	*name, t_env_list *env)
+{
+	t_env_node	*node;
+
+	node = env->head;
+	while (node)
+	{
+		if (is_equal(name, node->key))
+			return (node->value);
+		node = node->next;
+	}
+	return (NULL);
+}
+
+int	ft_setenv(char *key, char *value, int overwrite, t_env_list *env)
+{
+	t_env_node	*node;
+	t_env_node	*new_node;
+	
+	node = env->head;
+	while (node->next)
+	{
+		if (is_equal(key, node->key))
+		{
+			if (overwrite)
+			{
+				free(node->value);
+				node->value = ft_strdup(value); // should I duplicate ?
+			}
+			return (0);
+		}
+		node = node->next;
+	}
+	new_node = set_node(key, value);
+	if (!new_node)
+		return (1);
+	node->next = new_node;
+	env->size++;
+	return (0);
+}
+
