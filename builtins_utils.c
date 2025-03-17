@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:50:00 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/14 19:51:09 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/17 18:34:26 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,4 +84,3 @@ int	ft_setenv(char *key, char *value, int overwrite, t_env_list *env)
 	env->size++;
 	return (0);
 }
-

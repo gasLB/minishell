@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 14:38:52 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/12 18:04:31 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/17 17:06:49 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@
 // temporary compile command:
 // ccw builtins.c -L./libftprintf/libft -lft -L./libftprintf -lftprintf
 
+// /!\ args need to be expanded first, with quote and $
 void	ft_echo(int ac, char **args)
 {
 	int	i;
@@ -58,6 +59,7 @@ void	ft_echo(int ac, char **args)
 			ft_printf(" ");
 		i++;
 	}
+	free_args(args);	// -> need to clean up ?
 	exit(0);	
 }
 
@@ -67,7 +69,6 @@ void	ft_echo(int ac, char **args)
 // chdir: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
 //
 // -> to check later when I have the input system and a simplified parsing
-
 void	ft_pwd(void)
 {
 	char	*cwd;
@@ -79,7 +80,7 @@ void	ft_pwd(void)
 	exit(0);
 }
 
-void	ft_cd(int ac, char **args)
+void	ft_cd(int ac, char **args, t_env_list *env)
 {
 	char	*path;
 
@@ -87,13 +88,13 @@ void	ft_cd(int ac, char **args)
 		(ft_printf("minishell: cd: too many arguments\n"), exit(1));
 	else if (ac == 1)
 	{
-		path = ft_getenv("HOME");
+		path = ft_getenv("HOME", env);
 		if (!path)
 			(ft_printf("minishell: cd: HOME not set\n"), exit(1));
 	}
 	else if (ft_strlen(args[1]) == 1 && args[1][0] == '-')
 	{
-		path = ft_getenv("OLDPWD");
+		path = ft_getenv("OLDPWD", env);
 		if (!path)
 			(ft_printf("minishell: cd: OLDPWD not set\n"), exit(1));
 	}
@@ -105,6 +106,9 @@ void	ft_cd(int ac, char **args)
 
 void	ft_export(int ac, char **args)
 {
+	(void)ac;
+	(void)args;
+	return;
 	// what is the format of args? 
 	// some parsing is required
 	// should I handle "" and '' and $ inside this ?
@@ -121,9 +125,13 @@ void	ft_export(int ac, char **args)
 
 int	main(int ac, char **av, char **env)
 {
-	int	pid;
+	t_env_list	*env_list;
+	char	*str;
 
-	(void)env;
+	(void)ac;
+	(void)av;
+	env_list = populate_env(env);
+	return (0);
 }
 
 // all args need to be freed before exit -> specific function

@@ -10,7 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../libftprintf/libft/libft.h"
+#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
+#include <stdlib.h>
 
 t_env_node	*set_node(char *key, char *value)
 {
@@ -19,9 +22,9 @@ t_env_node	*set_node(char *key, char *value)
 	new_node = malloc(sizeof(t_env_node));
 	if (!new_node)
 		return (NULL);
-	node->key = ft_strdup(key);
-	node->value = ft_strdup(value);
-	node->next = NULL;
+	new_node->key = ft_strdup(key);
+	new_node->value = ft_strdup(value);
+	new_node->next = NULL;
 	return (new_node);	
 }
 
@@ -30,12 +33,12 @@ t_env_node	*init_node(char *line)
 	t_env_node	*env_node;
 	int	eq_index;
 
-	eq_index = ft_strchr(line, '=');
+	eq_index = ft_strchr(line, '=') - line;
 	env_node = malloc(sizeof(t_env_node));
 	if (!env_node)
 		return (NULL);
-	env_node->key = ft_substr(line, 0, eq_index + 1);
-	env_node->value = ft_substr(line, eq_index, ft_strlen(line) - eq_index - 1);
+	env_node->key = ft_substr(line, 0, eq_index);
+	env_node->value = ft_substr(line, eq_index + 1, ft_strlen(line) - eq_index - 1);
 	env_node->next = NULL;
 	return (env_node);
 }

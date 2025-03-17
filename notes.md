@@ -107,9 +107,12 @@ Alternative to termios
 
 ## GENERAL STEPS
 
-### tokenisation 
+Lexical analysis/tokenization: Breaking input into tokens
+Parsing: Converting tokens into a command structure
+Expansion: Handling variables, wildcards, etc.
+Execution: Running the commands
 
-identify each token's type
+=> in this order
 
 ## Crash Test list
 
