@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 14:38:52 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/17 17:06:49 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/18 18:53:46 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,23 +24,6 @@
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 
-// list of builtins to implement: 
-// echo (-n)
-// cd
-// pwd
-// export
-// unset
-// env
-// exit
-//
-// Each builtin should exit with the correct status
-//
-// If I consider the parsing complete, I must reuse some of the pipex logic to pipe
-// those builtins alongside any command in any order
-// temporary compile command:
-// ccw builtins.c -L./libftprintf/libft -lft -L./libftprintf -lftprintf
-
-// /!\ args need to be expanded first, with quote and $
 void	ft_echo(int ac, char **args)
 {
 	int	i;
@@ -59,16 +42,10 @@ void	ft_echo(int ac, char **args)
 			ft_printf(" ");
 		i++;
 	}
-	free_args(args);	// -> need to clean up ?
+	//free_args(args);
 	exit(0);	
 }
 
-// specific error message if cwd is removed for pwd and cd:
-//
-// pwd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
-// chdir: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
-//
-// -> to check later when I have the input system and a simplified parsing
 void	ft_pwd(void)
 {
 	char	*cwd;
@@ -85,7 +62,7 @@ void	ft_cd(int ac, char **args, t_env_list *env)
 	char	*path;
 
 	if (ac > 2)
-		(ft_printf("minishell: cd: too many arguments\n"), exit(1));
+		(ft_printf("minishell: cd: too many arguments\n"), exit(1)); //need proper exit function
 	else if (ac == 1)
 	{
 		path = ft_getenv("HOME", env);
@@ -109,10 +86,6 @@ void	ft_export(int ac, char **args)
 	(void)ac;
 	(void)args;
 	return;
-	// what is the format of args? 
-	// some parsing is required
-	// should I handle "" and '' and $ inside this ?
-	//
 	// minishell: export: '...': not a valid identifier
 	// -> wrong syntax of the variable name: non-authorized character
 	// -> no '=' or '=' at the end or at the wrong place (end or beginning)
@@ -120,27 +93,27 @@ void	ft_export(int ac, char **args)
 	//
 	// if no arguments: list all the exported variables
 	// -> understand the difference between 'exported' variables and non-exported
-	// maybe it should be implemented into minishell
+	// it this necessary?
 }
+/*
+list of builtins to implement: 
+echo (-n)
+cd
+pwd
+export
+unset
+env
+exit
 
-int	main(int ac, char **av, char **env)
-{
-	t_env_list	*env_list;
-	char	*str;
+Each builtin should exit with the correct status
 
-	(void)ac;
-	(void)av;
-	env_list = populate_env(env);
-	return (0);
-}
+Specific error message if cwd is removed for pwd and cd:
+pwd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+chdir: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
 
-// all args need to be freed before exit -> specific function
-//
-// mixed error handling perror or printf ? How to format with perror ?
-// what about wrong number of arguments ? Should they be handled inside each function or 
-// before executing each function ?
-//
-// printf_err() -> writes on stdr AND can format
-//
-// next I need to handle $ and "" and '' and any combination of them
-//
+-> to check later when I have the input system and a valid parsing
+
+all args need to be freed before exit : printf_err() -> writes on stdr AND can format
+
+
+*/

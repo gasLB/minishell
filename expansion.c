@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 12:28:51 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/17 19:52:29 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/18 19:48:13 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,88 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-// this function is used with: echo
+int	is_good_c(char c)
+{
+	if (c == NULL)
+		return (0);
+	return (ft_isalpha(c) || c == '_' || c == '?');
+}
+
+int	is_valid_inside(char c)
+{
+	return (c != '$' && (ft_isalnum(c) || c == '_'));
+}
+
+char	*expand_variable(char *str, char *q_mask, t_minishell *sh)
+{
+	char	*res;
+	int	begin;
+	int	i;
+
+	(void)q_mask;
+	i = 0;
+	begin = 0;
+	res = NULL;
+	while (str[i])
+	{
+		while (str[i] && ((str[i] != '$') || (!is_good_c(str[i + 1]))))
+			i++;
+		res = append_str(res, ft_substr(str, begin, i + 1));
+		if (!str[i++])
+			break;
+		if (str[i] == '?')
+			(res = append_str(res, ft_itoa(sh->last_exit)), i++);
+		begin = i;
+		while (str[i] && is_valid_inside(str[i]))
+			i++;
+		res = append_str(res, \
+		   ft_strdup(ft_getenv(ft_substr(str, begin, i + 1), env)));
+	}
+	return (res);
+}
+//----------------------------------------------------------------------------------------------------------------------------------------
+int	is_expandable(char *str, char *q_mask, int i)
+{
+	char	next;
+
+	next = 0;
+	if (q_mask[i] == 'S')
+		return (0);
+	else if (str[i] == '$')
+	{
+		next = str[i + 1];
+		if ((i != 0) && (q_mark[i - 1] == 'B'))
+			return (0);
+		if (next == '\0' || q_mark[i + 1] == 'B')	
+			return (0);
+		return (ft_isalpha(next) || next == '_' || next == '?');
+	}
+	return (0);
+}
+
+char	*expand_variables_new(char *str, char *q_mask, t_minishell *sh)
+{
+	char	*res;
+	int	begin;
+	int	i;
+
+	(i = 0, begin = 0, res = NULL);
+	while (str[i])
+	{
+		while (!is_expandable(str, q_mask, i))
+			i++;
+		res = append_str(res, ft_substr(str, begin, i + 1));
+		if (!str[i++])	// skip the '$' and return if EOS
+			break;
+		// multiple scenarios:
+		// - 'S' or "D" after $ -> translation
+		// - '?' after $ (only 'N') -> last_exit_status
+		// take into account backslash
+		// - continue until non-valid character (or non expandable mask) and look for corresponding environment variable
+			
+
+	}
+}
 
 // We first need a global function that takes as input the list of arguments
 // Wildcards are res AFTER variables
@@ -49,121 +130,118 @@ ab*: all files starting with 'ab' (including 'ab' itslef)
 $CWD*: all files in CWD
 "*": wildcard are treated as litterals inside double quotes
 
+
+
+ just after the $ -> check if special char among $?!0#*-
+
+ We define 2 types of groupings inside each variable: litteral groupings and expandables groupings
+ Expandable groupings have a valid name. 
+ In bash, Variable names must start with a letter or underscore, followed by any combination of letters, numbers, or underscores
+ They refer to an environment variable (or special code) that may exist or not
+
+ Litteral groupings are just treated as character strings
+ 
+
+	VARIABLE	abc$HOME-def$PATHabc7$?$+g$	
+
+			abc $HOME -def $PATHabc7 $? $+g $
+			--- ----- ---- --------- -- --- -
+	TYPE:		 L    E     L      E     E   L  L
+	EXIST:		      Y            N     Y     
+
+	RESULT:		abc /home/gfontagn -def 0 $+g $
+
+	(concatenated)	abc/home/gfontagn-def0$+g$
+
+
+ IMPLEMENTATION
+ 
+ We iterate on initial value. Current grouping is treated as litteral until we find a $:
+ 	- we write the current grouping.
+ 	- if $-grouping is not valid (we know by character next to $), treated as litteral until we find a $
+ 	- if $-grouping is valid, we try to expand it:
+ 		- if $-grouping doesn't refer to existing variable, we skip it
+ 		- if $-grouping refers to existing variable, we write it
+ 
+
+ first, I will test this function with echo without taking into account quotes
+ now implement q_mask and  handling for cases like $HOME/something 
+ 
+ MASK:
+
+ B (backslash)
+ S (single quote)
+ D (double quote)
+ N (no quote)
+
+ echo $string		:	NNNNNNN
+ ->
+ echo $"string"		:	NDDDDDD
+ -> string
+ echo $'string'		:	NSSSSSS
+ -> string
+ echo $""		:	N	(!special case: empty str after $)
+ -> 
+ echo " $ "		:	DDD
+ ->  $  
+ echo ab"cde"		:	NNDDD
+ ->abcde
+ echo "ab""cde"		:	DDDDD
+ -> abcde
+ echo 'ab'cde		:	SSNNN
+ ->abcde
+ echo 'ab'"cde"		:	SSDDD
+ ->abcde
+ echo ''ab''		:	NN
+ -> ab
+ echo ""ab""		:	NN
+ -> ab
+ echo "'ab'"		:	DDDD
+ ->'ab'
+ echo '"ab"'		:	SSSS
+ ->"ab"
+ echo ""'ab'""		:	SS
+ -> ab
+ echo ''"ab"''		:	DD
+ -> ab
+ echo ""''ab''""	:	NN
+ -> ab
+ echo '"'ab'"'		:	SNNS
+ ->"ab"
+ echo "'"ab"'"		:	DNND
+ ->'ab'
+ echo '"'"ab"'"'	:	SDDS
+ -> "ab"
+ echo "'"'ab'"'"	:	DSSD
+ -> 'ab'
+ echo abc\d		:	NNNBN
+ -> abcd
+ echo 'abc\d'		:	SSSSS
+ -> abc\d
+ echo "abc\d"		:	DDDDD
+ -> abc\d
+ echo \$HOME		:	BNNNN
+ -> $HOME
+ echo "$"HOME		:	DNNNN
+ -> $HOME
+ echo "$HO"ME		:	DDDNN
+ -> ME
+ echo $'\?'		:	NSS
+ -> ?
+
+ Special cases:
+ Inside double quotes, backslash retains its special meaning ONLY for certain characters:
+
+    \" - escapes a double quote
+    \\ - escapes a backslash
+    \$ - escapes a dollar sign
+    ``` - escapes a backtick
+    \! - escapes history expansion (when enabled)
+    \newline - line continuation
+
+
 */
-
-// just after the $ -> check if special char among $?!0#*-
-
-int	try_expand(char **to_expand, char *src, t_env_list *env, int l_e_s)
-{
-	int	i;
-	char	*expanded;
-
-	i = 0;
-	expanded = NULL;
-	if (!src[i])
-		return (0);
-	if (src[i] == '?')
-	{
-		*to_expand = append_str(*to_expand, ft_itoa(l_e_s));
-		return (1);
-	}
-	if (!(ft_is_alpha(src[i]) || (src[i] == '_')))
-		return (0);
-	while (str[i] && (ft_is_alnum(str[i]) || (src[i] == '-'))) // warning: check the ennv variable as late as possible
-		expanded = append_char(expanded, str[i++]);
-	if (expanded)
-	{
-		expanded = append_char(expanded, '\0');
-		*to_expand = append_str(*to_expand, ft_getenv(expanded)); // warning: getenv could be NULL
-		free(expanded);
-	}
-	return (i);
-}
-
-// first version without taking q_mask into account. str is the real str without any quotes
-char	*expand_variable_basic(char *str, char *q_mask, t_env_list *env, int l_e_s)
-{
-	char	*expanded;
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '$' && str[i + 1])
-			i += try_expand(&expanded, str + i, l_e_s); //pass expanded as a pointer to change it
-		else if (str[i])
-			(expanded = append_char(expanded, str[i]), i++);
-	}
-}
-
-// We define 2 types of groupings inside each variable: litteral groupings and expandables groupings
-// Expandable groupings have a valid name. 
-//// In bash, Variable names must start with a letter or underscore, followed by any combination of letters, numbers, or underscores
-// They refer to an environment variable (or special code) that may exist or not
-//
-// Litteral groupings are just treated as character strings
-// 
-//
-//	VARIABLE	abc$HOME-def$PATHabc7$?$+g$	
-//
-//			abc $HOME -def $PATHabc7 $? $+g $
-//			--- ----- ---- --------- -- --- -
-//	TYPE:		 L    E     L      E     E   L  L
-//	EXIST:		      Y            N     Y     
-//
-//	RESULT:		abc /home/gfontagn/ -def 0 $+g $
-//
-//	(concatenated)	abc/home/gfontagn/-def0$+g$
-//
-//
-// IMPLEMENTATION
-// 
-// We iterate on initial value. Current grouping is treated as litteral until we find a $:
-// 	- we write the current grouping.
-// 	- if $-grouping is not valid (we know by character next to $), treated as litteral until we find a $
-// 	- if $-grouping is valid, we try to expand it:
-// 		- if $-grouping doesn't refer to existing variable, we skip it
-// 		- if $-grouping refers to existing variable, we write it
-// 
+// What to do if not valid sequence? ( like unclosed quote)
+// fuck it for now
 //
 
-int	is_good_c(char c)
-{
-	if (c == NULL)
-		return (0);
-	return (ft_isalpha(c) || c == '_' || c == '?');
-}
-
-int	is_valid_inside(char c)
-{
-	return (c != '$' && (ft_isalnum(c) || c == '_'));
-}
-
-// now implement q_mask and  handling for cases like $HOME/something 
-
-char	*expand_variables_basic(char *str, char *q_mask, t_minishell *sh)
-{
-	char	*res;
-	int	begin;
-	int	i;
-
-	i = 0;
-	begin = 0;
-	res = NULL;
-	while (str[i])
-	{
-		while (str[i] && ((str[i] != '$') || (!is_good_c(str[i + 1]))))		// while being litteral
-			i++;
-		res = append_str(res, ft_substr(str, begin, i + 1));			// from here, either NULL or valid $-grouping  
-		if (!str[i++])
-			break;
-		if (str[i] == '?')
-			(res = append_str(res, ft_itoa(sh->last_exit)), i++);
-		begin = i;								// begin and i and the start of the new group (without $)
-		while (str[i] && is_valid_inside(str[i]))
-			i++;
-		res = append_str(res, \
-		   ft_strdup(ft_getenv(ft_substr(str, begin, i + 1), env)));
-	}
-	return (res);
-}

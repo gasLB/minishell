@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 19:35:03 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/17 17:20:03 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/18 19:02:49 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	is_equal(char *s1, char *s2)
 	return (1);
 }
 
-char	*ft_realloc_str(char *str, int new_size)
+char	*ft_realloc_str(char *str, int new_size) // Useless for now
 {
 	char	*new_str;
 	int	i;

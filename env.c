@@ -82,6 +82,3 @@ t_env_list	*populate_env(char **env)
 	}
 	return (env_list);
 }
-
-
-// I also need a ft_gentenv() and a ft_setenv()

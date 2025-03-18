@@ -6,16 +6,13 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/17 19:17:06 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/18 19:04:05 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
-// This is a linked hash table
-// each node has a key and a value
 
 typedef	struct s_token
 {
@@ -52,6 +49,8 @@ t_env_list	*populate_env(char **env);
 
 // utils.c
 int	is_equal(char *s1, char *s2);
+char	*ft_realloc_str(char *str, int new_size);
+char	*append_str(char *dest, char *src);
 
 // builtins_utils.c
 int	is_n_option(char *s);
@@ -63,5 +62,11 @@ int	ft_setenv(char *key, char *value, int overwrite, t_env_list *env);
 void	ft_echo(int ac, char **args);
 void	ft_pwd(void);
 void	ft_cd(int ac, char **args, t_env_list *env);
+
+// expansion.c
+char	*expand_variable(char *str, char *q_mask, t_minishell *sh);
+
+// tokenization.c
+t_token	**populate_token_list(int ac, char **av);
 
 #endif
