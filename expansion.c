@@ -66,39 +66,75 @@ int	is_expandable(char *str, char *q_mask, int i)
 	else if (str[i] == '$')
 	{
 		next = str[i + 1];
-		if ((i != 0) && (q_mark[i - 1] == 'B'))
-			return (0);
-		if (next == '\0' || q_mark[i + 1] == 'B')	
+		if (next == '\0')	
 			return (0);
 		return (ft_isalpha(next) || next == '_' || next == '?');
 	}
 	return (0);
 }
 
-char	*expand_variables_new(char *str, char *q_mask, t_minishell *sh)
+int	translation(char **res, t_token *tk, int i)
+{
+	int	begin;
+
+	begin = i;
+	while (tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D')
+		i++;
+	*res = append_str(*res, ft_substr(tk->value, begin, i + 1));
+	return (i);
+}
+
+int	is_valid_char_inside(char c_str, char c_q)
+{
+	if (!c_str || !c_q)
+		return (0);
+	else if (c_str != '$' && (ft_isalnum(c_str) || c_str == '_'))
+	{
+		if (c_q == 'N')
+			return (1);
+	}
+	return (0);
+}
+
+int	look_for_env_variable(char **res, t_token *tk, int i, t_env_list *env)
+{
+	int	begin;
+
+	begin = i;
+	while (is_valid_char_inside(str[i], q_mask[i]))
+		i++;
+	res = append_str(res, \
+		ft_strdup(ft_getenv(ft_substr(tk->value, begin, i + 1), env)));
+	return (i);
+}
+
+char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env)
 {
 	char	*res;
 	int	begin;
 	int	i;
 
 	(i = 0, begin = 0, res = NULL);
-	while (str[i])
+	while (tk->value[i])
 	{
-		while (!is_expandable(str, q_mask, i))
+		while (!is_expandable(tk->value, tk->quote_mask, i))
 			i++;
-		res = append_str(res, ft_substr(str, begin, i + 1));
-		if (!str[i++])	// skip the '$' and return if EOS
+		res = append_str(res, ft_substr(tk->value, begin, i + 1));
+		if (!tk->value[i++])	// skip the '$' and return if EOS
 			break;
-		// multiple scenarios:
-		// - 'S' or "D" after $ -> translation
-		// - '?' after $ (only 'N') -> last_exit_status
-		// take into account backslash
-		// - continue until non-valid character (or non expandable mask) and look for corresponding environment variable
-			
-
+		if (tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D')
+			i = translation(&res, tk, i);
+		else if (str[i] == '?')
+			(res = append_str(res, ft_itoa(sh->last_exit)), i++);
+		else
+			i = look_for_env_variable(&res, tk, i, env);
+		// if no string found, append_str returns NULL
 	}
 }
 
+// what's up with the numbers? 
+// echo $987
+// -> 87
 // We first need a global function that takes as input the list of arguments
 // Wildcards are res AFTER variables
 

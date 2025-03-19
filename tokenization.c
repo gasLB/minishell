@@ -14,7 +14,7 @@
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 
-char	*strdup_without_quotes(char *str)
+char	*strdup_without_quotes(char *str)	//rewrite with ft_strspd
 {
 	char	*res;
 	int	j;
@@ -66,13 +66,6 @@ char	*set_q_mask(char *val, char *str)
 				res[j++] = 'D';
 			else if (current == 'N')
 				current = 'D';	
-		}
-		else if (str[i] == '\\')
-		{
-			if (current == 'N') // ! not valid in bash if \ is last char
-				res[j++] = 'B';
-			else
-				res[j++] = current; // ! not for some special doubles
 		}
 		else
 			res[j++] = current;

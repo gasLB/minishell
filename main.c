@@ -30,3 +30,4 @@ int	main(int ac, char **av, char **env)
 // TODO:
 // [ ] Rewrite expansion by taking into account quote_mask and wildcards
 // [ ] Divide set_q_mask into multiple functions
+// [ ] Test all current functions and builtins
