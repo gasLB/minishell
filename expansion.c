@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 12:28:51 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/18 19:48:13 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/20 18:00:48 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,46 +16,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-int	is_good_c(char c)
-{
-	if (c == NULL)
-		return (0);
-	return (ft_isalpha(c) || c == '_' || c == '?');
-}
-
-int	is_valid_inside(char c)
-{
-	return (c != '$' && (ft_isalnum(c) || c == '_'));
-}
-
-char	*expand_variable(char *str, char *q_mask, t_minishell *sh)
-{
-	char	*res;
-	int	begin;
-	int	i;
-
-	(void)q_mask;
-	i = 0;
-	begin = 0;
-	res = NULL;
-	while (str[i])
-	{
-		while (str[i] && ((str[i] != '$') || (!is_good_c(str[i + 1]))))
-			i++;
-		res = append_str(res, ft_substr(str, begin, i + 1));
-		if (!str[i++])
-			break;
-		if (str[i] == '?')
-			(res = append_str(res, ft_itoa(sh->last_exit)), i++);
-		begin = i;
-		while (str[i] && is_valid_inside(str[i]))
-			i++;
-		res = append_str(res, \
-		   ft_strdup(ft_getenv(ft_substr(str, begin, i + 1), env)));
-	}
-	return (res);
-}
-//----------------------------------------------------------------------------------------------------------------------------------------
 int	is_expandable(char *str, char *q_mask, int i)
 {
 	char	next;
@@ -108,30 +68,34 @@ int	look_for_env_variable(char **res, t_token *tk, int i, t_env_list *env)
 	return (i);
 }
 
-char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env)
+char	*expand_variable(t_token *tk, t_minishell *sh)
 {
 	char	*res;
 	int	begin;
 	int	i;
 
-	(i = 0, begin = 0, res = NULL);
+	(i = 0, begin = 0, res = init_str());
+	if (!res)
+		return(NULL);
+	i = handle_tilde(&res, tk, sh->env);
 	while (tk->value[i])
 	{
 		while (!is_expandable(tk->value, tk->quote_mask, i))
 			i++;
 		res = append_str(res, ft_substr(tk->value, begin, i + 1));
-		if (!tk->value[i++])	// skip the '$' and return if EOS
+		if (!tk->value[i++])
 			break;
 		if (tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D')
 			i = translation(&res, tk, i);
 		else if (str[i] == '?')
 			(res = append_str(res, ft_itoa(sh->last_exit)), i++);
 		else
-			i = look_for_env_variable(&res, tk, i, env);
-		// if no string found, append_str returns NULL
+			i = look_for_env_variable(&res, tk, i, sh->env);
 	}
+	return (res);
 }
 
+// I will focus on wildcards later
 // what's up with the numbers? 
 // echo $987
 // -> 87
@@ -168,102 +132,138 @@ $CWD*: all files in CWD
 
 
 
- just after the $ -> check if special char among $?!0#*-
+just after the $ -> check if special char among $?!0#*-
 
- We define 2 types of groupings inside each variable: litteral groupings and expandables groupings
- Expandable groupings have a valid name. 
- In bash, Variable names must start with a letter or underscore, followed by any combination of letters, numbers, or underscores
- They refer to an environment variable (or special code) that may exist or not
+We define 2 types of groupings inside each variable: litteral groupings and expandables groupings
+Expandable groupings have a valid name. 
+In bash, Variable names must start with a letter or underscore, followed by any combination of letters, numbers, or underscores
+They refer to an environment variable (or special code) that may exist or not
 
- Litteral groupings are just treated as character strings
- 
-
-	VARIABLE	abc$HOME-def$PATHabc7$?$+g$	
-
-			abc $HOME -def $PATHabc7 $? $+g $
-			--- ----- ---- --------- -- --- -
-	TYPE:		 L    E     L      E     E   L  L
-	EXIST:		      Y            N     Y     
-
-	RESULT:		abc /home/gfontagn -def 0 $+g $
-
-	(concatenated)	abc/home/gfontagn-def0$+g$
+Litteral groupings are just treated as character strings
 
 
- IMPLEMENTATION
- 
- We iterate on initial value. Current grouping is treated as litteral until we find a $:
- 	- we write the current grouping.
- 	- if $-grouping is not valid (we know by character next to $), treated as litteral until we find a $
- 	- if $-grouping is valid, we try to expand it:
- 		- if $-grouping doesn't refer to existing variable, we skip it
- 		- if $-grouping refers to existing variable, we write it
- 
+       VARIABLE	abc$HOME-def$PATHabc7$?$+g$	
 
- first, I will test this function with echo without taking into account quotes
- now implement q_mask and  handling for cases like $HOME/something 
- 
- MASK:
+       		abc $HOME -def $PATHabc7 $? $+g $
+       		--- ----- ---- --------- -- --- -
+       TYPE:		 L    E     L      E     E   L  L
+       EXIST:		      Y            N     Y     
 
- B (backslash)
- S (single quote)
- D (double quote)
- N (no quote)
+       RESULT:		abc /home/gfontagn -def 0 $+g $
 
- echo $string		:	NNNNNNN
- ->
- echo $"string"		:	NDDDDDD
- -> string
- echo $'string'		:	NSSSSSS
- -> string
- echo $""		:	N	(!special case: empty str after $)
- -> 
- echo " $ "		:	DDD
- ->  $  
- echo ab"cde"		:	NNDDD
- ->abcde
- echo "ab""cde"		:	DDDDD
- -> abcde
- echo 'ab'cde		:	SSNNN
- ->abcde
- echo 'ab'"cde"		:	SSDDD
- ->abcde
- echo ''ab''		:	NN
- -> ab
- echo ""ab""		:	NN
- -> ab
- echo "'ab'"		:	DDDD
- ->'ab'
- echo '"ab"'		:	SSSS
- ->"ab"
- echo ""'ab'""		:	SS
- -> ab
- echo ''"ab"''		:	DD
- -> ab
- echo ""''ab''""	:	NN
- -> ab
- echo '"'ab'"'		:	SNNS
- ->"ab"
- echo "'"ab"'"		:	DNND
- ->'ab'
- echo '"'"ab"'"'	:	SDDS
- -> "ab"
- echo "'"'ab'"'"	:	DSSD
- -> 'ab'
- echo abc\d		:	NNNBN
- -> abcd
- echo 'abc\d'		:	SSSSS
- -> abc\d
- echo "abc\d"		:	DDDDD
- -> abc\d
- echo \$HOME		:	BNNNN
- -> $HOME
- echo "$"HOME		:	DNNNN
- -> $HOME
- echo "$HO"ME		:	DDDNN
- -> ME
- echo $'\?'		:	NSS
- -> ?
+       (concatenated)	abc/home/gfontagn-def0$+g$
+
+
+IMPLEMENTATION
+
+We iterate on initial value. Current grouping is treated as litteral until we find a $:
+	- we write the current grouping.
+	- if $-grouping is not valid (we know by character next to $), treated as litteral until we find a $
+	- if $-grouping is valid, we try to expand it:
+		- if $-grouping doesn't refer to existing variable, we skip it
+		- if $-grouping refers to existing variable, we write it
+
+
+first, I will test this function with echo without taking into account quotes
+now implement q_mask and  handling for cases like $HOME/something 
+
+MASK:
+
+B (backslash)
+S (single quote)
+D (double quote)
+N (no quote)
+
+echo $string		:	NNNNNNN
+->
+echo $"string"		:	NDDDDDD
+-> string
+echo $'string'		:	NSSSSSS
+-> string
+echo $""		:	N	(!special case: empty str after $)
+-> 
+echo " $ "		:	DDD
+->  $  
+echo ab"cde"		:	NNDDD
+->abcde
+echo "ab""cde"		:	DDDDD
+-> abcde
+echo 'ab'cde		:	SSNNN
+->abcde
+echo 'ab'"cde"		:	SSDDD
+->abcde
+echo ''ab''		:	NN
+-> ab
+echo ""ab""		:	NN
+-> ab
+echo "'ab'"		:	DDDD
+->'ab'
+echo '"ab"'		:	SSSS
+->"ab"
+echo ""'ab'""		:	SS
+-> ab
+echo ''"ab"''		:	DD
+-> ab
+echo ""''ab''""	:	NN
+-> ab
+echo '"'ab'"'		:	SNNS
+->"ab"
+echo "'"ab"'"		:	DNND
+->'ab'
+echo '"'"ab"'"'	:	SDDS
+-> "ab"
+echo "'"'ab'"'"	:	DSSD
+-> 'ab'
+echo abc\d		:	NNNBN
+-> abcd
+echo 'abc\d'		:	SSSSS
+-> abc\d
+echo "abc\d"		:	DDDDD
+-> abc\d
+echo \$HOME		:	BNNNN
+-> $HOME
+echo "$"HOME		:	DNNNN
+-> $HOME
+echo "$HO"ME		:	DDDNN
+-> ME
+echo $'\?'		:	NSS
+-> ?
+echo ~
+-> /home/gfontagn
+echo "~"
+-> ~
+echo '~'
+-> ~
+echo ~a
+-> ~a
+echo a~
+-> a~
+echo ~/
+-> /home/gfontagn/
+echo ~/abc
+-> /home/gfontagn/abc
+echo ~/~
+-> /home/gfontagn/~
+echo ~$HOME
+-> ~/home/gfontagn
+echo ~/"abcd"
+-> /home/gfontagn/rere
+echo ~/$HOME
+-> /home/gfontagn//home/gfontagn
+echo *
+-> a.c b.cc.c text.md ...
+echo exp*
+-> expansion.c expansion_utils.c
+echo "exp"*'c'
+-> expansion.c expansion_utils.c
+echo exp*prout
+-> exp*prout
+echo $HOME*prout
+-> /home/gfontagn*prout
+echo *exp$HOME
+-> *exp/home/gfontagn
+
+
 
  Special cases:
  Inside double quotes, backslash retains its special meaning ONLY for certain characters:
