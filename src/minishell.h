@@ -16,7 +16,7 @@
 
 typedef	struct s_token
 {
-	char	*value;			// the raw string
+	char	*value;			// the string without quotes
 	int	type;			// command, argument, operator, etc...
 	char	*expanded_value;	// after expansion
 	char	*quote_mask;		// quoting context for each character: 'NNNDDS'
@@ -64,9 +64,13 @@ void	ft_pwd(void);
 void	ft_cd(int ac, char **args, t_env_list *env);
 
 // expansion.c
-char	*expand_variable(char *str, char *q_mask, t_minishell *sh);
+t_token	**expand_tokens(t_token **token_list, t_minishell *sh, t_env_list *env);
+
+// expansion_utils.c
+char	*init_str(void);
+int	handle_tilde(char **res, t_token *tk, t_env_list *env);
 
 // tokenization.c
-t_token	**populate_token_list(int ac, char **av);
+t_token	**populate_tokens(int ac, char **av);
 
 #endif

@@ -1,0 +1,1 @@
+cd src && cc -Werror -Wall -Wextra -g    builtins.c builtins_utils.c env.c expansion.c expansion_utils.c    main.c tokenization.c utils.c    -o minishell    -I.    -L../libftprintf -lftprintf    -L../libftprintf/libft -lft    -lreadline

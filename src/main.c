@@ -13,20 +13,61 @@
 #include "../libftprintf/libft/libft.h"
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
+#include <stdlib.h>
 
+t_minishell	*init_shell(t_env_list *env_list)
+{
+	t_minishell	*sh;
+
+	sh = malloc(sizeof(sh));
+	if (!sh)
+		return (NULL);
+	sh->env_list = env_list;
+	sh->last_exit = 0;
+	return (sh);
+}
+
+void	print_tokens(t_token **tk_list)
+{
+	int	i;
+
+	i = 0;
+	while (tk_list[i])
+	{
+		ft_printf("--- %d ---\n", i);
+		ft_printf("value : %s\n", tk_list[i]->value);
+		ft_printf("type : %d\n", tk_list[i]->type);
+		ft_printf("quote mask : %s\n", tk_list[i]->quote_mask);
+		ft_printf("exp value : %s\n", tk_list[i]->expanded_value);
+		ft_printf("---------\n");
+		i++;
+	}
+}
 int	main(int ac, char **av, char **env)
 {
 	t_env_list	*env_list;
 	t_token		**token_list;
-	char	*str;
+	t_minishell	*sh;
 
-	token_list = populate_tokens(ac, av);
 	env_list = populate_env(env);
+	if (!env_list)
+		(ft_printf("debug: err envlist"), exit(1));
+	sh = init_shell(env_list);
+	if (!sh)
+		(ft_printf("debug: err shell"), exit(1));
+	token_list = populate_tokens(ac, av);
+	if (!token_list)			// redudant part but useful for debug
+		(ft_printf("debug: err tokenlist"), exit(1));
+	token_list = expand_tokens(token_list, sh, env_list);
+	print_tokens(token_list);	
 	return (0);
 }
 
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
-// [ ] Divide set_q_mask into multiple functions
+// [X] Divide set_q_mask into multiple functions
 // [ ] Test all current functions and builtins
+// -> for that, I need to implement the input system with readline
+//
+//

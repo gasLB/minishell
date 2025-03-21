@@ -13,6 +13,7 @@
 #include "../libftprintf/libft/libft.h"
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
+#include <stdlib.h>
 
 char	*strdup_without_quotes(char *str)	//rewrite with ft_strspd
 {
@@ -27,7 +28,7 @@ char	*strdup_without_quotes(char *str)	//rewrite with ft_strspd
 		return (NULL);
 	while (str[i])
 	{
-		if (str[i] != '"' && str[i] ! = '\\')
+		if (str[i] != '"' && str[i] != '\\')
 			res[j++] = str[i];
 		i++;
 	}
@@ -39,37 +40,27 @@ char	*set_q_mask(char *val, char *str)
 	int	i;
 	int	j;
 	char	*res;
-	char	current;
+	char	c;
 
 	res = ft_calloc(ft_strlen(val) + 1, sizeof(char));
 	if (!res)
 		return (NULL);
 	i = 0;
 	j = 0;
-	current = 'N';
-	while (str[i])	// could reduce all of this by a simple mapping or external funct
+	c = 'N';
+	while (str[i])
 	{
-		if (str[i] == '\'')
-		{
-			if (current == 'S')
-				current = 'N';
-			else if (current == 'D')
-				res[j++] = 'S'; 
-			else if (current == 'N')
-				current = 'S';
-		}
-		else if (str[i] == '"')
-		{
-			if (current == 'D')
-				current = 'N';
-			else if (current == 'S')
-				res[j++] = 'D';
-			else if (current == 'N')
-				current = 'D';	
-		}
+		if ((c == 'D' && str[i] == '"') || (c == 'S' && str[i] == '\''))
+			c = 'N';
+		else if (c == 'N' && str[i] == '"')
+			c  = 'D';
+		else if (c == 'N' && str[i] == '\'')
+			c = 'S';
 		else
-			res[j++] = current;
+			res[j++] = c;
+		i++;
 	}
+	res[j] = '\0';
 	return (res);
 }
 
@@ -80,32 +71,34 @@ t_token	*init_token(char *str)
 	token = malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
-	token->value = strdup_without_quotes(str);
+	token->value = strdup_without_quotes(str);	// to replace
 	if (!token->value)
 		return (NULL);
 	token->type = -1;	// to do later, maybe not at the right place
 	token->expanded_value = NULL;
 	token->quote_mask = set_q_mask(token->value, str);
-	if (!token->mask)
+	if (!token->quote_mask)
 		return (NULL);
 	return (token);
 }
 
-t_token	**populate_token_list(int ac, char **av)
+// assuming for now we only enter arguments of a builtin
+t_token	**populate_tokens(int ac, char **av)
 {
 	t_token	**token_list;
 	int	i;
 
 	if (ac <= 1)
 		return (NULL);
-	token_list = malloc(ac * sizeof(t_token *));
+	token_list = malloc((ac - 1) * sizeof(t_token *));
 	if (!token_list)
 		return (NULL);
 	i = 0;
-	while (i < ac)
+	while (i < ac - 1)
 	{
-		token_list[i] = init_token(av[i]);
+		token_list[i] = init_token(av[i + 1]);
 		i++;
 	}
+	token_list[i] = NULL;
 	return (token_list);
 }

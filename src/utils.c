@@ -13,6 +13,7 @@
 #include "../libftprintf/libft/libft.h"
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
+#include <stdlib.h>
 
 int	is_equal(char *s1, char *s2)
 {
@@ -28,7 +29,7 @@ char	*ft_realloc_str(char *str, int new_size) // Useless for now
 	char	*new_str;
 	int	i;
 
-	if (ft_strlen(str) > new_size)
+	if ((int)ft_strlen(str) > new_size)
 		return (NULL);
 	if (!str)
 		return (NULL);

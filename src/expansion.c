@@ -21,6 +21,8 @@ int	is_expandable(char *str, char *q_mask, int i)
 	char	next;
 
 	next = 0;
+	if (!str[i])
+		return (1);
 	if (q_mask[i] == 'S')
 		return (0);
 	else if (str[i] == '$')
@@ -61,14 +63,14 @@ int	look_for_env_variable(char **res, t_token *tk, int i, t_env_list *env)
 	int	begin;
 
 	begin = i;
-	while (is_valid_char_inside(str[i], q_mask[i]))
+	while (is_valid_char_inside(tk->value[i], tk->quote_mask[i]))
 		i++;
-	res = append_str(res, \
+	*res = append_str(*res, \
 		ft_strdup(ft_getenv(ft_substr(tk->value, begin, i + 1), env)));
 	return (i);
 }
 
-char	*expand_variable(t_token *tk, t_minishell *sh)
+char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env)
 {
 	char	*res;
 	int	begin;
@@ -77,7 +79,7 @@ char	*expand_variable(t_token *tk, t_minishell *sh)
 	(i = 0, begin = 0, res = init_str());
 	if (!res)
 		return(NULL);
-	i = handle_tilde(&res, tk, sh->env);
+	i = handle_tilde(&res, tk, env);
 	while (tk->value[i])
 	{
 		while (!is_expandable(tk->value, tk->quote_mask, i))
@@ -87,15 +89,27 @@ char	*expand_variable(t_token *tk, t_minishell *sh)
 			break;
 		if (tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D')
 			i = translation(&res, tk, i);
-		else if (str[i] == '?')
+		else if (tk->value[i] == '?')
 			(res = append_str(res, ft_itoa(sh->last_exit)), i++);
 		else
-			i = look_for_env_variable(&res, tk, i, sh->env);
+			i = look_for_env_variable(&res, tk, i, env);
 	}
 	return (res);
 }
 
-// I will focus on wildcards later
+t_token	**expand_tokens(t_token **tk_list, t_minishell *sh, t_env_list *env)
+{
+	int	i;
+
+	i = 0;
+	while (tk_list[i] != NULL)
+	{
+		tk_list[i]->expanded_value = expand_variable(*tk_list, sh, env);
+		i++;
+	}
+	return (tk_list);
+}
+// I will focus on wildcards later (with the bonuses)
 // what's up with the numbers? 
 // echo $987
 // -> 87
