@@ -46,13 +46,13 @@ int	translation(char **res, t_token *tk, int i)
 	return (i);
 }
 
-int	is_valid_char_inside(char c_str, char c_q)
+int	is_valid_char_inside(char c_str, char c_q, char current)
 {
 	if (!c_str || !c_q)
 		return (0);
 	else if (c_str != '$' && (ft_isalnum(c_str) || c_str == '_'))
 	{
-		if (c_q == 'N')
+		if (c_q != 'S' && c_q == current)
 			return (1);
 	}
 	return (0);
@@ -61,13 +61,22 @@ int	is_valid_char_inside(char c_str, char c_q)
 int	look_for_env_variable(char **res, t_token *tk, int i, t_env_list *env)
 {
 	int	begin;
+	char	*env_var;
+	char	current_q;
 
 	begin = i;
-	while (is_valid_char_inside(tk->value[i], tk->quote_mask[i]))
+	current_q = tk->quote_mask[i];
+	while (is_valid_char_inside(tk->value[i], tk->quote_mask[i], current_q))
 		i++;
-	*res = append_str(*res, \
-		ft_strdup(ft_getenv(ft_substr(tk->value, begin, i + 1), env)));
+	ft_printf("begin: %d\n", begin);
+	ft_printf("i: %d\n", i);
+	env_var = ft_getenv(ft_substr(tk->value, begin, i - begin), env);
+	if (!env_var)
+		*res = append_str(*res, init_str());
+	else
+		*res = append_str(*res, ft_strdup(env_var));
 	return (i);
+	// problem: need to pudate i even if no env is found
 }
 
 char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env)
@@ -84,15 +93,17 @@ char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env)
 	{
 		while (!is_expandable(tk->value, tk->quote_mask, i))
 			i++;
-		res = append_str(res, ft_substr(tk->value, begin, i + 1));
+		res = append_str(res, ft_substr(tk->value, begin, i - begin));
 		if (!tk->value[i++])
 			break;
-		if (tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D')
+		if ((tk->quote_mask[i - 1] == 'N') && \
+			(tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D'))
 			i = translation(&res, tk, i);
 		else if (tk->value[i] == '?')
 			(res = append_str(res, ft_itoa(sh->last_exit)), i++);
 		else
 			i = look_for_env_variable(&res, tk, i, env);
+		begin = i;
 	}
 	return (res);
 }
@@ -104,7 +115,7 @@ t_token	**expand_tokens(t_token **tk_list, t_minishell *sh, t_env_list *env)
 	i = 0;
 	while (tk_list[i] != NULL)
 	{
-		tk_list[i]->expanded_value = expand_variable(*tk_list, sh, env);
+		tk_list[i]->expanded_value = expand_variable(tk_list[i], sh, env);
 		i++;
 	}
 	return (tk_list);
@@ -276,6 +287,12 @@ echo $HOME*prout
 -> /home/gfontagn*prout
 echo *exp$HOME
 -> *exp/home/gfontagn
+echo ab"$cd"ef
+-> abef
+echo ab'$cd'ef
+-> ab$cdef
+echo ab$cdef
+-> ab
 
 
 

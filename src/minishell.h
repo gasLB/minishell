@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/18 19:04:05 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/22 19:42:52 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,10 @@ t_env_node	*init_node(char *line);
 t_env_list	*init_env(void);
 t_env_list	*populate_env(char **env);
 
+// env_utils.c
+char	*ft_getenv(char	*name, t_env_list *env);
+int	ft_setenv(char *key, char *value, int overwrite, t_env_list *env);
+
 // utils.c
 int	is_equal(char *s1, char *s2);
 char	*ft_realloc_str(char *str, int new_size);
@@ -55,13 +59,15 @@ char	*append_str(char *dest, char *src);
 // builtins_utils.c
 int	is_n_option(char *s);
 void	change_directories(char *path);
-char	*ft_getenv(char	*name, t_env_list *env);
-int	ft_setenv(char *key, char *value, int overwrite, t_env_list *env);
+void	export_no_args(t_env_list *env);
+int	is_valid_env_name(char *str);
+void	export_var(char *str, t_env_list *env);
 
 // builtins.c
 void	ft_echo(int ac, char **args);
 void	ft_pwd(void);
 void	ft_cd(int ac, char **args, t_env_list *env);
+void	ft_export(int ac, char **args, t_env_list *env);
 
 // expansion.c
 t_token	**expand_tokens(t_token **token_list, t_minishell *sh, t_env_list *env);

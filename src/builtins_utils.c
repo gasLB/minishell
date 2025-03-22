@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:50:00 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/17 18:34:26 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/22 19:42:29 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,43 +44,63 @@ void	change_directories(char *path)
 	exit(0);
 }
 
-char	*ft_getenv(char	*name, t_env_list *env)
+int	is_valid_env_name(char *str)
+{
+	int	i;
+
+	if (!str || *str == '\0')
+		return (0);
+	if (!(ft_isalpha(str[0]) || str[0] == '_'))
+		return (0);
+	i = 1;
+	while (str[i] && str[i] != '=')
+	{
+		if (!(ft_isalnum(str[i]) || str[i] == '_'))
+		{
+			if (!(str[i] == '+' && str[i + 1] == '='))
+				return (0);
+		}
+		i++;
+	}
+	return (1);
+}
+
+void	export_var(char *str, t_env_list *env)
+{
+	char	*pos;
+	char	*key;
+	char	*value;
+	int	overwrite;
+
+	overwrite = 1;
+	pos = ft_strchr(str, '=');
+	if (!pos)
+		ft_setenv(str, NULL, 0, env);
+     	else
+	{
+		if (*(pos - 1) == '+')
+			overwrite = 0;
+		key = ft_substr(str, 0, pos - str + overwrite - 1); 
+		// if ovewrite -> len - 1
+		// if not -> len
+		value = ft_substr(pos + 1, 0, ft_strlen(pos - 1));
+		if (!key || !value)
+			return;
+		ft_setenv(key, value, overwrite, env);
+	}
+}
+
+void	export_no_args(t_env_list *env)
 {
 	t_env_node	*node;
 
 	node = env->head;
 	while (node)
 	{
-		if (is_equal(name, node->key))
-			return (node->value);
+		if (node->value == NULL)
+			ft_printf("export %s\n", node->key);
+		else
+			ft_printf("export %s=\"%s\"\n", node->key, node->value);
 		node = node->next;
 	}
-	return (NULL);
-}
-
-int	ft_setenv(char *key, char *value, int overwrite, t_env_list *env)
-{
-	t_env_node	*node;
-	t_env_node	*new_node;
-	
-	node = env->head;
-	while (node->next)
-	{
-		if (is_equal(key, node->key))
-		{
-			if (overwrite)
-			{
-				free(node->value);
-				node->value = ft_strdup(value); // should I duplicate ?
-			}
-			return (0);
-		}
-		node = node->next;
-	}
-	new_node = set_node(key, value);
-	if (!new_node)
-		return (1);
-	node->next = new_node;
-	env->size++;
-	return (0);
-}
+}	

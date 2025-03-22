@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 14:38:52 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/18 18:53:46 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/22 20:12:23 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	ft_echo(int ac, char **args)
 	while (i < ac && is_n_option(args[i]))
 		(i++, n_option = 1);
 	while (i < ac)
-	{
+{
 		ft_printf("%s", args[i]);
 		if (i + 1 == ac && n_option == 0)
 			ft_printf("\n");
@@ -43,7 +43,7 @@ void	ft_echo(int ac, char **args)
 		i++;
 	}
 	//free_args(args);
-	exit(0);	
+	exit(0);
 }
 
 void	ft_pwd(void)
@@ -81,20 +81,29 @@ void	ft_cd(int ac, char **args, t_env_list *env)
 	exit(1);
 }
 
-void	ft_export(int ac, char **args)
+
+void	ft_export(int ac, char **args, t_env_list *env)
 {
-	(void)ac;
-	(void)args;
-	return;
-	// minishell: export: '...': not a valid identifier
-	// -> wrong syntax of the variable name: non-authorized character
-	// -> no '=' or '=' at the end or at the wrong place (end or beginning)
-	// if one name is not valit, all the previous ones are exported nontheless
-	//
-	// if no arguments: list all the exported variables
-	// -> understand the difference between 'exported' variables and non-exported
-	// it this necessary?
+	int	i;
+
+	i = 1;
+	if (ac <= 1)
+		(export_no_args(env), exit(1));
+	while (i < ac)
+	{
+		if (is_valid_env_name(args[i]))
+			export_var(args[i], env);
+		else
+			ft_printf("minishell: export: %s: not a valid identifier\n", args[i]);
+		i++;
+	}
 }
+
+void	ft_unset(int ac, char **args, t_env_list *env)
+{
+
+}
+
 /*
 list of builtins to implement: 
 echo (-n)
@@ -117,3 +126,64 @@ all args need to be freed before exit : printf_err() -> writes on stdr AND can f
 
 
 */
+
+/*
+
+EXPORT
+- When you run export on its own, you should display env variables sorted in this shape: 
+```
+$ declare -x HOME="/USER/fraqioui"
+$ declare -x var1
+$ declare -x var=""
+```
+- Export with a variable name should add this var to the environment variables which is the env linked list.
+- The variable Should be an identifier which means that the var should start with an alphabet (uppercase/lowercase)
+	or underscore character. In addition the var could contain a number.
+	Examples of valid identifiers: Var12, _var12, v_1ar, var1_, _ , ...etc
+	Examples of invalid identifiers: 1Var, @var, v+ar, ...etc
+- Before exporting the var you should check first if it already exists.
+Ex:
+```
+$ export var
+//now, var already exists in env variables
+$ export var
+//in this case you should not update this variable
+$ export var=hello
+//now, you should update the value of this variable.
+```
+- If there is a plus before an equal symbol you should append the var value, if there is just an equal symbol you should overwrite the var value.
+- Examples of export:
+```
+$ export var
+$ export =value
+$ export var=		equivalent de var=""
+$ export var=""
+$ export var====value
+$ export var+=value
+$ export var1 var2 var3 var4
+```
+if one name is not valit, all the previous ones are exported nontheless
+*/
+
+// if just variable name
+// 	if valid:
+// 		if exist:
+// 			do nothing
+// 		else:
+// 			create var
+// 	else:
+// 		minishell: export: {arg}: not a valid identifier
+// else:
+// 	if valid:
+// 		if exists:
+// 			if +=:
+// 				append {value} at the end
+// 			if =:
+// 				overwrite {value} of {key}
+// 		else:
+// 			create var {key} = {value}
+// 	else:
+// 		minishell: export: {arg}: not a valid identifier
+//
+//
+

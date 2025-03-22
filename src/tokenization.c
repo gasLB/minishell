@@ -88,7 +88,7 @@ t_token	**populate_tokens(int ac, char **av)
 	t_token	**token_list;
 	int	i;
 
-	if (ac <= 1)
+	if (ac < 1)
 		return (NULL);
 	token_list = malloc((ac - 1) * sizeof(t_token *));
 	if (!token_list)

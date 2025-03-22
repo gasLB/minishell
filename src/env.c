@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 17:13:13 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/14 19:51:10 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/22 19:51:48 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@ t_env_node	*set_node(char *key, char *value)
 	if (!new_node)
 		return (NULL);
 	new_node->key = ft_strdup(key);
-	new_node->value = ft_strdup(value);
+	if (value == NULL)
+		new_node-> value = NULL;
+	else
+		new_node->value = ft_strdup(value);
 	new_node->next = NULL;
 	return (new_node);	
 }
@@ -68,7 +71,7 @@ t_env_list	*populate_env(char **env)
 	previous_node = NULL;
 	while (env[++i])
 	{
-		if (ft_strchr(env[i], '=') != NULL)
+		if (ft_strchr(env[i], '=') != NULL) // not sure this is needed
 		{
 			current_node = init_node(env[i]);
 			if (!current_node)

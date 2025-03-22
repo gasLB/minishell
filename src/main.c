@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 18:38:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/20 18:01:12 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/22 19:59:32 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	print_tokens(t_token **tk_list)
 		i++;
 	}
 }
+
 int	main(int ac, char **av, char **env)
 {
 	t_env_list	*env_list;
@@ -50,16 +51,10 @@ int	main(int ac, char **av, char **env)
 	t_minishell	*sh;
 
 	env_list = populate_env(env);
-	if (!env_list)
-		(ft_printf("debug: err envlist"), exit(1));
 	sh = init_shell(env_list);
-	if (!sh)
-		(ft_printf("debug: err shell"), exit(1));
-	token_list = populate_tokens(ac, av);
-	if (!token_list)			// redudant part but useful for debug
-		(ft_printf("debug: err tokenlist"), exit(1));
-	token_list = expand_tokens(token_list, sh, env_list);
-	print_tokens(token_list);	
+	token_list = expand_tokens(populate_tokens(ac, av), sh, env_list);
+	ft_export(ac, av, env_list);
+	export_no_args(env_list);
 	return (0);
 }
 
@@ -67,7 +62,9 @@ int	main(int ac, char **av, char **env)
 //
 // TODO:
 // [X] Divide set_q_mask into multiple functions
-// [ ] Test all current functions and builtins
-// -> for that, I need to implement the input system with readline
+// [ ] test export 
+// [ ] correct leaks inside all current code (ex: ft_strdup, etc...)
+// [ ] implement other builtins
+// [ ] implement input system with readline
 //
 //
