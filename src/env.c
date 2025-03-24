@@ -24,11 +24,21 @@ t_env_node	*set_node(char *key, char *value)
 		return (NULL);
 	new_node->key = ft_strdup(key);
 	if (value == NULL)
-		new_node-> value = NULL;
+		new_node->value = NULL;
 	else
 		new_node->value = ft_strdup(value);
 	new_node->next = NULL;
 	return (new_node);	
+}
+
+void	unset_node(t_env_node *node)
+{
+	if (!node)
+		return;
+	node->next = NULL;
+	free(node->key);
+	if (node->value)
+		free(node->value);
 }
 
 t_env_node	*init_node(char *line)

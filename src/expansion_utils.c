@@ -44,3 +44,21 @@ int	handle_tilde(char **res, t_token *tk, t_env_list *env)
 	return (i);
 }
 
+char	**expanded_list(int ac, t_token **tk_list)
+{
+	char	**exp_list;
+	int	i;
+
+	i = 0;
+	exp_list = malloc((ac - 1) * sizeof(char *));
+	if (!exp_list)
+		return (NULL);
+	while (i < ac - 1)
+	{
+		exp_list[i] = tk_list[i]->expanded_value;	
+		i++;
+	}
+	return (exp_list);
+
+
+}

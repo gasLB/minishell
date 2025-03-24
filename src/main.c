@@ -49,12 +49,14 @@ int	main(int ac, char **av, char **env)
 	t_env_list	*env_list;
 	t_token		**token_list;
 	t_minishell	*sh;
+	char	**arg_list;
 
 	env_list = populate_env(env);
 	sh = init_shell(env_list);
 	token_list = expand_tokens(populate_tokens(ac, av), sh, env_list);
-	ft_export(ac, av, env_list);
-	export_no_args(env_list);
+	arg_list = expanded_list(ac, token_list);	
+	ft_unset(ac - 1, arg_list, env_list);
+	ft_env(env_list);
 	return (0);
 }
 
@@ -62,9 +64,10 @@ int	main(int ac, char **av, char **env)
 //
 // TODO:
 // [X] Divide set_q_mask into multiple functions
-// [ ] test export 
-// [ ] correct leaks inside all current code (ex: ft_strdup, etc...)
+// [X] test export 
+// [X] implement a function to put all expanded values inside char **
+// [X] make sure 'echo' takes into account env
+// [X] test unset
 // [ ] implement other builtins
+// [ ] correct leaks inside all current code (ex: ft_strdup, etc...)
 // [ ] implement input system with readline
-//
-//

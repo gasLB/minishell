@@ -15,6 +15,26 @@
 #include "minishell.h"
 #include <stdlib.h>
 
+void	ft_unsetenv(char *name, t_env_list *env)
+{
+	t_env_node	*node;
+	t_env_node	*to_remove;
+
+	node = env->head;
+	while (node->next)
+	{
+		if (is_equal(name, (node->next)->key))
+		{
+			to_remove = node->next;
+			node->next = to_remove->next;	
+			unset_node(to_remove);
+			break;
+		}
+		node = node->next;
+	}
+	env->size -= env->size;
+}
+
 char	*ft_getenv(char	*name, t_env_list *env)
 {
 	t_env_node	*node;

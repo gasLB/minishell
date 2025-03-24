@@ -30,7 +30,7 @@ void	ft_echo(int ac, char **args)
 	int	n_option;
 
 	n_option = 0;
-	i = 1;
+	i = 0;
 	while (i < ac && is_n_option(args[i]))
 		(i++, n_option = 1);
 	while (i < ac)
@@ -61,22 +61,22 @@ void	ft_cd(int ac, char **args, t_env_list *env)
 {
 	char	*path;
 
-	if (ac > 2)
+	if (ac > 1)
 		(ft_printf("minishell: cd: too many arguments\n"), exit(1)); //need proper exit function
-	else if (ac == 1)
+	else if (ac == 0)
 	{
 		path = ft_getenv("HOME", env);
 		if (!path)
 			(ft_printf("minishell: cd: HOME not set\n"), exit(1));
 	}
-	else if (ft_strlen(args[1]) == 1 && args[1][0] == '-')
+	else if (ft_strlen(args[0]) == 1 && args[0][0] == '-')
 	{
 		path = ft_getenv("OLDPWD", env);
 		if (!path)
 			(ft_printf("minishell: cd: OLDPWD not set\n"), exit(1));
 	}
 	else
-		path = args[1];
+		path = args[0];
 	change_directories(path);
 	exit(1);
 }
@@ -86,8 +86,8 @@ void	ft_export(int ac, char **args, t_env_list *env)
 {
 	int	i;
 
-	i = 1;
-	if (ac <= 1)
+	i = 0;
+	if (ac == 0)
 		(export_no_args(env), exit(1));
 	while (i < ac)
 	{
@@ -101,9 +101,56 @@ void	ft_export(int ac, char **args, t_env_list *env)
 
 void	ft_unset(int ac, char **args, t_env_list *env)
 {
+	int	i;
 
+	i = 0;
+	while (i < ac)
+	{
+		ft_unsetenv(args[i], env);
+		i++;
+	}
 }
 
+void	ft_env(t_env_list *env)
+{	
+	t_env_node	*node;
+
+	node = env->head;
+	while (node)
+	{
+		if (node->value == NULL)
+			ft_printf("%s\n", node->key);
+		else
+			ft_printf("%s=\"%s\"\n", node->key, node->value);
+		node = node->next;
+	}
+}
+
+void	ft_exit(int ac, char **args, t_minishell *sh)
+{
+	int	exitn;
+
+	if (ac > 1)
+		ft_printf("minishell: exit: too many arguments\n");
+	else if (ac == 1)
+	{
+		if (is_a_number(args[0]))
+		{
+			exitn = ft_atoi(args[0]) % 256;
+			sh->last_exit = exitn;
+			exit(exitn);
+		}
+		ft_printf("minishell: exit: %s: numeric argument required\n", args[0])
+	}
+	else if (ac == 0)
+	{
+		exitn = sh->last_exit;
+		exit(exitn);
+	}
+}
+// shouldn't I update last exit status ?
+
+// IN ALL THOSE FUNCTIONS, AC IS THE NUMBER OF ACTUAL ARTGUMENTS AND ARGS THE EXPANDED VALUE LIST WITHOUT ./minishell
 /*
 list of builtins to implement: 
 echo (-n)

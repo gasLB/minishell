@@ -68,8 +68,6 @@ int	look_for_env_variable(char **res, t_token *tk, int i, t_env_list *env)
 	current_q = tk->quote_mask[i];
 	while (is_valid_char_inside(tk->value[i], tk->quote_mask[i], current_q))
 		i++;
-	ft_printf("begin: %d\n", begin);
-	ft_printf("i: %d\n", i);
 	env_var = ft_getenv(ft_substr(tk->value, begin, i - begin), env);
 	if (!env_var)
 		*res = append_str(*res, init_str());

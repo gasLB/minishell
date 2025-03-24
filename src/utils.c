@@ -58,3 +58,21 @@ char	*append_str(char *dest, char *src)
 	free(src);
 	return (new);
 }
+
+int	is_a_number(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[0] && (str[0] == '+' || str[0] == '-'))
+		i++;
+	if (!str[i])
+		return (0);
+	while (str[i])
+	{
+		if (!ft_is_digit(str[i]) && i )
+			return (0);
+		i++;
+	}
+	return (1);
+}

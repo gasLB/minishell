@@ -43,6 +43,7 @@ typedef struct s_minishell
 
 // env.c
 t_env_node	*set_node(char *key, char *value);
+void	unset_node(t_env_node *node);
 t_env_node	*init_node(char *line);
 t_env_list	*init_env(void);
 t_env_list	*populate_env(char **env);
@@ -50,11 +51,13 @@ t_env_list	*populate_env(char **env);
 // env_utils.c
 char	*ft_getenv(char	*name, t_env_list *env);
 int	ft_setenv(char *key, char *value, int overwrite, t_env_list *env);
+void	ft_unsetenv(char *name, t_env_list *env);
 
 // utils.c
 int	is_equal(char *s1, char *s2);
 char	*ft_realloc_str(char *str, int new_size);
 char	*append_str(char *dest, char *src);
+int	is_a_number(char *str);
 
 // builtins_utils.c
 int	is_n_option(char *s);
@@ -68,6 +71,10 @@ void	ft_echo(int ac, char **args);
 void	ft_pwd(void);
 void	ft_cd(int ac, char **args, t_env_list *env);
 void	ft_export(int ac, char **args, t_env_list *env);
+void	ft_unset(int ac, char **args, t_env_list *env);
+void	ft_env(t_env_list *env);
+void	ft_exit(int ac, char **args, t_env_list *env);
+
 
 // expansion.c
 t_token	**expand_tokens(t_token **token_list, t_minishell *sh, t_env_list *env);
@@ -75,6 +82,7 @@ t_token	**expand_tokens(t_token **token_list, t_minishell *sh, t_env_list *env);
 // expansion_utils.c
 char	*init_str(void);
 int	handle_tilde(char **res, t_token *tk, t_env_list *env);
+char	**expanded_list(int ac, t_token **tk_list);
 
 // tokenization.c
 t_token	**populate_tokens(int ac, char **av);
