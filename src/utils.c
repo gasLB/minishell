@@ -70,7 +70,7 @@ int	is_a_number(char *str)
 		return (0);
 	while (str[i])
 	{
-		if (!ft_is_digit(str[i]) && i )
+		if (!ft_isdigit(str[i]) && i )
 			return (0);
 		i++;
 	}

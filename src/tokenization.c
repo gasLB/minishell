@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 12:50:10 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/18 19:04:43 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/25 13:47:46 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ t_token	**populate_tokens(int ac, char **av)
 
 	if (ac < 1)
 		return (NULL);
-	token_list = malloc((ac - 1) * sizeof(t_token *));
+	token_list = malloc(ac * sizeof(t_token *));
 	if (!token_list)
 		return (NULL);
 	i = 0;

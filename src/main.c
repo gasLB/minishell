@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 18:38:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/22 19:59:32 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/25 14:26:20 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_minishell	*init_shell(t_env_list *env_list)
 {
 	t_minishell	*sh;
 
-	sh = malloc(sizeof(sh));
+	sh = malloc(sizeof(t_minishell));
 	if (!sh)
 		return (NULL);
 	sh->env_list = env_list;
@@ -55,19 +55,14 @@ int	main(int ac, char **av, char **env)
 	sh = init_shell(env_list);
 	token_list = expand_tokens(populate_tokens(ac, av), sh, env_list);
 	arg_list = expanded_list(ac, token_list);	
-	ft_unset(ac - 1, arg_list, env_list);
-	ft_env(env_list);
+	ft_echo(ac, respoah)
+	free_all_struct(sh, token_list, arg_list);
 	return (0);
 }
 
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
-// [X] Divide set_q_mask into multiple functions
-// [X] test export 
-// [X] implement a function to put all expanded values inside char **
-// [X] make sure 'echo' takes into account env
-// [X] test unset
-// [ ] implement other builtins
-// [ ] correct leaks inside all current code (ex: ft_strdup, etc...)
-// [ ] implement input system with readline
+// [X] implement other builtins
+// [X] correct leaks inside all current code (ex: ft_strdup, etc...). Todo before input because readline() cause inevitable leaks
+// [ ] think and implement tree structure for execution

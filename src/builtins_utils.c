@@ -81,12 +81,12 @@ void	export_var(char *str, t_env_list *env)
 		if (*(pos - 1) == '+')
 			overwrite = 0;
 		key = ft_substr(str, 0, pos - str + overwrite - 1); 
-		// if ovewrite -> len - 1
-		// if not -> len
 		value = ft_substr(pos + 1, 0, ft_strlen(pos - 1));
 		if (!key || !value)
 			return;
 		ft_setenv(key, value, overwrite, env);
+		free(key);
+		free(value);
 	}
 }
 

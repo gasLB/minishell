@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/22 19:42:52 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/25 14:26:19 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	ft_cd(int ac, char **args, t_env_list *env);
 void	ft_export(int ac, char **args, t_env_list *env);
 void	ft_unset(int ac, char **args, t_env_list *env);
 void	ft_env(t_env_list *env);
-void	ft_exit(int ac, char **args, t_env_list *env);
+void	ft_exit(int ac, char **args, t_token **tkl, t_minishell *sh);
 
 
 // expansion.c
@@ -86,5 +86,11 @@ char	**expanded_list(int ac, t_token **tk_list);
 
 // tokenization.c
 t_token	**populate_tokens(int ac, char **av);
+
+// free_all.c
+void	free_all_struct(t_minishell *sh, t_token **tk_list, char **arg_list);
+
+// input.c
+void	read_print_input(void);
 
 #endif

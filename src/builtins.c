@@ -42,8 +42,6 @@ void	ft_echo(int ac, char **args)
 			ft_printf(" ");
 		i++;
 	}
-	//free_args(args);
-	exit(0);
 }
 
 void	ft_pwd(void)
@@ -126,7 +124,7 @@ void	ft_env(t_env_list *env)
 	}
 }
 
-void	ft_exit(int ac, char **args, t_minishell *sh)
+void	ft_exit(int ac, char **args, t_token **tkl, t_minishell *sh)
 {
 	int	exitn;
 
@@ -138,13 +136,15 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 		{
 			exitn = ft_atoi(args[0]) % 256;
 			sh->last_exit = exitn;
+			free_all_struct(sh, tkl, args);
 			exit(exitn);
 		}
-		ft_printf("minishell: exit: %s: numeric argument required\n", args[0])
+		ft_printf("minishell: exit: %s: numeric argument required\n", args[0]);
 	}
 	else if (ac == 0)
 	{
 		exitn = sh->last_exit;
+		free_all_struct(sh, tkl, args);
 		exit(exitn);
 	}
 }

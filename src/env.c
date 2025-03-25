@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 17:13:13 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/22 19:51:48 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/25 14:04:34 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	unset_node(t_env_node *node)
 	free(node->key);
 	if (node->value)
 		free(node->value);
+	free(node);
 }
 
 t_env_node	*init_node(char *line)
