@@ -41,6 +41,38 @@ typedef struct s_minishell
 	int		last_exit;
 }	t_minishell;
 
+typedef struct	s_redirect
+{
+	int	in_type;
+	int	out_type;
+	char	*in_str;
+	char	*out_str;
+}	t_redirect;
+
+typedef	struct	s_ast_node
+{
+	struct s_ast_node	*left;
+	struct s_ast_node	*right;
+	int	visited;
+	int	type;
+	char	**args;
+	struct s_redirect	*redirect;
+}	t_ast_node;
+
+enum token_types
+{
+	CMD,
+	IN,
+	HD,
+	TRUNC,
+	APPEND,
+	PIPE,
+	OPEN_PAR,
+	CLOS_PAR,
+	AND,
+	OR
+};
+
 // env.c
 t_env_node	*set_node(char *key, char *value);
 void	unset_node(t_env_node *node);
@@ -92,5 +124,10 @@ void	free_all_struct(t_minishell *sh, t_token **tk_list, char **arg_list);
 
 // input.c
 void	read_print_input(void);
+
+// tree.c
+t_ast_node	*create_example_ast(void);
+void	print_ast_node(t_ast_node *ast);
+void	dfs_ast(t_ast_node *node, void (*f)(t_ast_node *));
 
 #endif

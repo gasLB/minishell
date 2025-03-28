@@ -227,15 +227,15 @@ echo ""'ab'""		:	SS
 -> ab
 echo ''"ab"''		:	DD
 -> ab
-echo ""''ab''""	:	NN
+echo ""''ab''""		:	NN
 -> ab
 echo '"'ab'"'		:	SNNS
 ->"ab"
 echo "'"ab"'"		:	DNND
 ->'ab'
-echo '"'"ab"'"'	:	SDDS
+echo '"'"ab"'"'		:	SDDS
 -> "ab"
-echo "'"'ab'"'"	:	DSSD
+echo "'"'ab'"'"		:	DSSD
 -> 'ab'
 echo abc\d		:	NNNBN
 -> abcd

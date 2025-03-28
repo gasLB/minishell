@@ -1,1 +1,1 @@
-cc -Werror -Wall -Wextra -g    builtins.c builtins_utils.c env.c env_utils.c expansion.c expansion_utils.c    main.c tokenization.c utils.c free_all.c  -o minishell    -I.    -L../libftprintf -lftprintf    -L../libftprintf/libft -lft    -lreadline
+cc -Werror -Wall -Wextra -g    builtins.c builtins_utils.c env.c env_utils.c expansion.c expansion_utils.c tree.c  main.c tokenization.c utils.c free_all.c  -o minishell    -I.    -L../libftprintf -lftprintf    -L../libftprintf/libft -lft    -lreadline

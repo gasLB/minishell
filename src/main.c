@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 18:38:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/25 14:26:20 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/03/27 13:47:50 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,15 @@ int	main(int ac, char **av, char **env)
 	t_env_list	*env_list;
 	t_token		**token_list;
 	t_minishell	*sh;
+	t_ast_node	*ast;
 	char	**arg_list;
 
 	env_list = populate_env(env);
 	sh = init_shell(env_list);
 	token_list = expand_tokens(populate_tokens(ac, av), sh, env_list);
 	arg_list = expanded_list(ac, token_list);	
-	ft_echo(ac, respoah)
+	ast = create_example_ast();
+	dfs_ast(ast, print_ast_node);
 	free_all_struct(sh, token_list, arg_list);
 	return (0);
 }
@@ -63,6 +65,7 @@ int	main(int ac, char **av, char **env)
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
-// [X] implement other builtins
-// [X] correct leaks inside all current code (ex: ft_strdup, etc...). Todo before input because readline() cause inevitable leaks
 // [ ] think and implement tree structure for execution
+// [ ] test with basic example
+// [ ] get advices + look at pipex for execution
+// [ ] implement here_doc 
