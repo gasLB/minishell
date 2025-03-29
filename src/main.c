@@ -65,7 +65,7 @@ int	main(int ac, char **av, char **env)
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
-// [ ] think and implement tree structure for execution
-// [ ] test with basic example
+// [X] think and implement tree structure for execution
+// [X] test with basic example
 // [ ] get advices + look at pipex for execution
 // [ ] implement here_doc 
