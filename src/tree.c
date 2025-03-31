@@ -17,7 +17,7 @@
 
 // => true && cat file | grep "bonjour"
 
-t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect)
+t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect, int ac)
 {
 	t_ast_node	*node;
 
@@ -26,6 +26,7 @@ t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect)
 		return (NULL);
 	node->type = type;
 	node->args = args;
+	node->ac = ac;
 	node->redirect = redirect;
 	node->left = NULL;
 	node->right = NULL;
@@ -57,13 +58,13 @@ t_ast_node	*create_example_ast(void)
 	ar3[0] = ft_strdup("grep");
 	ar3[1] = ft_strdup("bonjour");
 	ar3[2] = NULL;
-	node = create_ast_node(AND, NULL, NULL);
+	node = create_ast_node(AND, NULL, NULL, 0);
 	head = node;
-	node->left = create_ast_node(CMD, ar1, NULL);
-	node->right = create_ast_node(PIPE, NULL, NULL);
+	node->left = create_ast_node(CMD, ar1, NULL, 2);
+	node->right = create_ast_node(PIPE, NULL, NULL, 0);
 	node = node->right;
-	node->left = create_ast_node(CMD, ar2, NULL);
-	node->right = create_ast_node(CMD, ar3, NULL);
+	node->left = create_ast_node(CMD, ar2, NULL, 3);
+	node->right = create_ast_node(CMD, ar3, NULL, 3);
 	return (head);
 }
 

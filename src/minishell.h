@@ -56,6 +56,7 @@ typedef	struct	s_ast_node
 	int	visited;
 	int	type;
 	char	**args;
+	int	ac;
 	struct s_redirect	*redirect;
 }	t_ast_node;
 
