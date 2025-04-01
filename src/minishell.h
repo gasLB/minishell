@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/29 19:51:00 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/01 14:28:14 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,12 @@ typedef struct s_env_list
 	int	size;
 }	t_env_list;
 
-typedef struct s_minishell
-{
-	t_env_list	*env_list;
-	int		last_exit;
-}	t_minishell;
-
 typedef struct	s_redirect
 {
-	int	in_type;
-	int	out_type;
-	char	*in_str;
-	char	*out_str;
+	int	in_type;	// HD or IN
+	int	out_type;	// TRUNC or APPEND
+	char	*in_str;	// infile name or LIM (heredoc)
+	char	*out_str;	// outfile name
 }	t_redirect;
 
 typedef	struct	s_ast_node
@@ -56,9 +50,15 @@ typedef	struct	s_ast_node
 	int	visited;
 	int	type;
 	char	**args;
-	int	ac;
 	struct s_redirect	*redirect;
 }	t_ast_node;
+
+typedef struct s_minishell
+{
+	t_env_list	*env_list;
+	t_ast_node	*ast;
+	int		last_exit;
+}	t_minishell;
 
 enum token_types
 {
@@ -121,7 +121,7 @@ char	**expanded_list(int ac, t_token **tk_list);
 t_token	**populate_tokens(int ac, char **av);
 
 // free_all.c
-void	free_all_struct(t_minishell *sh, t_token **tk_list, char **arg_list);
+void	free_all_struct(t_minishell *sh, char **arg_list);
 
 // input.c
 void	read_print_input(void);

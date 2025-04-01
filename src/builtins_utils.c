@@ -34,14 +34,14 @@ int	is_n_option(char *s)
 	return (1);
 }
 
-void	change_directories(char *path)
+int	change_directories(char *path)
 {
 	if (chdir(path) != 0)
 	{
 		ft_printf("minishell: cd: %s: No such file or directory\n", path);
-		exit(1);
+		return (1);
 	}
-	exit(0);
+	return (0);
 }
 
 int	is_valid_env_name(char *str)

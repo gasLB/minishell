@@ -15,7 +15,7 @@
 #include "minishell.h"
 #include <stdlib.h>
 
-t_minishell	*init_shell(t_env_list *env_list)
+t_minishell	*init_shell(t_env_list *env_list, t_ast_node *ast)
 {
 	t_minishell	*sh;
 
@@ -23,6 +23,7 @@ t_minishell	*init_shell(t_env_list *env_list)
 	if (!sh)
 		return (NULL);
 	sh->env_list = env_list;
+	sh->ast = ast;
 	sh->last_exit = 0;
 	return (sh);
 }
@@ -52,12 +53,12 @@ int	main(int ac, char **av, char **env)
 	t_ast_node	*ast;
 	char	**arg_list;
 
-	env_list = populate_env(env);
-	sh = init_shell(env_list);
-	token_list = expand_tokens(populate_tokens(ac, av), sh, env_list);
-	arg_list = expanded_list(ac, token_list);	
 	ast = create_example_ast();
 	dfs_ast(ast, print_ast_node);
+	env_list = populate_env(env);
+	sh = init_shell(env_list, ast);
+	token_list = expand_tokens(populate_tokens(ac, av), sh, env_list);
+	arg_list = expanded_list(ac, token_list);	
 	free_all_struct(sh, token_list, arg_list);
 	return (0);
 }
@@ -66,6 +67,9 @@ int	main(int ac, char **av, char **env)
 //
 // TODO:
 // [ ] implement independant exec function for commands and builtins with args
+// 	[ ] need to convert environment in an array for execve()
+// 	[ ] maybe unite everything inside a single struct (the node?)
+// [ ] handle proper error messages and formatting: minishell vs external command name
 // [ ] implement pipe function when encountering pipe node
 // [ ] implement operator function for operators
 // [ ] look at pipex for execution

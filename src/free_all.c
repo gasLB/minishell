@@ -57,10 +57,16 @@ void	free_token_list(t_token **tk_list)
 	free(tk_list);
 }
 
-void	free_all_struct(t_minishell *sh, t_token **tk_list, char **arg_list)
+void	free_ast(t_ast_node *ast)
+{
+	(void)ast;
+	ft_printf("freeing ast...\n");
+}
+
+void	free_all_struct(t_minishell *sh, char **arg_list)
 {
 	free_env_list(sh->env_list);
+	free_ast(sh->ast);
 	free(sh);	
-	free_token_list(tk_list);
 	free(arg_list);
 }

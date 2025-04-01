@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 19:12:12 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/29 19:51:00 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/01 18:16:50 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,124 +15,77 @@
 #include "minishell.h"
 #include <stdlib.h>
 
-char	*ft_strjoin_slash(char const *s1, char const *s2)
+// error messages are more complicated than I thought
+// If external prgrm, the name of the programm is first
+// if builtin, bash: or minishell: is first
+// Do I need to reset STDIN and STDOUT after?
+
+int	exec_builtin(char **args, t_ast_node *node, t_minishell *sh)
 {
-	char	*pt;
-	size_t	total_len;
-	size_t	s1_len;
+	int	ac;
 
-	if (!s1 || !s2)
-		return (0);
-	s1_len = ft_strlen((char *)s1);
-	total_len = s1_len + ft_strlen((char *)s2) + 1;
-	pt = malloc((total_len + 1) * sizeof(char));
-	if (!pt)
-		return (NULL);
-	ft_strlcpy(pt, (char *)s1, total_len + 1);
-	pt[s1_len] = '/';
-	pt[s1_len + 1] = '\0';
-	ft_strlcat(pt, (char *)s2, total_len + 1);
-	return (pt);
-}
-
-int	is_path_found(char *path)
-{
-	int	fd;
-
-	if (!path)
-		return (0);
-	fd = open(path, O_DIRECTORY);
-	if (fd != -1)
-	{
-		close(fd);
-		return (0);
-	}
-	if (access(path, F_OK) == 0)
-		return (1);
+	args++;
+	ac = ft_lstlen(args); 
+	if (ft_isequal(str, "echo"))
+		sh->last_exit = ft_echo(ac, args)
+	if (ft_isequal(str, "pwd"))
+		sh->last_exit = ft_pwd();
+	if (ft_isequal(str, "cd"))
+		sh->last_exit = ft_cd(ac, args, sh);
+	if (ft_isequal(str, "export"))
+		sh->last_exit = ft_export(ac, args, sh->env_list);
+	if (ft_isequal(str, "unset"))
+		sh->last_exit = ft_unset(ac, args, sh->env_list);
+	if (ft_isequal(str, "env"))
+		sh->last_exit = ft_env(sh->env_list);
+	if (ft_isequal(str, "exit"))
+		ft_exit(ac, args, sh);
 	return (0);
 }
 
-char	*look_for_path(char *name, char **com_paths)
+int	exec_cmd(char **args, t_ast_node *node, t_minishell *sh)
 {
-	char	*path;
-	int	i;
+	int	pid;
 
-	i = 0;
-	if (!name)
-		return (NULL);
-	if (is_path_found(name))
-		return (ft_strdup(name));
-	else if (name && name[0] == '/')
+	pid = fork();
+	if (pid == -1)
+		return (1);
+	if (pid == 0)	// need to convert env_list to env_array
 	{
-		ft_printf("minishell: %s: no such file or directory\n", name);
-		return (NULL);
+
 	}
-	while (paths[i])
-	{
-		path = ft_strjoin_slash(paths[i], cmd_name);
-		if (!path || is_path_found(path))
-			return (path);
-		(free(path), i++);
-	}
-	ft_printf("minishell: %s: command not found\n", cmd_name);
-	return (NULL);
-}
 
-char	**get_all_paths(t_env_list *env)
-{
-	char	*path_line;
-	char	**paths;
-
-	path_line = ft_getenv("PATH", env);
-	if (!path_line)
-		return (NULL);
-	paths = ft_split(path_line, ':');
-	free(path_line);
-	if (!paths)
-		return (NULL);
-	return (paths);
-}
-
-char	*find_path(char *name, t_minishell *sh)
-{
-	char	**common_paths;
-	char	*path;
-
-	if (ft_strlen(name) == 0)
-		return (NULL);
-	common_paths = get_all_paths(sh->env_list);
-	path = look_for_path(args[0], common_paths);
-	if (common_paths)
-		free_args(common_paths);
-	return (path);
 }
 
 int	cmd_node(t_ast_node *node, t_minishell *sh)
 {
 	t_token	**token_list;
 	char	**args;
+	int	len;
 
-	token_list = populate_tokens(node->ac, node->args);	// we could do without ac ! (NULL-trm)
+	len = ft_lstlen(node->args);
+	token_list = populate_tokens(len, node->args);
 	token_list = expand_tokens(token_list, sh, sh->env_list);
-	args = expanded_list(node->ac, token_list);
-	// free token_list here
+	args = expanded_list(len, token_list);
+	free_token_list(token_list);
+	if (set_redirections(args, node) == 1)
+		return (1);
 	if (is_builtin(args[0]))
-		exec_builtin(args, node, sh);
-	else
-	{
-		args[0] = find_path(args[0], sh);
-		if (!args[0])
-			(free_args(args), return (1));
-		return (exec_cmd(args, node, sh));
-	}
+		return (exec_builtin(args, node, sh));
+	args[0] = find_path(args[0], sh);
+	if (!args[0])
+		(free_args(args), return (1));
+	return (exec_cmd(args, node, sh));
 }
-
-
-
-	// 1. Is it a builtin?
-	// 2. Is it available in CWD?
-	// 3. Is it in the path?
 /*
+
+Before executing a command, we create a pipe for each pipe encountered in the node
+Pipes are handled before commands
+Redirections have priority over pipes
+ex:
+command1 > file.txt | command2	-> command2 reads from empty pipe
+command1 | command2 < input.txt	-> command2 reads from input.txt and pipe is useless
+
 
 What are the steps for executing one command?
 1. tokenize and expand the args into tk_list
