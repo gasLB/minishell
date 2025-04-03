@@ -59,16 +59,17 @@ int	main(int ac, char **av, char **env)
 	sh = init_shell(env_list, ast);
 	token_list = expand_tokens(populate_tokens(ac, av), sh, env_list);
 	arg_list = expanded_list(ac, token_list);	
-	free_all_struct(sh, token_list, arg_list);
+	free_token_list(token_list);
+	free_all_struct(sh, arg_list, NULL);
 	return (0);
 }
 
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
-// [ ] implement independant exec function for commands and builtins with args
-// 	[ ] need to convert environment in an array for execve()
-// 	[ ] maybe unite everything inside a single struct (the node?)
+// [X] implement independant exec function for commands and builtins with args
+// [X] need to convert environment in an array for execve()
+// [ ] debug everything and test with 800 tests minishell
 // [ ] handle proper error messages and formatting: minishell vs external command name
 // [ ] implement pipe function when encountering pipe node
 // [ ] implement operator function for operators

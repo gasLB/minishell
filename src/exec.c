@@ -14,11 +14,32 @@
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 #include <stdlib.h>
+#include <errno.h>
 
 // error messages are more complicated than I thought
 // If external prgrm, the name of the programm is first
 // if builtin, bash: or minishell: is first
 // Do I need to reset STDIN and STDOUT after?
+
+void error_execution(int ern, char *cmd_name)
+{
+	if (ern == ENOENT)
+		ft_printf("bash: %s: No such file or directory\n", cmd_name);
+	else if (ern == EACCES)
+		ft_printf("bash: %s: Permission denied\n", cmd_name);
+	else if (ern == ENOMEM)
+		ft_printf("bash: %s: Cannot allocate memory\n", cmd_name);
+	else if (ern == ENOEXEC)
+		ft_printf("bash: %s: Exec format error\n", cmd_name);
+	else if (ern == E2BIG)
+		ft_printf("bash: %s: Argument list too long\n", cmd_name);
+	else if (ern == ETXTBSY)
+		ft_printf("bash: %s: Text file busy\n", cmd_name);
+	else if (ern == EISDIR)
+		ft_printf("bash: %s: Is a directory\n", cmd_name);
+	else
+		ft_printf("bash: %s: %s\n", cmd_name, strerror(ern));
+}
 
 int	exec_builtin(char **args, t_ast_node *node, t_minishell *sh)
 {
@@ -43,18 +64,35 @@ int	exec_builtin(char **args, t_ast_node *node, t_minishell *sh)
 	return (0);
 }
 
-int	exec_cmd(char **args, t_ast_node *node, t_minishell *sh)
+int	execute_command(char **args, char **envp, t_minishell *sh)
+{
+	int	saved_er;
+
+	if (execve(args[0], args, envp) < 0)
+	{
+		saved_er = errno;
+		free_all_struct(sh, args, envp);
+		error_execution(errno);
+	}
+}
+
+int	exec_external(char **args, t_ast_node *node, t_minishell *sh)
 {
 	int	pid;
+	char	**envp;
+	int	status;
 
+	envp = 	convert_envl_to_array(sh->env_list);// to free if execve fails
+	if (!envp)
+		return (1);
 	pid = fork();
 	if (pid == -1)
 		return (1);
-	if (pid == 0)	// need to convert env_list to env_array
-	{
-
-	}
-
+	if (pid == 0)
+		execute_command(args, envp, sh);
+	waitpid(pid, &status, 0);
+	sh->last_exit = status;
+	exit(status);
 }
 
 int	cmd_node(t_ast_node *node, t_minishell *sh)
@@ -75,7 +113,7 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 	args[0] = find_path(args[0], sh);
 	if (!args[0])
 		(free_args(args), return (1));
-	return (exec_cmd(args, node, sh));
+	return (exec_external(args, node, sh));
 }
 /*
 

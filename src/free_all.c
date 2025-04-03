@@ -63,10 +63,23 @@ void	free_ast(t_ast_node *ast)
 	ft_printf("freeing ast...\n");
 }
 
-void	free_all_struct(t_minishell *sh, char **arg_list)
+void	free_str_list(char **lst)
+{
+	int	i;
+
+	if (!lst)
+		return;
+	i = 0;
+	while (lst[i])
+		free(lst[i]);
+	free(lst);
+}
+
+void	free_all_struct(t_minishell *sh, char **arg_list, char **envp)
 {
 	free_env_list(sh->env_list);
 	free_ast(sh->ast);
 	free(sh);	
-	free(arg_list);
+	free_str_list(arg_list);
+	free_str_list(envp);
 }

@@ -44,3 +44,51 @@ int	is_builtin(char *str)
 		return (7);
 	return (0);
 }
+
+char	*ft_strjoin_env_node(char *key, char *value)
+{
+	char	*pt;
+	size_t	total_len;
+	int	i;
+
+	total_len = ft_strlen(key) + ft_strlen(value) + 1;
+	pt = malloc(total_len + 1) * sizeof(char));
+	if (!pt)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (key[i])
+		(pt[i] = key[i], i++);
+	if (value)
+	{
+		j = 0;
+		pt[i++] = '=';
+		while (value[j])
+			pt[i++] = value[j++];
+	}
+	pt[i] = NULL;
+	return (pt);
+}
+
+char	**convert_envp_to_array(t_env_list *envl);
+{
+	char	**envp;
+	t_env_node	*head;
+	int	i;
+
+	envp = malloc((envl->size + 1) * sizeof(char *));	// Is size alerady set?
+	if (!envp)
+		return (NULL);
+	i = 0;
+	head = envl->head;
+	while (head)
+	{
+		envp[i] = ft_strjoin_env_node(head->key, head->value);
+		if (!envp[i])
+			return (NULL);
+		head = head->next;
+		i++;
+	}
+	envp[i] = NULL;
+	return (envp);	
+}
