@@ -94,19 +94,19 @@ int	is_a_number(char *str);
 
 // builtins_utils.c
 int	is_n_option(char *s);
-void	change_directories(char *path);
+int	change_directories(char *path);
 void	export_no_args(t_env_list *env);
 int	is_valid_env_name(char *str);
 void	export_var(char *str, t_env_list *env);
 
-// builtins.c
-void	ft_echo(int ac, char **args);
-void	ft_pwd(void);
-void	ft_cd(int ac, char **args, t_env_list *env);
-void	ft_export(int ac, char **args, t_env_list *env);
-void	ft_unset(int ac, char **args, t_env_list *env);
-void	ft_env(t_env_list *env);
-void	ft_exit(int ac, char **args, t_token **tkl, t_minishell *sh);
+// builtins.c;;
+int	ft_echo(int ac, char **args);
+int	ft_pwd(void);
+int	ft_cd(int ac, char **args, t_env_list *env);
+int	ft_export(int ac, char **args, t_env_list *env);
+int	ft_unset(int ac, char **args, t_env_list *env);
+int	ft_env(t_env_list *env);
+void	ft_exit(int ac, char **args, t_minishell *sh);
 
 
 // expansion.c
@@ -121,14 +121,15 @@ char	**expanded_list(int ac, t_token **tk_list);
 t_token	**populate_tokens(int ac, char **av);
 
 // free_all.c
-void	free_all_struct(t_minishell *sh, char **arg_list);
+void	free_all_struct(t_minishell *sh, char **arg_list, char **envp);
+void	free_token_list(t_token **tk_list);
 
-// input.c
-void	read_print_input(void);
+// exec.c
+int	cmd_node(t_ast_node *node, t_minishell *sh);
 
 // tree.c
 t_ast_node	*create_example_ast(void);
 void	print_ast_node(t_ast_node *ast);
-void	dfs_ast(t_ast_node *node, void (*f)(t_ast_node *));
+void	dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minishell *));
 
 #endif

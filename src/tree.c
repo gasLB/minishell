@@ -89,14 +89,14 @@ void	print_ast_node(t_ast_node *node)
 	ft_printf("----------------\n");
 }
 
-void	dfs_ast(t_ast_node *node, void (*f)(t_ast_node *))
+void	dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minishell *))
 {
 	node->visited = 1;
-	f(node);
+	f(node, sh);
 	if (node->left && !(node->left->visited))
-		dfs_ast(node->left, f);
+		dfs_ast(node->left, sh, f);
 	if (node->right && !(node->right->visited))
-		dfs_ast(node->right, f);
+		dfs_ast(node->right, sh, f);
 }
 
 // I need a special data structure that stores the state of v

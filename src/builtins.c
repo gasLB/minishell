@@ -12,8 +12,8 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+//#include <readline/readline.h>
+//#include <readline/history.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -61,18 +61,27 @@ int	ft_cd(int ac, char **args, t_env_list *env)
 	char	*path;
 
 	if (ac > 1)
-		(ft_printf("minishell: cd: too many arguments\n"), return (1)); //need proper exit function
+	{
+		ft_printf("minishell: cd: too many arguments\n");
+		return (1);
+	}
 	else if (ac == 0)
 	{
 		path = ft_getenv("HOME", env);
 		if (!path)
-			(ft_printf("minishell: cd: HOME not set\n"), return (1));
+		{
+			ft_printf("minishell: cd: HOME not set\n");
+			return (1);
+		}
 	}
 	else if (ft_strlen(args[0]) == 1 && args[0][0] == '-')
 	{
 		path = ft_getenv("OLDPWD", env);
 		if (!path)
-			(ft_printf("minishell: cd: OLDPWD not set\n"), return (1));
+		{
+			ft_printf("minishell: cd: OLDPWD not set\n");
+			return (1);
+		}
 	}
 	else
 		path = args[0];
@@ -86,7 +95,10 @@ int	ft_export(int ac, char **args, t_env_list *env)
 
 	i = 0;
 	if (ac == 0)
-		(export_no_args(env), return (1));
+	{
+		export_no_args(env);
+		return (1);
+	}
 	while (i < ac)
 	{
 		if (is_valid_env_name(args[i]))
@@ -139,7 +151,7 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 		{
 			exitn = ft_atoi(args[0]) % 256;
 			sh->last_exit = exitn;
-			free_all_struct(sh, args);
+			free_all_struct(sh, args, NULL);
 			exit(exitn);
 		}
 		ft_printf("minishell: exit: %s: numeric argument required\n", args[0]);
@@ -147,7 +159,7 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 	else if (ac == 0)
 	{
 		exitn = sh->last_exit;
-		free_all_struct(sh, args);
+		free_all_struct(sh, args, NULL);
 		exit(exitn);
 	}
 }
