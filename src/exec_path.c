@@ -14,6 +14,8 @@
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 char	*ft_strjoin_slash(char const *s1, char const *s2)
 {
@@ -67,14 +69,14 @@ char	*look_for_path(char *name, char **com_paths)
 		ft_printf("minishell: %s: no such file or directory\n", name);
 		return (NULL);
 	}
-	while (paths[i])
+	while (com_paths[i])
 	{
-		path = ft_strjoin_slash(paths[i], cmd_name);
+		path = ft_strjoin_slash(com_paths[i], name);
 		if (!path || is_path_found(path))
 			return (path);
 		(free(path), i++);
 	}
-	ft_printf("minishell: %s: command not found\n", cmd_name);
+	ft_printf("minishell: %s: command not found\n", name);
 	return (NULL);
 }
 
@@ -101,8 +103,8 @@ char	*find_path(char *name, t_minishell *sh)
 	if (ft_strlen(name) == 0)
 		return (NULL);
 	common_paths = get_all_paths(sh->env_list);
-	path = look_for_path(args[0], common_paths);
+	path = look_for_path(name, common_paths);
 	if (common_paths)
-		free_args(common_paths);
+		free_str_list(common_paths);
 	return (path);
 }

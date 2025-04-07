@@ -15,6 +15,9 @@
 #include "minishell.h"
 #include <stdlib.h>
 #include <errno.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 // error messages are more complicated than I thought
 // If external prgrm, the name of the programm is first
@@ -45,21 +48,22 @@ int	exec_builtin(char **args, t_ast_node *node, t_minishell *sh)
 {
 	int	ac;
 
+	(void)node;		// for now
 	args++;
 	ac = ft_lstlen(args); 
-	if (ft_isequal(str, "echo"))
-		sh->last_exit = ft_echo(ac, args)
-	if (ft_isequal(str, "pwd"))
+	if (is_equal(args[0], "echo"))
+		sh->last_exit = ft_echo(ac, args);
+	if (is_equal(args[0], "pwd"))
 		sh->last_exit = ft_pwd();
-	if (ft_isequal(str, "cd"))
-		sh->last_exit = ft_cd(ac, args, sh);
-	if (ft_isequal(str, "export"))
+	if (is_equal(args[0], "cd"))
+		sh->last_exit = ft_cd(ac, args, sh->env_list);
+	if (is_equal(args[0], "export"))
 		sh->last_exit = ft_export(ac, args, sh->env_list);
-	if (ft_isequal(str, "unset"))
+	if (is_equal(args[0], "unset"))
 		sh->last_exit = ft_unset(ac, args, sh->env_list);
-	if (ft_isequal(str, "env"))
+	if (is_equal(args[0], "env"))
 		sh->last_exit = ft_env(sh->env_list);
-	if (ft_isequal(str, "exit"))
+	if (is_equal(args[0], "exit"))	//maybe should free node here
 		ft_exit(ac, args, sh);
 	return (0);
 }
@@ -72,8 +76,9 @@ int	execute_command(char **args, char **envp, t_minishell *sh)
 	{
 		saved_er = errno;
 		free_all_struct(sh, args, envp);
-		error_execution(errno);
+		error_execution(errno, args[0]);	// args[0] is not the command name anymore
 	}
+	return (1);
 }
 
 int	exec_external(char **args, t_ast_node *node, t_minishell *sh)
@@ -82,7 +87,8 @@ int	exec_external(char **args, t_ast_node *node, t_minishell *sh)
 	char	**envp;
 	int	status;
 
-	envp = 	convert_envl_to_array(sh->env_list);// to free if execve fails
+	(void)node;	//to use later
+	envp = 	convert_envp_to_array(sh->env_list);// to free if execve fails
 	if (!envp)
 		return (1);
 	pid = fork();
@@ -110,10 +116,32 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 		return (1);
 	if (is_builtin(args[0]))
 		return (exec_builtin(args, node, sh));
-	args[0] = find_path(args[0], sh);
+args[0] = find_path(args[0], sh);
 	if (!args[0])
-		(free_args(args), return (1));
+	{
+		free_str_list(args);
+		return (1);
+	}
 	return (exec_external(args, node, sh));
+}
+
+// wait. I need to duplicate pipes 
+// but where do I put it?
+//
+int	pipe_node(t_ast_node *node, t_minishell *sh)
+{
+	int	fd[2];
+
+	
+}
+
+int	handle_node(t_ast_node *node, t_minishell *sh)
+{
+	if (node->type == PIPE)
+		return (pipe_node(node, sh));
+	else if (node->type == CMD)
+		return (cmd_node(node, sh));
+	return (1);
 }
 /*
 

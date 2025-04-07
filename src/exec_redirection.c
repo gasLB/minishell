@@ -14,6 +14,15 @@
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 #include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int	here_doc(char *file_name)
+{
+	(void)file_name;
+	return (1);
+	//		TODO
+}
 
 int	open_in(char **args, char *file_name, int in_status)
 {
@@ -26,7 +35,7 @@ int	open_in(char **args, char *file_name, int in_status)
 		ft_printf("%s: %s: No such file or directory\n", args[0], file_name);
 	else
 	{
-		infile = open(av[1], O_RDONLY, 0644);
+		infile = open(args[1], O_RDONLY, 0644);
 		if (infile == -1)
 			ft_printf("%s: %s: Permission denied\n", args[0], file_name);
 	}

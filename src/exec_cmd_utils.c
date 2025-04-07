@@ -14,11 +14,13 @@
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 #include <stdlib.h>
+#include <fcntl.h>
 
 int	ft_lstlen(char **args)
 {
 	int	i;
 
+	i = 0;
 	while (args[i])
 		i++;
 	return (i);
@@ -28,19 +30,19 @@ int	is_builtin(char *str)
 {
 	if (!str)
 		return (0);
-	if (ft_isequal(str, "echo"))
+	if (is_equal(str, "echo"))
 		return (1);
-	if (ft_isequal(str, "pwd"))
+	if (is_equal(str, "pwd"))
 		return (2);
-	if (ft_isequal(str, "cd"))
+	if (is_equal(str, "cd"))
 		return (3);
-	if (ft_isequal(str, "export"))
+	if (is_equal(str, "export"))
 		return (4);
-	if (ft_isequal(str, "unset"))
+	if (is_equal(str, "unset"))
 		return (5);
-	if (ft_isequal(str, "env"))
+	if (is_equal(str, "env"))
 		return (6);
-	if (ft_isequal(str, "exit"))
+	if (is_equal(str, "exit"))
 		return (7);
 	return (0);
 }
@@ -50,13 +52,13 @@ char	*ft_strjoin_env_node(char *key, char *value)
 	char	*pt;
 	size_t	total_len;
 	int	i;
+	int	j;
 
 	total_len = ft_strlen(key) + ft_strlen(value) + 1;
-	pt = malloc(total_len + 1) * sizeof(char));
+	pt = malloc((total_len + 1) * sizeof(char));
 	if (!pt)
 		return (NULL);
 	i = 0;
-	j = 0;
 	while (key[i])
 		(pt[i] = key[i], i++);
 	if (value)
@@ -66,11 +68,11 @@ char	*ft_strjoin_env_node(char *key, char *value)
 		while (value[j])
 			pt[i++] = value[j++];
 	}
-	pt[i] = NULL;
+	pt[i] = '\0';
 	return (pt);
 }
 
-char	**convert_envp_to_array(t_env_list *envl);
+char	**convert_envp_to_array(t_env_list *envl)
 {
 	char	**envp;
 	t_env_node	*head;

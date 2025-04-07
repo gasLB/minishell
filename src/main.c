@@ -56,16 +56,17 @@ int	main(int ac, char **av, char **env)
 	ast = create_example_ast();
 	env_list = populate_env(env);
 	sh = init_shell(env_list, ast);
-	dfs_ast(ast, sh, cmd_node);
+	dfs_ast(ast, sh, handle_node);
 	return (0);
 }
 
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
-// [X] implement independant exec function for commands and builtins with args
-// [X] need to convert environment in an array for execve()
-// [X] debug everything and test with 800 tests minishell
+// [ ] make cmd exec work
+// [ ] handle pipes
+// [ ] handle operators
+// [ ] handle redirections
 // [ ] handle proper error messages and formatting: minishell vs external command name
 // [ ] implement pipe function when encountering pipe node
 // [ ] implement operator function for operators

@@ -88,7 +88,33 @@ void	print_ast_node(t_ast_node *node)
 	}
 	ft_printf("----------------\n");
 }
-
+/* new DFS
+int execute_ast(t_ast_node *node, t_minishell *sh)
+{
+    int result;
+    
+    if (node == NULL)
+        return 0;
+        
+    if (node->type == PIPE) {
+        return pipe_node(node, sh);
+    } else if (node->type == AND) {
+        result = execute_ast(node->left, sh);
+        if (result == 0) // Success
+            return execute_ast(node->right, sh);
+        return result;
+    } else if (node->type == OR) {
+        result = execute_ast(node->left, sh);
+        if (result != 0) // Failure
+            return execute_ast(node->right, sh);
+        return result;
+    } else if (node->type == CMD) {
+        return cmd_node(node, sh);
+    }
+    
+    return 1; // Error
+}
+*/
 void	dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minishell *))
 {
 	node->visited = 1;

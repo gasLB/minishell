@@ -121,11 +121,23 @@ char	**expanded_list(int ac, t_token **tk_list);
 t_token	**populate_tokens(int ac, char **av);
 
 // free_all.c
+void	free_str_list(char **lst);
 void	free_all_struct(t_minishell *sh, char **arg_list, char **envp);
 void	free_token_list(t_token **tk_list);
 
 // exec.c
 int	cmd_node(t_ast_node *node, t_minishell *sh);
+
+// exec_utils.c
+int	is_builtin(char *str);
+int	ft_lstlen(char **args);
+char	**convert_envp_to_array(t_env_list *envl);
+
+// exec_path.c
+char	*find_path(char *name, t_minishell *sh);
+
+// exec_redirection.c
+int	set_redirections(char **args, t_ast_node *node);
 
 // tree.c
 t_ast_node	*create_example_ast(void);
