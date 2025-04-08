@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 12:50:10 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/25 13:47:46 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:47:03 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,9 @@ t_token	**populate_tokens(int ac, char **av)
 	if (!token_list)
 		return (NULL);
 	i = 0;
-	while (i < ac - 1)
+	while (i < ac)
 	{
-		token_list[i] = init_token(av[i + 1]);
+		token_list[i] = init_token(av[i]);
 		i++;
 	}
 	token_list[i] = NULL;

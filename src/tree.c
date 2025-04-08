@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 12:56:19 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/01 14:25:51 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:04:54 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,58 +88,6 @@ void	print_ast_node(t_ast_node *node)
 	}
 	ft_printf("----------------\n");
 }
-/* new DFS
-int execute_ast(t_ast_node *node, t_minishell *sh)
-{
-    int result;
-    
-    if (node == NULL)
-        return 0;
-        
-    if (node->type == PIPE) {
-        return pipe_node(node, sh);
-    } else if (node->type == AND) {
-        result = execute_ast(node->left, sh);
-        if (result == 0) // Success
-            return execute_ast(node->right, sh);
-        return result;
-    } else if (node->type == OR) {
-        result = execute_ast(node->left, sh);
-        if (result != 0) // Failure
-            return execute_ast(node->right, sh);
-        return result;
-    } else if (node->type == CMD) {
-        return cmd_node(node, sh);
-    }
-    
-    return 1; // Error
-}
-*/
-void	dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minishell *))
-{
-	node->visited = 1;
-	f(node, sh);
-	if (node->left && !(node->left->visited))
-		dfs_ast(node->left, sh, f);
-	if (node->right && !(node->right->visited))
-		dfs_ast(node->right, sh, f);
-}
-
-// I need a special data structure that stores the state of v
-/*
-procedure DFS(node) is
-    if node is null then
-        return
-    
-    label node as visited
-    
-    // Process "adjacent edges" (child edges in a binary tree)
-    if node.left is not null and not visited then
-        DFS(node.left)
-    
-    if node.right is not null and not visited then
-        DFS(node.right)
-*/
 
 
 

@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 19:12:12 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/01 18:16:50 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:29:50 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ int	execute_command(char **args, char **envp, t_minishell *sh)
 {
 	int	saved_er;
 
+	ft_printf("executing command... %s\n", args[0]);
 	if (execve(args[0], args, envp) < 0)
 	{
 		saved_er = errno;
@@ -98,51 +99,9 @@ int	exec_external(char **args, t_ast_node *node, t_minishell *sh)
 		execute_command(args, envp, sh);
 	waitpid(pid, &status, 0);
 	sh->last_exit = status;
-	exit(status);
+	return (status);		// should I exit or return?
 }
 
-int	cmd_node(t_ast_node *node, t_minishell *sh)
-{
-	t_token	**token_list;
-	char	**args;
-	int	len;
-
-	len = ft_lstlen(node->args);
-	token_list = populate_tokens(len, node->args);
-	token_list = expand_tokens(token_list, sh, sh->env_list);
-	args = expanded_list(len, token_list);
-	free_token_list(token_list);
-	if (set_redirections(args, node) == 1)
-		return (1);
-	if (is_builtin(args[0]))
-		return (exec_builtin(args, node, sh));
-args[0] = find_path(args[0], sh);
-	if (!args[0])
-	{
-		free_str_list(args);
-		return (1);
-	}
-	return (exec_external(args, node, sh));
-}
-
-// wait. I need to duplicate pipes 
-// but where do I put it?
-//
-int	pipe_node(t_ast_node *node, t_minishell *sh)
-{
-	int	fd[2];
-
-	
-}
-
-int	handle_node(t_ast_node *node, t_minishell *sh)
-{
-	if (node->type == PIPE)
-		return (pipe_node(node, sh));
-	else if (node->type == CMD)
-		return (cmd_node(node, sh));
-	return (1);
-}
 /*
 
 Before executing a command, we create a pipe for each pipe encountered in the node

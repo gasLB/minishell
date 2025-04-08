@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:53:55 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/01 17:02:45 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:36:22 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ int	set_redirections(char **args, t_ast_node *node)
 	int	infile;
 	int	outfile;
 
+	if (node->redirect == NULL)
+		return (0);
 	in_status = node->redirect->in_type;
 	out_status = node->redirect->out_type;
 	if (in_status != 0)

@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/01 14:28:14 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:51:07 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,8 @@ void	free_all_struct(t_minishell *sh, char **arg_list, char **envp);
 void	free_token_list(t_token **tk_list);
 
 // exec.c
-int	cmd_node(t_ast_node *node, t_minishell *sh);
+int	exec_external(char **args, t_ast_node *node, t_minishell *sh);
+int	exec_builtin(char **args, t_ast_node *node, t_minishell *sh);
 
 // exec_utils.c
 int	is_builtin(char *str);
@@ -142,6 +143,10 @@ int	set_redirections(char **args, t_ast_node *node);
 // tree.c
 t_ast_node	*create_example_ast(void);
 void	print_ast_node(t_ast_node *ast);
-void	dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minishell *));
+
+// tree_traverse.c
+int	cmd_node(t_ast_node *node, t_minishell *sh);
+void	pipe_node(t_ast_node *node, t_minishell *sh);
+void	dfs_ast(t_ast_node *node, t_minishell *sh);
 
 #endif

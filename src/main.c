@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 18:38:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/27 13:47:50 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:28:41 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	main(int ac, char **av, char **env)
 	ast = create_example_ast();
 	env_list = populate_env(env);
 	sh = init_shell(env_list, ast);
-	dfs_ast(ast, sh, handle_node);
+	dfs_ast(ast, sh);
 	return (0);
 }
 
@@ -71,5 +71,4 @@ int	main(int ac, char **av, char **env)
 // [ ] implement pipe function when encountering pipe node
 // [ ] implement operator function for operators
 // [ ] look at pipex for execution
-//
 // [ ] implement here_doc 

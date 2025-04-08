@@ -1,11 +1,12 @@
-/* ************************************************************************** */ /*                                                                            */
+/* ************************************************************************** */
+/*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   expansion_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/20 16:32:13 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/20 17:55:26 by gfontagn         ###   ########.fr       */
+/*   Created: 2025/04/08 17:55:46 by gfontagn          #+#    #+#             */
+/*   Updated: 2025/04/08 18:07:04 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +50,12 @@ char	**expanded_list(int ac, t_token **tk_list)
 	int	i;
 
 	i = 0;
-	exp_list = malloc((ac - 1) * sizeof(char *));
+	exp_list = malloc((ac) * sizeof(char *));
 	if (!exp_list)
 		return (NULL);
-	while (i < ac - 1)
+	while (i < ac)
 	{
-		exp_list[i] = tk_list[i]->expanded_value;	
+		exp_list[i] = ft_strdup(tk_list[i]->expanded_value);
 		i++;
 	}
 	return (exp_list);
