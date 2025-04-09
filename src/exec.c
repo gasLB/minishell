@@ -49,22 +49,21 @@ int	exec_builtin(char **args, t_ast_node *node, t_minishell *sh)
 	int	ac;
 
 	(void)node;		// for now
-	args++;
-	ac = ft_lstlen(args); 
+	ac = ft_lstlen(args) - 1; 
 	if (is_equal(args[0], "echo"))
-		sh->last_exit = ft_echo(ac, args);
+		sh->last_exit = ft_echo(ac, args + 1);
 	if (is_equal(args[0], "pwd"))
 		sh->last_exit = ft_pwd();
 	if (is_equal(args[0], "cd"))
-		sh->last_exit = ft_cd(ac, args, sh->env_list);
+		sh->last_exit = ft_cd(ac, args + 1, sh->env_list);
 	if (is_equal(args[0], "export"))
-		sh->last_exit = ft_export(ac, args, sh->env_list);
+		sh->last_exit = ft_export(ac, args + 1, sh->env_list);
 	if (is_equal(args[0], "unset"))
-		sh->last_exit = ft_unset(ac, args, sh->env_list);
+		sh->last_exit = ft_unset(ac, args + 1, sh->env_list);
 	if (is_equal(args[0], "env"))
 		sh->last_exit = ft_env(sh->env_list);
 	if (is_equal(args[0], "exit"))	//maybe should free node here
-		ft_exit(ac, args, sh);
+		ft_exit(ac, args + 1, sh);
 	return (0);
 }
 
@@ -72,12 +71,12 @@ int	execute_command(char **args, char **envp, t_minishell *sh)
 {
 	int	saved_er;
 
-	ft_printf("executing command... %s\n", args[0]);
 	if (execve(args[0], args, envp) < 0)
 	{
 		saved_er = errno;
-		free_all_struct(sh, args, envp);
 		error_execution(errno, args[0]);	// args[0] is not the command name anymore
+		free_all_struct(sh, args, envp);
+		exit(1);
 	}
 	return (1);
 }

@@ -15,6 +15,41 @@
 #include "minishell.h"
 #include <stdlib.h>
 
+t_ast_node	*create_example_ast(void)
+{
+	t_ast_node	*node;
+	t_ast_node	*head;
+	char **ar1; 
+	char **ar2; 
+	char **ar3;
+
+	ar1 = malloc(3 * sizeof(char *));
+	ar2 = malloc(3 * sizeof(char *)); 
+	ar3 = malloc(3 * sizeof(char *));
+	if (!ar1 || !ar2 || !ar3)
+	return NULL; 
+
+	ar1[0] = ft_strdup("unset");
+	ar1[1] = ft_strdup("PATH");
+	ar1[2] = NULL;
+
+	ar2[0] = ft_strdup("env");
+	ar2[1] = NULL;
+
+	ar3[0] = ft_strdup("grep");
+	ar3[1] = ft_strdup("PATH");
+	ar3[2] = NULL;
+
+	node = create_ast_node(AND, NULL, NULL);
+	head = node;
+	node->left = create_ast_node(CMD, ar1, NULL);
+	node->right = create_ast_node(PIPE, NULL, NULL);
+	node = node->right;
+	node->left = create_ast_node(CMD, ar2, NULL);
+	node->right = create_ast_node(CMD, ar3, NULL);
+	return (head);
+}
+
 t_minishell	*init_shell(t_env_list *env_list, t_ast_node *ast)
 {
 	t_minishell	*sh;
@@ -63,11 +98,17 @@ int	main(int ac, char **av, char **env)
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
-// [ ] make cmd exec work
-// [ ] handle pipes
-// [ ] handle operators
+// [X] make cmd exec work
+// 	[X] PATH is corrupted in env when I go through it a second time. I know! I may be freeing it 2 times
+// [X] handle pipes
+// [X] handle operators
+// [X] test with nonexistant commands
+// [ ] need to have true command name in node for error msg and debugging
+// [ ] test with wrong arguments
+// [ ] test with builtins
+// [ ] test with multiple pipes
+// [ ] free all memory
 // [ ] handle redirections
-// [ ] handle proper error messages and formatting: minishell vs external command name
 // [ ] implement pipe function when encountering pipe node
 // [ ] implement operator function for operators
 // [ ] look at pipex for execution

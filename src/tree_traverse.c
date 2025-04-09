@@ -40,6 +40,8 @@ void	dfs_ast(t_ast_node *node, t_minishell *sh)
 	}
 }
 
+// I think smthg is wrong here. It works only when left command is found in path with a pipe
+// the problem is that I free everything when execve fails
 void	pipe_node(t_ast_node *node, t_minishell *sh)
 {
 	int	fd[2];

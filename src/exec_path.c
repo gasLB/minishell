@@ -69,14 +69,14 @@ char	*look_for_path(char *name, char **com_paths)
 		ft_printf("minishell: %s: no such file or directory\n", name);
 		return (NULL);
 	}
-	while (com_paths[i])
+	while (com_paths && com_paths[i])
 	{
 		path = ft_strjoin_slash(com_paths[i], name);
 		if (!path || is_path_found(path))
 			return (path);
 		(free(path), i++);
 	}
-	ft_printf("minishell: %s: command not found\n", name);
+	ft_printf("minishell: %s: command not found\n", name);	// write on the error output
 	return (NULL);
 }
 
@@ -89,7 +89,6 @@ char	**get_all_paths(t_env_list *env)
 	if (!path_line)
 		return (NULL);
 	paths = ft_split(path_line, ':');
-	free(path_line);
 	if (!paths)
 		return (NULL);
 	return (paths);

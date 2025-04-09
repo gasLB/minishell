@@ -33,40 +33,6 @@ t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect)
 	return (node);
 }
 
-t_ast_node	*create_example_ast(void)
-{
-	t_ast_node	*node;
-	t_ast_node	*head;
-	char **ar1; 
-	char **ar2; 
-	char **ar3;
-
-	ar1 = malloc(2 * sizeof(char *));
-	ar2 = malloc(3 * sizeof(char *)); 
-	ar3 = malloc(3 * sizeof(char *));
-	if (!ar1 || !ar2 || !ar3)
-	return NULL; 
-
-	ar1[0] = ft_strdup("true");
-	ar1[1] = NULL;
-
-	ar2[0] = ft_strdup("cat");
-	ar2[1] = ft_strdup("file");
-	ar2[2] = NULL;
-
-	ar3[0] = ft_strdup("grep");
-	ar3[1] = ft_strdup("bonjour");
-	ar3[2] = NULL;
-	node = create_ast_node(AND, NULL, NULL);
-	head = node;
-	node->left = create_ast_node(CMD, ar1, NULL);
-	node->right = create_ast_node(PIPE, NULL, NULL);
-	node = node->right;
-	node->left = create_ast_node(CMD, ar2, NULL);
-	node->right = create_ast_node(CMD, ar3, NULL);
-	return (head);
-}
-
 void	print_ast_node(t_ast_node *node)
 {
 	int	i;

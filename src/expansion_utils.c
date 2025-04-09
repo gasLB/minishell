@@ -58,6 +58,7 @@ char	**expanded_list(int ac, t_token **tk_list)
 		exp_list[i] = ft_strdup(tk_list[i]->expanded_value);
 		i++;
 	}
+	exp_list[i] = NULL;
 	return (exp_list);
 
 

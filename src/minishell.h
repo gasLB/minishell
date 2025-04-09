@@ -141,8 +141,8 @@ char	*find_path(char *name, t_minishell *sh);
 int	set_redirections(char **args, t_ast_node *node);
 
 // tree.c
-t_ast_node	*create_example_ast(void);
 void	print_ast_node(t_ast_node *ast);
+t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect);
 
 // tree_traverse.c
 int	cmd_node(t_ast_node *node, t_minishell *sh);
