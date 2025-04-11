@@ -67,37 +67,38 @@ int	exec_builtin(char **args, t_ast_node *node, t_minishell *sh)
 	return (0);
 }
 
-int	execute_command(char **args, char **envp, t_minishell *sh)
+int	execute_command(char *name, char **args, char **envp, t_minishell *sh)
 {
 	int	saved_er;
 
 	if (execve(args[0], args, envp) < 0)
 	{
 		saved_er = errno;
-		error_execution(errno, args[0]);	// args[0] is not the command name anymore
+		error_execution(saved_er, name);	// args[0] is not the command name anymore
 		free_all_struct(sh, args, envp);
+		free(name);
 		exit(1);
 	}
 	return (1);
 }
 
-int	exec_external(char **args, t_ast_node *node, t_minishell *sh)
+int	exec_external(char *name, char **args, t_ast_node *node, t_minishell *s)
 {
 	int	pid;
 	char	**envp;
 	int	status;
 
 	(void)node;	//to use later
-	envp = 	convert_envp_to_array(sh->env_list);// to free if execve fails
+	envp = 	convert_envp_to_array(s->env_list);// to free if execve fails
 	if (!envp)
 		return (1);
 	pid = fork();
 	if (pid == -1)
 		return (1);
 	if (pid == 0)
-		execute_command(args, envp, sh);
+		execute_command(name, args, envp, s);
 	waitpid(pid, &status, 0);
-	sh->last_exit = status;
+	s->last_exit = status;
 	return (status);		// should I exit or return?
 }
 

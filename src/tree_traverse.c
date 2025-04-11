@@ -75,6 +75,7 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 {
 	t_token	**token_list;
 	char	**args;
+	char	*cmd_name;
 	int	len;
 
 	len = ft_lstlen(node->args);
@@ -86,13 +87,15 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 		return (1);
 	if (is_builtin(args[0]))
 		return (exec_builtin(args, node, sh));
+	cmd_name = ft_strdup(args[0]);
 	args[0] = find_path(args[0], sh);
 	if (!args[0])
 	{
 		free_str_list(args);
+		free(cmd_name);
 		return (1);
 	}
-	return (exec_external(args, node, sh));
+	return (exec_external(cmd_name, args, node, sh));
 }
 
 void	old_dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minishell *))

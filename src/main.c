@@ -29,15 +29,17 @@ t_ast_node	*create_example_ast(void)
 	if (!ar1 || !ar2 || !ar3)
 	return NULL; 
 
-	ar1[0] = ft_strdup("unset");
-	ar1[1] = ft_strdup("PATH");
+	ar1[0] = ft_strdup("ls");
+	ar1[1] = ft_strdup("-l");
 	ar1[2] = NULL;
 
-	ar2[0] = ft_strdup("env");
-	ar2[1] = NULL;
+	ar2[0] = ft_strdup("echo");
+	ar2[1] = ft_strdup("-n");
+	ar2[2] = ft_strdup("ceci est un test");
+	ar2[3] = NULL;
 
-	ar3[0] = ft_strdup("grep");
-	ar3[1] = ft_strdup("PATH");
+	ar3[0] = ft_strdup("wc");
+	ar3[1] = ft_strdup("-w");
 	ar3[2] = NULL;
 
 	node = create_ast_node(AND, NULL, NULL);
@@ -98,18 +100,10 @@ int	main(int ac, char **av, char **env)
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
-// [X] make cmd exec work
-// 	[X] PATH is corrupted in env when I go through it a second time. I know! I may be freeing it 2 times
-// [X] handle pipes
-// [X] handle operators
-// [X] test with nonexistant commands
-// [ ] need to have true command name in node for error msg and debugging
-// [ ] test with wrong arguments
-// [ ] test with builtins
+// [ ] test every builtins
+// 	[ ] eror with echo multiple args
+// 	[ ] I have problem freeing expanded_value
 // [ ] test with multiple pipes
-// [ ] free all memory
 // [ ] handle redirections
-// [ ] implement pipe function when encountering pipe node
-// [ ] implement operator function for operators
-// [ ] look at pipex for execution
 // [ ] implement here_doc 
+// [ ] free all memory

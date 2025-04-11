@@ -126,7 +126,7 @@ void	free_all_struct(t_minishell *sh, char **arg_list, char **envp);
 void	free_token_list(t_token **tk_list);
 
 // exec.c
-int	exec_external(char **args, t_ast_node *node, t_minishell *sh);
+int	exec_external(char *n, char **args, t_ast_node *node, t_minishell *sh);
 int	exec_builtin(char **args, t_ast_node *node, t_minishell *sh);
 
 // exec_utils.c
