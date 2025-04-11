@@ -124,6 +124,7 @@ t_token	**populate_tokens(int ac, char **av);
 void	free_str_list(char **lst);
 void	free_all_struct(t_minishell *sh, char **arg_list, char **envp);
 void	free_token_list(t_token **tk_list);
+void	free_ast(t_ast_node *node);
 
 // exec.c
 int	exec_external(char *n, char **args, t_ast_node *node, t_minishell *sh);
@@ -148,5 +149,6 @@ t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect);
 int	cmd_node(t_ast_node *node, t_minishell *sh);
 void	pipe_node(t_ast_node *node, t_minishell *sh);
 void	dfs_ast(t_ast_node *node, t_minishell *sh);
+void	function_dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minishell *));
 
 #endif

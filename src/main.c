@@ -23,20 +23,20 @@ t_ast_node	*create_example_ast(void)
 	char **ar2; 
 	char **ar3;
 
-	ar1 = malloc(3 * sizeof(char *));
+	ar1 = malloc(4 * sizeof(char *));
 	ar2 = malloc(3 * sizeof(char *)); 
 	ar3 = malloc(3 * sizeof(char *));
 	if (!ar1 || !ar2 || !ar3)
-	return NULL; 
+		return NULL; 
 
 	ar1[0] = ft_strdup("ls");
-	ar1[1] = ft_strdup("-l");
-	ar1[2] = NULL;
+	ar1[1] = ft_strdup("-a");
+	ar1[2] = ft_strdup("test");
+	ar1[3] = NULL;
 
 	ar2[0] = ft_strdup("echo");
 	ar2[1] = ft_strdup("-n");
-	ar2[2] = ft_strdup("ceci est un test");
-	ar2[3] = NULL;
+	ar2[2] = NULL;
 
 	ar3[0] = ft_strdup("wc");
 	ar3[1] = ft_strdup("-w");
@@ -94,6 +94,7 @@ int	main(int ac, char **av, char **env)
 	env_list = populate_env(env);
 	sh = init_shell(env_list, ast);
 	dfs_ast(ast, sh);
+	free_all_struct(sh, NULL, NULL);
 	return (0);
 }
 
@@ -101,8 +102,7 @@ int	main(int ac, char **av, char **env)
 //
 // TODO:
 // [ ] test every builtins
-// 	[ ] eror with echo multiple args
-// 	[ ] I have problem freeing expanded_value
+// 	[X] I have problem freeing expanded_value
 // [ ] test with multiple pipes
 // [ ] handle redirections
 // [ ] implement here_doc 

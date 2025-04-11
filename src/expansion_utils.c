@@ -50,7 +50,7 @@ char	**expanded_list(int ac, t_token **tk_list)
 	int	i;
 
 	i = 0;
-	exp_list = malloc((ac) * sizeof(char *));
+	exp_list = malloc((ac + 1) * sizeof(char *));
 	if (!exp_list)
 		return (NULL);
 	while (i < ac)
@@ -60,6 +60,4 @@ char	**expanded_list(int ac, t_token **tk_list)
 	}
 	exp_list[i] = NULL;
 	return (exp_list);
-
-
 }

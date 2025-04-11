@@ -48,19 +48,14 @@ void	free_token_list(t_token **tk_list)
 	i = 0;
 	while (tk_list[i])
 	{
+		ft_printf("tk_list[%d]: value: %s, expanded: %s, quote: %s\n", i, tk_list[i]->value, tk_list[i]->expanded_value, tk_list[i]->quote_mask);
 		free(tk_list[i]->value);
-		free(tk_list[i]->expanded_value);
 		free(tk_list[i]->quote_mask);
+		free(tk_list[i]->expanded_value);
 		free(tk_list[i]);
 		i++;
 	}
 	free(tk_list);
-}
-
-void	free_ast(t_ast_node *ast)
-{
-	(void)ast;
-	ft_printf("freeing ast...\n");
 }
 
 void	free_str_list(char **lst)
@@ -76,6 +71,25 @@ void	free_str_list(char **lst)
 		i++;
 	}
 	free(lst);
+}
+
+void	free_ast(t_ast_node *node)
+{
+	if (!node)
+		return;
+	if (node->visited == 2)
+		return;
+	node->visited = 2;
+	if (node->left && node->left->visited != 2)
+		free_ast(node->left);
+	if (node->right && node->right->visited != 2)
+		free_ast(node->right);
+	if (node->args)
+		(free_str_list(node->args), node->args = NULL);
+	if (node->redirect)
+		ft_printf("freeing redirection...");
+	if (node)
+		free(node);
 }
 
 void	free_all_struct(t_minishell *sh, char **arg_list, char **envp)

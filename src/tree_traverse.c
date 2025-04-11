@@ -98,14 +98,14 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 	return (exec_external(cmd_name, args, node, sh));
 }
 
-void	old_dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minishell *))
+void	f_dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minishell *))
 {
 	node->visited = 1;
 	f(node, sh);
 	if (node->left && !(node->left->visited))
-		old_dfs_ast(node->left, sh, f);
+		f_dfs_ast(node->left, sh, f);
 	if (node->right && !(node->right->visited))
-		old_dfs_ast(node->right, sh, f);
+		f_dfs_ast(node->right, sh, f);
 }
 
 // I need a special data structure that stores the state of v

@@ -99,6 +99,9 @@ int	exec_external(char *name, char **args, t_ast_node *node, t_minishell *s)
 		execute_command(name, args, envp, s);
 	waitpid(pid, &status, 0);
 	s->last_exit = status;
+	free_str_list(envp);
+	free_str_list(args);
+	free(name);
 	return (status);		// should I exit or return?
 }
 

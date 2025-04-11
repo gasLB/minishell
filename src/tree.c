@@ -55,8 +55,6 @@ void	print_ast_node(t_ast_node *node)
 	ft_printf("----------------\n");
 }
 
-
-
 /*
 So I need to implement, given a certain input, the tree used to categorize tokens
 and execute it.
