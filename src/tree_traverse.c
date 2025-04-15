@@ -42,6 +42,15 @@ void	dfs_ast(t_ast_node *node, t_minishell *sh)
 
 // I think smthg is wrong here. It works only when left command is found in path with a pipe
 // the problem is that I free everything when execve fails
+
+void	add_pipe_fd(int fd1, int fd2, t_minishell *sh)
+{
+	if (!sh->pipe_fds)
+		sh->pipe_fds = malloc(MAX_FD * sizeof(int));
+	sh->pipe_fds[sh->pipe_count++] = fd1;
+	sh->pipe_fds[sh->pipe_count++] = fd2;
+}
+
 void	pipe_node(t_ast_node *node, t_minishell *sh)
 {
 	int	fd[2];
@@ -52,6 +61,8 @@ void	pipe_node(t_ast_node *node, t_minishell *sh)
 	origin_stdout = dup(STDOUT_FILENO);
 	if (pipe(fd) == -1)
 		return;
+	add_pipe_fd(fd[0], fd[1], sh);
+	add_pipe_fd(origin_stdin, origin_stdout, sh);
 	if (node->left && !(node->left->visited))
 	{
 		dup2(fd[1], STDOUT_FILENO);
@@ -83,7 +94,7 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 	token_list = expand_tokens(token_list, sh, sh->env_list);
 	args = expanded_list(len, token_list);
 	free_token_list(token_list);
-	if (set_redirections(args, node) == 1)
+	if (set_redirections(args, node, sh) == 1)
 		return (1);
 	if (is_builtin(args[0]))
 		return (exec_builtin(args, node, sh));

@@ -14,6 +14,14 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 10000
+# endif
+
+# ifndef MAX_FD
+#  define MAX_FD 1024
+# endif
+
 typedef	struct s_token
 {
 	char	*value;			// the string without quotes
@@ -57,6 +65,8 @@ typedef struct s_minishell
 {
 	t_env_list	*env_list;
 	t_ast_node	*ast;
+	int		pipe_count;
+	int		*pipe_fds;
 	int		last_exit;
 }	t_minishell;
 
@@ -139,7 +149,7 @@ char	**convert_envp_to_array(t_env_list *envl);
 char	*find_path(char *name, t_minishell *sh);
 
 // exec_redirection.c
-int	set_redirections(char **args, t_ast_node *node);
+int	set_redirections(char **args, t_ast_node *node, t_minishell *sh);
 
 // tree.c
 void	print_ast_node(t_ast_node *ast);
@@ -150,5 +160,8 @@ int	cmd_node(t_ast_node *node, t_minishell *sh);
 void	pipe_node(t_ast_node *node, t_minishell *sh);
 void	dfs_ast(t_ast_node *node, t_minishell *sh);
 void	function_dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minishell *));
+
+// here_doc.c
+int	here_doc(char *lim, char **args, t_minishell *sh);
 
 #endif

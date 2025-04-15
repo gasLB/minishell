@@ -15,6 +15,30 @@
 #include "minishell.h"
 #include <stdlib.h>
 
+t_redirect	*create_redirect(int n_type, char *str)
+{
+	t_redirect	*res;
+
+	res = malloc(sizeof(t_redirect));
+	if (!res)
+		return (NULL);
+	if (n_type == IN || n_type == HD)
+	{
+		res->in_type = n_type;
+		res->out_type = -1;
+		res->in_str = ft_strdup(str);
+		res->out_str = NULL;
+	}
+	else
+	{
+		res->out_type = n_type;
+		res->in_type = -1;
+		res->out_str = ft_strdup(str);
+		res->in_str = NULL;
+	}
+	return (res);
+}
+
 t_ast_node	*create_example_ast(void)
 {
 	t_ast_node	*node;
@@ -23,32 +47,29 @@ t_ast_node	*create_example_ast(void)
 	char **ar2; 
 	char **ar3;
 
-	ar1 = malloc(4 * sizeof(char *));
-	ar2 = malloc(3 * sizeof(char *)); 
+	ar1 = malloc(3 * sizeof(char *));
+	ar2 = malloc(2 * sizeof(char *)); 
 	ar3 = malloc(3 * sizeof(char *));
 	if (!ar1 || !ar2 || !ar3)
 		return NULL; 
 
-	ar1[0] = ft_strdup("ls");
-	ar1[1] = ft_strdup("-a");
-	ar1[2] = ft_strdup("test");
-	ar1[3] = NULL;
+	ar1[0] = ft_strdup("wc");
+	ar1[1] = ft_strdup("-l");
+	ar1[2] = NULL;
 
-	ar2[0] = ft_strdup("echo");
-	ar2[1] = ft_strdup("-n");
-	ar2[2] = NULL;
+	ar2[0] = ft_strdup("cat");
+	ar2[1] = NULL;
 
-	ar3[0] = ft_strdup("wc");
-	ar3[1] = ft_strdup("-w");
-	ar3[2] = NULL;
+	ar3[0] = ft_strdup("cat");
+	ar3[1] = NULL;
 
-	node = create_ast_node(AND, NULL, NULL);
+	node = create_ast_node(PIPE, NULL, NULL);
 	head = node;
-	node->left = create_ast_node(CMD, ar1, NULL);
+	node->left = create_ast_node(CMD, ar1, create_redirect(HD, "LIM"));
 	node->right = create_ast_node(PIPE, NULL, NULL);
 	node = node->right;
 	node->left = create_ast_node(CMD, ar2, NULL);
-	node->right = create_ast_node(CMD, ar3, NULL);
+	node->right = create_ast_node(CMD, ar3, create_redirect(TRUNC, "file2"));
 	return (head);
 }
 
@@ -62,6 +83,8 @@ t_minishell	*init_shell(t_env_list *env_list, t_ast_node *ast)
 	sh->env_list = env_list;
 	sh->ast = ast;
 	sh->last_exit = 0;
+	sh->pipe_count = 0;
+	sh->pipe_fds = NULL;
 	return (sh);
 }
 
@@ -101,9 +124,11 @@ int	main(int ac, char **av, char **env)
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
-// [ ] test every builtins
-// 	[X] I have problem freeing expanded_value
-// [ ] test with multiple pipes
-// [ ] handle redirections
-// [ ] implement here_doc 
+// [X] test every builtins
+// [X] test with multiple pipes
+// [X] handle redirections
+// [X] implement here_doc 
+// [ ] handle error messages
+// [ ] test with quotes and double quotes
+// [ ] test with complex ast
 // [ ] free all memory

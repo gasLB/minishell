@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:53:55 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/08 17:36:22 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/15 17:46:33 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,18 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-int	here_doc(char *file_name)
-{
-	(void)file_name;
-	return (1);
-	//		TODO
-}
-
-int	open_in(char **args, char *file_name, int in_status)
+int	open_in(char **args, char *file_name, int in_status, t_minishell *sh)
 {
 	int	infile;
 
 	infile = -1;
 	if (in_status == HD)
-		return (here_doc(file_name));
+		return (here_doc(file_name, args, sh));
 	if (access(file_name, F_OK) != 0)
 		ft_printf("%s: %s: No such file or directory\n", args[0], file_name);
 	else
 	{
-		infile = open(args[1], O_RDONLY, 0644);
+		infile = open(file_name, O_RDONLY, 0644);
 		if (infile == -1)
 			ft_printf("%s: %s: Permission denied\n", args[0], file_name);
 	}
@@ -59,7 +52,7 @@ int	open_out(char **args, char *file_name, int in_status)
 	return (outfile);
 }
 
-int	set_redirections(char **args, t_ast_node *node)
+int	set_redirections(char **args, t_ast_node *node, t_minishell *sh)
 {
 	int	in_status;
 	int	out_status;
@@ -70,14 +63,14 @@ int	set_redirections(char **args, t_ast_node *node)
 		return (0);
 	in_status = node->redirect->in_type;
 	out_status = node->redirect->out_type;
-	if (in_status != 0)
+	if (in_status != -1)
 	{
-		infile = open_in(args, node->redirect->in_str, in_status);
+		infile = open_in(args, node->redirect->in_str, in_status, sh);
 		if (infile == -1 || dup2(infile, STDIN_FILENO) == -1)
 			return (1);
 		close(infile);
 	}
-	if (out_status != 0)
+	if (out_status != -1)
 	{
 		outfile = open_out(args, node->redirect->out_str, out_status);
 		if (outfile == -1 || dup2(outfile, STDOUT_FILENO) == -1)

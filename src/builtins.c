@@ -151,7 +151,7 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 		{
 			exitn = ft_atoi(args[0]) % 256;
 			sh->last_exit = exitn;
-			free_all_struct(sh, args, NULL);
+			free_all_struct(sh, args - 1, NULL);
 			exit(exitn);
 		}
 		ft_printf("minishell: exit: %s: numeric argument required\n", args[0]);
@@ -159,7 +159,7 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 	else if (ac == 0)
 	{
 		exitn = sh->last_exit;
-		free_all_struct(sh, args, NULL);
+		free_all_struct(sh, args - 1, NULL);
 		exit(exitn);
 	}
 }

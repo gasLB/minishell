@@ -64,6 +64,8 @@ int	exec_builtin(char **args, t_ast_node *node, t_minishell *sh)
 		sh->last_exit = ft_env(sh->env_list);
 	if (is_equal(args[0], "exit"))	//maybe should free node here
 		ft_exit(ac, args + 1, sh);
+	if (args)
+		free_str_list(args);
 	return (0);
 }
 
