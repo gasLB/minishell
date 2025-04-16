@@ -24,23 +24,28 @@ int	is_equal(char *s1, char *s2)
 	return (1);
 }
 
-char	*ft_realloc_str(char *str, int new_size) // Useless for now
+// I keep this for now but it is useless
+char	**append_to_lst(char **l, char *new_s)
 {
-	char	*new_str;
+	char	**new_l;
 	int	i;
+	int	size;
 
-	if ((int)ft_strlen(str) > new_size)
+	size = ft_lstlen(l);
+	new_l = malloc((size + 2) * sizeof(char *));
+	if (!new_l)
 		return (NULL);
-	if (!str)
-		return (NULL);
-	new_str = ft_calloc(new_size, sizeof(char));
-	if (!new_str)
-		return (NULL);
-	i = -1;
-	while (str[i++])
-		new_str[i] = str[i];
-	free(str);
-	return (new_str);
+	i = 0;
+	while (i < size)
+	{
+		new_l[i] = ft_strdup(l[i]);
+		free(l[i]);
+		i++;
+	}
+	new_l[i] = new_s;
+	new_l[i + 1] = NULL;
+	free(l);
+	return (new_l);
 }
 
 char	*append_str(char *dest, char *src)
@@ -70,7 +75,7 @@ int	is_a_number(char *str)
 		return (0);
 	while (str[i])
 	{
-		if (!ft_isdigit(str[i]) && i )
+		if (!ft_isdigit(str[i]) && i)
 			return (0);
 		i++;
 	}

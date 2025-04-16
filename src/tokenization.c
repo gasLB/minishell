@@ -41,6 +41,7 @@ char	*set_q_mask(char *val, char *str)
 	int	j;
 	char	*res;
 	char	c;
+	char	new;
 
 	res = ft_calloc(ft_strlen(val) + 1, sizeof(char));
 	if (!res)
@@ -50,12 +51,9 @@ char	*set_q_mask(char *val, char *str)
 	c = 'N';
 	while (str[i])
 	{
-		if ((c == 'D' && str[i] == '"') || (c == 'S' && str[i] == '\''))
-			c = 'N';
-		else if (c == 'N' && str[i] == '"')
-			c  = 'D';
-		else if (c == 'N' && str[i] == '\'')
-			c = 'S';
+		new = set_quote_character(c, str[i]));
+		if (new != c)
+			c = new;
 		else
 			res[j++] = c;
 		i++;
@@ -74,15 +72,15 @@ t_token	*init_token(char *str)
 	token->value = strdup_without_quotes(str);	// to replace
 	if (!token->value)
 		return (NULL);
-	token->type = -1;	// to do later, maybe not at the right place
+	token->type = find_token_type(token->value, env_list)
 	token->expanded_value = NULL;
 	token->quote_mask = set_q_mask(token->value, str);
 	if (!token->quote_mask)
 		return (NULL);
+	free(str);	// recently added !
 	return (token);
 }
 
-// assuming for now we only enter arguments of a builtin
 t_token	**populate_tokens(int ac, char **av)
 {
 	t_token	**token_list;

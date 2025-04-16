@@ -115,5 +115,10 @@ Expressions are atoms connectedd by binary operators
 
 '&&' and '||' can only be used betweem commands
 
-
+what should I do know? 
+Wb is late and my part is completely done.
+If I can do the parsing in only one afternoon, then I should do it
+I'll think 10 minutes about it.
+The parsing job: check the validity of the the input, then if valid construct the ast tree
+ok. I will try to do it.
 */

@@ -98,7 +98,6 @@ void	ft_unsetenv(char *name, t_env_list *env);
 
 // utils.c
 int	is_equal(char *s1, char *s2);
-char	*ft_realloc_str(char *str, int new_size);
 char	*append_str(char *dest, char *src);
 int	is_a_number(char *str);
 
