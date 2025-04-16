@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 13:48:33 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/01 13:49:18 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/16 15:32:24 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	*look_for_path(char *name, char **com_paths)
 		return (ft_strdup(name));
 	else if (name && name[0] == '/')
 	{
-		ft_printf("minishell: %s: no such file or directory\n", name);
+		printf_fd(2, "minishell: %s: no such file or directory\n", name);
 		return (NULL);
 	}
 	while (com_paths && com_paths[i])
@@ -76,7 +76,7 @@ char	*look_for_path(char *name, char **com_paths)
 			return (path);
 		(free(path), i++);
 	}
-	ft_printf("minishell: %s: command not found\n", name);	// write on the error output
+	printf_fd(2, "minishell: %s: command not found\n", name);	// write on the error output
 	return (NULL);
 }
 

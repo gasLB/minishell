@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 18:38:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/08 18:28:41 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/16 15:42:39 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,23 +53,25 @@ t_ast_node	*create_example_ast(void)
 	if (!ar1 || !ar2 || !ar3)
 		return NULL; 
 
-	ar1[0] = ft_strdup("wc");
-	ar1[1] = ft_strdup("-l");
+	ar1[0] = ft_strdup("cd");
+	ar1[1] = ft_strdup("abracadabra");
 	ar1[2] = NULL;
 
-	ar2[0] = ft_strdup("cat");
+	ar2[0] = ft_strdup("ls");
 	ar2[1] = NULL;
 
 	ar3[0] = ft_strdup("cat");
 	ar3[1] = NULL;
 
-	node = create_ast_node(PIPE, NULL, NULL);
+	node = create_ast_node(AND, NULL, NULL);
 	head = node;
-	node->left = create_ast_node(CMD, ar1, create_redirect(HD, "LIM"));
+	//node->left = create_ast_node(CMD, ar1, create_redirect(HD, "LIM"));
+	node->left = create_ast_node(CMD, ar1, NULL);
 	node->right = create_ast_node(PIPE, NULL, NULL);
 	node = node->right;
 	node->left = create_ast_node(CMD, ar2, NULL);
-	node->right = create_ast_node(CMD, ar3, create_redirect(TRUNC, "file2"));
+	//node->right = create_ast_node(CMD, ar3, create_redirect(TRUNC, "file2"));
+	node->right = create_ast_node(CMD, ar3, NULL);
 	return (head);
 }
 
@@ -124,11 +126,7 @@ int	main(int ac, char **av, char **env)
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
-// [X] test every builtins
-// [X] test with multiple pipes
-// [X] handle redirections
-// [X] implement here_doc 
-// [ ] handle error messages
+// [X] handle error messages
 // [ ] test with quotes and double quotes
 // [ ] test with complex ast
 // [ ] free all memory

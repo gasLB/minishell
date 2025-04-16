@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 14:38:52 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/01 17:40:51 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/16 15:23:11 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	ft_cd(int ac, char **args, t_env_list *env)
 
 	if (ac > 1)
 	{
-		ft_printf("minishell: cd: too many arguments\n");
+		printf_fd(2, "minishell: cd: too many arguments\n");
 		return (1);
 	}
 	else if (ac == 0)
@@ -70,7 +70,7 @@ int	ft_cd(int ac, char **args, t_env_list *env)
 		path = ft_getenv("HOME", env);
 		if (!path)
 		{
-			ft_printf("minishell: cd: HOME not set\n");
+			printf_fd(2, "minishell: cd: HOME not set\n");
 			return (1);
 		}
 	}
@@ -79,7 +79,7 @@ int	ft_cd(int ac, char **args, t_env_list *env)
 		path = ft_getenv("OLDPWD", env);
 		if (!path)
 		{
-			ft_printf("minishell: cd: OLDPWD not set\n");
+			printf_fd(2, "minishell: cd: OLDPWD not set\n");
 			return (1);
 		}
 	}
@@ -104,7 +104,7 @@ int	ft_export(int ac, char **args, t_env_list *env)
 		if (is_valid_env_name(args[i]))
 			export_var(args[i], env);
 		else
-			ft_printf("minishell: export: %s: not a valid identifier\n", args[i]);
+			printf_fd(2, "minishell: export: %s: not a valid identifier\n", args[i]);
 		i++;
 	}
 	return (0);
@@ -144,7 +144,7 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 	int	exitn;
 
 	if (ac > 1)
-		ft_printf("minishell: exit: too many arguments\n");
+		printf_fd(2, "minishell: exit: too many arguments\n");
 	else if (ac == 1)
 	{
 		if (is_a_number(args[0]))
@@ -154,7 +154,7 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 			free_all_struct(sh, args - 1, NULL);
 			exit(exitn);
 		}
-		ft_printf("minishell: exit: %s: numeric argument required\n", args[0]);
+		printf_fd(2, "minishell: exit: %s: numeric argument required\n", args[0]);
 	}
 	else if (ac == 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:50:00 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/22 19:42:29 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/16 15:23:42 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	change_directories(char *path)
 {
 	if (chdir(path) != 0)
 	{
-		ft_printf("minishell: cd: %s: No such file or directory\n", path);
+		printf_fd(2, "minishell: cd: %s: No such file or directory\n", path);
 		return (1);
 	}
 	return (0);

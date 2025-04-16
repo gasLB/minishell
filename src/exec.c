@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 19:12:12 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/08 18:29:50 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/16 15:42:42 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,27 +21,27 @@
 
 // error messages are more complicated than I thought
 // If external prgrm, the name of the programm is first
-// if builtin, bash: or minishell: is first
+// if builtin, minishell: or minishell: is first
 // Do I need to reset STDIN and STDOUT after?
 
 void error_execution(int ern, char *cmd_name)
 {
 	if (ern == ENOENT)
-		ft_printf("bash: %s: No such file or directory\n", cmd_name);
+		printf_fd(2, "minishell: %s: No such file or directory\n", cmd_name);
 	else if (ern == EACCES)
-		ft_printf("bash: %s: Permission denied\n", cmd_name);
+		printf_fd(2, "minishell: %s: Permission denied\n", cmd_name);
 	else if (ern == ENOMEM)
-		ft_printf("bash: %s: Cannot allocate memory\n", cmd_name);
+		printf_fd(2, "minishell: %s: Cannot allocate memory\n", cmd_name);
 	else if (ern == ENOEXEC)
-		ft_printf("bash: %s: Exec format error\n", cmd_name);
+		printf_fd(2, "minishell: %s: Exec format error\n", cmd_name);
 	else if (ern == E2BIG)
-		ft_printf("bash: %s: Argument list too long\n", cmd_name);
+		printf_fd(2, "minishell: %s: Argument list too long\n", cmd_name);
 	else if (ern == ETXTBSY)
-		ft_printf("bash: %s: Text file busy\n", cmd_name);
+		printf_fd(2, "minishell: %s: Text file busy\n", cmd_name);
 	else if (ern == EISDIR)
-		ft_printf("bash: %s: Is a directory\n", cmd_name);
+		printf_fd(2, "minishell: %s: Is a directory\n", cmd_name);
 	else
-		ft_printf("bash: %s: %s\n", cmd_name, strerror(ern));
+		printf_fd(2, "minishell: %s: %s\n", cmd_name, strerror(ern));
 }
 
 int	exec_builtin(char **args, t_ast_node *node, t_minishell *sh)

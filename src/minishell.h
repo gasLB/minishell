@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/08 17:51:07 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/16 14:55:25 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,5 +163,9 @@ void	function_dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, 
 
 // here_doc.c
 int	here_doc(char *lim, char **args, t_minishell *sh);
+
+// error.c
+int	printf_fd(int fd, const char *s, ...);
+
 
 #endif

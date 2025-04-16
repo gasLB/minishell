@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:53:55 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/15 17:46:33 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/16 15:34:01 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,12 @@ int	open_in(char **args, char *file_name, int in_status, t_minishell *sh)
 	if (in_status == HD)
 		return (here_doc(file_name, args, sh));
 	if (access(file_name, F_OK) != 0)
-		ft_printf("%s: %s: No such file or directory\n", args[0], file_name);
+		printf_fd(2, "%s: %s: No such file or directory\n", args[0], file_name);
 	else
 	{
 		infile = open(file_name, O_RDONLY, 0644);
 		if (infile == -1)
-			ft_printf("%s: %s: Permission denied\n", args[0], file_name);
+			printf_fd(2, "%s: %s: Permission denied\n", args[0], file_name);
 	}
 	return (infile);
 }
@@ -42,7 +42,7 @@ int	open_out(char **args, char *file_name, int in_status)
 	outfile = -1;
 	if (access(file_name, F_OK) == 0 && access(file_name, W_OK) != 0)
 	{
-		ft_printf("%s: %s: Permission denied\n", args[0], file_name);
+		printf_fd(2, "%s: %s: Permission denied\n", args[0], file_name);
 		return (-1);
 	}
 	if (in_status == TRUNC)

@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 17:15:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/15 17:51:07 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/16 15:34:39 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	close_all_pipes(t_minishell *sh)
 	while (i < sh->pipe_count)
 	{
 		close(sh->pipe_fds[i]);
-		ft_putstr_fd("one pipe closed\n", 2);
 		i++;
 	}
 }
