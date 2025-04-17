@@ -72,7 +72,7 @@ t_token	*init_token(char *str)
 	token->value = strdup_without_quotes(str);	// to replace
 	if (!token->value)
 		return (NULL);
-	token->type = find_token_type(token->value, env_list)
+	token->type = -1;
 	token->expanded_value = NULL;
 	token->quote_mask = set_q_mask(token->value, str);
 	if (!token->quote_mask)

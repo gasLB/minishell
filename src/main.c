@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 18:38:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/16 16:18:35 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/17 21:50:53 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,13 +127,15 @@ int	main(int ac, char **av, char **env)
 //
 // TODO:
 // [ ] do parsing
-// 	[ ] implement find_token_type into init_token
-// 	[ ] don't put expansion inside init_token: FOO="hello | world" echo $FOO Should NOT create a pipe
-//	[ ] test tokenization
-//	[ ] check if syntax of line is correct
+// 	[X] implement find_token_type (outside of init_token cause need to know some context)
+//	[X] check if syntax of line is correct
 //	[ ] create ast tree with priorities
+//	[ ] handle special case of empty commands with redirections
+//	[ ] write a new main to test parsing
 //	[ ] test with convoluted examples
 // [ ] handle signals
 // [ ] test with quotes and double quotes
 // [ ] test with complex ast
 // [ ] free all memory
+// [ ] write proper Makefile
+// [ ] minishell message and progress bar when compiling

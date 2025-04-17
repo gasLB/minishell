@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:13:29 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/16 16:26:01 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/17 21:48:19 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,86 @@ t_token	**new_populate_tokens(t_token **tk_list, char *line, int start, int end)
 	return (tk_list);
 }
 
+/*
+ the goal of this function is to find the type of each token in the list
+ The idea is to go through the list. If the token's value doesn't correspond to a type:
+ if we are not in a command state, this is a command.
+ if we are in a comand state, this is an arg
+ What makes us go out of a command state?
+ -> enccountering a pipe
+ -> encountering a redirection of any kind
+ -> encountering a parenthesis? (parenthesis should not be placed after cmds)
+ -> encountering an operator
+ parenthesis shouldn't be inside any kind of quote status
+ But how do we know if for example the word is not a file for the redirection?
+ How to use redirections: 
+ command < file
+ < file command
+ -> in all cases, file is just after the redirection operator.
+ So we must keep track of 2 variables, the 'in-command' and the 'in redirect'
+ wait, maybe I can simplify this by just keeping track of the previous state
+
+ Why do I need environment to set token type>?
+ can we be both inside command and inside redirection?
+ -> no. only args are inside cmd
+ -> 
+ */
+
+int	set_token_basic_type(t_token *token)
+{
+	if (is_equal(token->value, "<") && is_equal(token->quote_mask, "N"))
+		return (IN);
+	if (is_equal(token->value, "<<") && is_equal(token->quote_mask, "NN"))
+		return (HD);
+	if (is_equal(token->value, ">") && is_equal(token->quote_mask, "N"))
+		return (TRUNC);
+	if (is_equal(token->value, ">>") && is_equal(token->quote_mask, "NN"))
+		return (APPEND);
+	if (is_equal(token->value, "|") && is_equal(token->quote_mask, "N"))
+		return (PIPE);
+	if (is_equal(token->value, "&&") && is_equal(token->quote_mask, "NN"))
+		return (AND);
+	if (is_equal(token->value, "||") && is_equal(token->quote_mask, "NN"))
+		return (OR);
+	/*
+	if (is_equal(token->value, "(") && is_equal(token->quote_mask, "N"))
+		return (OPEN_PAR);
+	if (is_equal(token->value, ")") && is_equal(token->quote_mask, "N"))
+		return (CLOSE_PAR);
+	*/
+	return (-1);
+}
+
+void	set_each_token_type(t_token ***tk_list_pt, int grp)
+{
+	int	i;
+	int	type;
+
+	i = 0;
+	while (*tk_list_pt[i])
+	{
+		type = token_basic_type((*tk_list_pt)[i]);
+		if (type > -1)
+		{
+			if (is_redirect(type))
+				grp = REDIRECT;
+			if (grp == COMMAND)
+				grp = -1;
+		}
+		else
+		{
+			if (grp == REDIRECT)
+				(type = FILE, grp = -1);
+			else if (grp == COMMAND)
+				type = ARG;
+			else
+				(type = CMD, grp = COMMAND);
+		}
+		((*tk_list_pt)[i]->type = type, i++);
+	}
+}
+
+
 int	main(int ac, char **av, char **env)
 {
 	t_env_list	*env_list;
@@ -122,6 +202,11 @@ int	main(int ac, char **av, char **env)
 /*
 
 ---------------
+
+The question is: must I check validity first or find each token type first?
+-> I think I should first find each token's type. Because I need type information for checking syntax
+This is more complicated than I thought. 
+The quote status is important 
 
 1) tokenization: raw + value + quote_mask + type
 

@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/16 14:55:25 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/17 21:54:06 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,16 +73,24 @@ typedef struct s_minishell
 enum token_types
 {
 	CMD,
+	ARG,
 	IN,
 	HD,
 	TRUNC,
 	APPEND,
+	FILE,
 	PIPE,
-	OPEN_PAR,
-	CLOS_PAR,
 	AND,
-	OR
+	OR,
+	//OPEN_PAR,
+	//CLOS_PAR
 };
+
+enum group_types
+{
+	COMMAND,
+	REDIRECT,
+}
 
 // env.c
 t_env_node	*set_node(char *key, char *value);

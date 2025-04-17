@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 12:56:19 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/08 18:04:54 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/17 22:07:50 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 #include <stdlib.h>
-
-// => true && cat file | grep "bonjour"
 
 t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect)
 {
@@ -32,6 +30,40 @@ t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect)
 	node->visited = 0;
 	return (node);
 }
+
+
+
+/*
+
+So I have the parsing function:
+I have a full token list with values, their type, and expanded in a valid line
+
+PRECEDENCE CLIMBING
+
+The Core Idea
+
+Redirections (>, <, >>, <<) - highest precedence, binds tightly to commands
+Pipes (|) - medium precedence
+Logical operators (&&, ||) - lowest precedence
+
+
+So I need to implement, given a certain input, the tree used to categorize tokens
+and execute it.
+
+AST 1
+
+we have AST NODES, which point to left and right.
+=> we are traversing the AST recursively
+
+ex: int execute(t_node node)
+{
+ if (node.type == PIPE)
+   return (execute_pipe(node.left, node.right));
+ else
+   return (execute_simple_command(node.value))
+}
+
+-> But if node.right also contains a pipe, we must call execute again?
 
 void	print_ast_node(t_ast_node *node)
 {
@@ -54,28 +86,6 @@ void	print_ast_node(t_ast_node *node)
 	}
 	ft_printf("----------------\n");
 }
-
-/*
-So I need to implement, given a certain input, the tree used to categorize tokens
-and execute it.
-My job is not to code the parser. I just need to understand the rules and construct
-true trees.
-
-AST 1
-
-we have AST NODES, which point to left and right.
-=> we are traversing the AST recursively
-
-ex: int execute(t_node node)
-{
- if (node.type == PIPE)
-   return (execute_pipe(node.left, node.right));
- else
-   return (execute_simple_command(node.value))
-}
-
--> But if node.right also contains a pipe, we must call execute again?
-
 
 AST 2
 
