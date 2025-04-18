@@ -32,7 +32,7 @@ int	check_first_last_token(t_token **tk_list)
 	return (-1);
 }
 
-int	index_err_check(t_token **tk_list, char has_c, char exp_c, char exp_f)
+int	index_err_check(t_token **tk_list, char has_c, char exp_f)
 {
 	int	i;
 	int	type;
@@ -43,20 +43,20 @@ int	index_err_check(t_token **tk_list, char has_c, char exp_c, char exp_f)
 		type = tk_list[i]->type;
 		if (exp_f && !is_file(type))
 			return (i);
-		else if (exp_f)
-			exp_f = 0;
+		else if (exp_f && is_file(type))
+			(exp_f = 0, has_c = 1);
 		else if (is_redirect(type))
 			exp_f = 1;
 		else if (is_pipe(type) || is_operator(type))
 		{
 			if (!has_c)
 				return (i);
-			(exp_c = 1, has_c = 0);
+			has_c = 0;
 		}
 		else if (is_command(type))
-			(has_c = 1, exp_c = 0);
+			has_c = 1;
 	}
-	if (exp_f || exp_c)
+	if (exp_f || !has_c)
 		return (i);
 	return (-1);
 }
@@ -71,16 +71,16 @@ int	syntax_error(t_token *token, t_minishell *sh)
 		sh->last_exit = 2;
 		return (2);
 	}
-	v = token->value;
+	v = token->value;		// value or expanded value? Moi je pose des questions hein c'est tout
 	printf_fd(2, "minishell: syntax error near unexpected token %s", v);
 	sh->last_exit = 2;
 	return (2);
 }
 
+// returns 0 in case of success
 int	check_syntax(t_token **tk_list, t_minishell *sh)
 {
 	int	has_c;
-	int	exp_c;
 	int	exp_f;
 	int	index;
 
@@ -89,10 +89,9 @@ int	check_syntax(t_token **tk_list, t_minishell *sh)
 	index = check_first_last_token(tk_list);
 	if (index != -1)
 		return (syntax_error(tk_list[index], sh));
-	exp_c = 0;
 	exp_f = is_redirect(tk_list[0]->type);
 	has_c = is_command(tk_list[0]->type) || exp_f;
-	index = index_err_check(tk_list, has_c, exp_c, exp_f);
+	index = index_err_check(tk_list, has_c, exp_f);
 	if (index != -1)
 		return (syntax_error(tk_list[index], sh));
 	return (0);

@@ -15,7 +15,7 @@
 #include "minishell.h"
 #include <stdlib.h>
 
-// OLD FUNCTION !!
+// OUTDATED FUNCTION !! kept for tests
 t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect)
 {
 	t_ast_node	*node;
@@ -72,6 +72,8 @@ int	get_precedence(t_token *token)
 	return (3);
 }
 
+// we can have a null-command with only redirections in parse_command
+// args is initalized with init_list but args[0] = NULL
 t_ast_node	*parse_command(t_token ***tk_list_pt)
 {
 	char	**args;

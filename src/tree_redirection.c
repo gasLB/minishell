@@ -79,7 +79,7 @@ t_redirect	*set_one_redir(t_redirect *red, t_token ***tkp)
 	if (type == IN || type == HD)
 	{
 		if (!add_red_node(&(red->in), type, file))
-			(free(file), return (red));
+			(free(file), return (red));	// why free file ? -> if the call fails
 	}
 	else
 	{
