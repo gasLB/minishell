@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 12:56:19 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/17 22:07:50 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/18 21:44:32 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "minishell.h"
 #include <stdlib.h>
 
+// OLD FUNCTION !!
 t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect)
 {
 	t_ast_node	*node;
@@ -31,7 +32,131 @@ t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect)
 	return (node);
 }
 
+t_ast_node	*init_ast_node(void)
+{
+	t_ast_node	*node;
 
+	node = malloc(sizeof(t_ast_node));
+	if (!node)
+		return (NULL);
+	node->type = -1;
+	node->args = NULL;
+	node->redirect = NULL;
+	node->left = NULL;
+	node->right = NULL;
+	node->visited = 0;
+	return (node);
+}
+
+t_ast_node	*set_ast_node(int type, char **args, t_redirect *red)
+{
+	t_ast_node	*node;
+
+	node = init_ast_node();
+	if (!node)
+		return (NULL);
+	node->args = args;
+	node->type = type;
+	node->redirect = red;
+	return (node);
+}
+
+int	get_precedence(t_token *token)
+{
+	if (!token)
+		return (-1);
+	if (is_operator(token->type))
+		return (1);
+	if (is_pipe(token->type))
+		return (2);
+	return (3);
+}
+
+t_ast_node	*parse_command(t_token ***tk_list_pt)
+{
+	char	**args;
+	char	*value;
+	t_redirect	*red;
+	int	type;
+
+	red = NULL;
+	args = init_list();	
+	if (!args)
+		return (NULL);
+	while (*tk_list_pt && get_precedence(**tk_list_pt) == 3)
+	{
+		value = (**tk_list_pt)->expanded_value;
+		type = (**tk_list_pt)->type;
+		if (is_command(type))
+			args[0] = ft_strdup(value);
+		else if (type == ARG)
+			args = append_to_lst(args, ft_strdup(value));
+		else if (is_redirect(type))
+		{
+			red = set_one_redir(red, tk_list_pt);
+			continue;
+		}
+		(*tk_list_pt)++;
+	}
+	return (set_ast_node(CMD, args, red));
+}
+
+int	op_greater_precedence(t_token *token, int min_precedence)
+{
+	if (!token)
+		return (0);
+	if (is_operator(token->type) || is_pipe(token->type))
+	{
+		if (get_precedence(token) >= min_precedence) 
+			return (1);
+	}
+	return (0);
+}
+
+t_ast_node	*combine_nodes(t_ast_node *left, t_ast_node *right, t_token *op)
+{
+	t_ast_node	*new_node;
+
+	new_node = init_ast_node();
+	if (!new_node)
+		return (NULL);
+	new_node->type = op->type;
+	new_node->left = left;
+	new_node->right = right;
+	return (new_node);
+}
+
+t_ast_node	*parse_expr(t_ast_node *left, int min_prec, t_token ***tkp)
+{
+	t_token		*operator;
+	t_token		*lookahead;
+	t_ast_node	*right;
+
+	while (op_greater_precedence(**tkp, min_prec))
+	{
+		operator = (**tkp)++;
+		right = parse_command(tkp);
+		while (op_greater_precedence(**tkp, get_precedence(operator)))
+		{
+			lookahead = (**tkp)++;
+			right = parse_expr(right, get_precedence(lookahead), tkp);
+		}
+		left = combine_nodes(left, right, operator);
+	}
+	return (left);
+}
+
+t_ast_node	*create_ast(t_token **tk_list)
+{
+	t_ast_node	*head;
+
+	if (!tk_list || !tk_list[0])
+		return (NULL);
+	head = parse_command(&tk_list);
+	if (!head)
+		return (NULL);
+	return (parse_expr(head, 0, &tk_list));
+}
 
 /*
 
@@ -40,16 +165,67 @@ I have a full token list with values, their type, and expanded in a valid line
 
 PRECEDENCE CLIMBING
 
-The Core Idea
+# Intro
+
+How many precedence levels do I have?
+-> 3
 
 Redirections (>, <, >>, <<) - highest precedence, binds tightly to commands
 Pipes (|) - medium precedence
 Logical operators (&&, ||) - lowest precedence
 
+An infix expression is a sequence of primary expressions separated by operators.
+primary expr is one at the highest precedence level
 
-So I need to implement, given a certain input, the tree used to categorize tokens
-and execute it.
+--- Pseudo-code
 
+parse_expression ()
+    return parse_expression_1 (parse_primary (), 0)
+
+parse_expression_1 (lhs, min_precedence)
+    while the next token is a binary operator whose precedence is >= min_precedence
+        op := next token
+	consume_token() // advance to the next token
+        rhs := parse_primary ()
+        while the next token is a binary operator whose precedence is greater
+                 than op's
+            lookahead := next token
+	    consume_token()
+            rhs := parse_expression_1 (rhs, lookahead's precedence)
+        lhs := the result of applying op with operands lhs and rhs
+    return lhs
+
+
+--- Explanation
+
+1.The first call parses the leftmost primary expression (a command)
+2. Passes it to parse_expression_1 with a min precedence of 0
+
+parse_expression_1:
+3. continue until we see operator with precedence >= minimum 
+4. When we see operator with precedence >= minimum, parse primary for its right side
+
+
+--- Example: 2 + 3 * 4 + 5
+
+- parse primary 2 as lhs
+- calls parse_expression_1(2, 0)
+- op = +
+- rhs = 3
+- lookahead = *
+- rhs = parse_expression_1(3, 2)
+	- op = *
+	- rhs = 4
+	- return rhs = 3 * 4 = 12
+- rhs = 12
+- lhs = 2 + 12
+- op = +
+- rhs = 5
+- lhs = 14 + 5 = 19
+- return 19
+
+
+---
 AST 1
 
 we have AST NODES, which point to left and right.

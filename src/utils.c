@@ -25,6 +25,18 @@ int	is_equal(char *s1, char *s2)
 }
 
 // I keep this for now but it is useless
+
+char	**init_list(void)
+{
+	char	**res;
+
+	res = malloc(sizeof(char*));
+	if (!res)
+		return (NULL);
+	res[0] = NULL;
+	return (res);
+}
+
 char	**append_to_lst(char **l, char *new_s)
 {
 	char	**new_l;

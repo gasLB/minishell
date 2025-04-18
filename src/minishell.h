@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/17 21:54:06 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/18 21:28:53 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,17 @@ typedef struct s_env_list
 	int	size;
 }	t_env_list;
 
-typedef struct	s_redirect
+typedef struct s_red_node
 {
-	int	in_type;	// HD or IN
-	int	out_type;	// TRUNC or APPEND
-	char	*in_str;	// infile name or LIM (heredoc)
-	char	*out_str;	// outfile name
+	int	type;	// HD or IN or TRUNC or APPEND
+	char	*str;	// file name or LIM (heredoc)
+	struct s_red_node	*next;
+}	t_red_node;
+
+typedef struct s_redirect
+{
+	struct s_red_node	*in;
+	struct s_red_node	*out;
 }	t_redirect;
 
 typedef	struct	s_ast_node
@@ -90,7 +95,7 @@ enum group_types
 {
 	COMMAND,
 	REDIRECT,
-}
+};
 
 // env.c
 t_env_node	*set_node(char *key, char *value);
