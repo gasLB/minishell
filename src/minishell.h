@@ -43,18 +43,12 @@ typedef struct s_env_list
 	int	size;
 }	t_env_list;
 
-typedef struct s_red_node
+typedef struct s_redir_node
 {
 	int	type;	// HD or IN or TRUNC or APPEND
 	char	*str;	// file name or LIM (heredoc)
-	struct s_red_node	*next;
-}	t_red_node;
-
-typedef struct s_redirect
-{
-	struct s_red_node	*in;
-	struct s_red_node	*out;
-}	t_redirect;
+	struct	s_redir_node	*next;
+}	t_redir_node;
 
 typedef	struct	s_ast_node
 {
@@ -63,7 +57,7 @@ typedef	struct	s_ast_node
 	int	visited;
 	int	type;
 	char	**args;
-	struct s_redirect	*redirect;
+	struct s_redir_node	*redirect;
 }	t_ast_node;
 
 typedef struct s_minishell

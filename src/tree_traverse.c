@@ -94,7 +94,7 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 	token_list = expand_tokens(token_list, sh, sh->env_list);
 	args = expanded_list(len, token_list);
 	free_token_list(token_list);
-	if (set_redirections(args, node, sh) == 1)
+	if (set_redirections(args, node->redirect, sh) == 1)
 		return (1);
 	if (is_builtin(args[0]))
 		return (exec_builtin(args, node, sh));

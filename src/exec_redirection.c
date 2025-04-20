@@ -35,7 +35,7 @@ int	open_in(char **args, char *file_name, int in_status, t_minishell *sh)
 	return (infile);
 }
 
-int	open_out(char **args, char *file_name, int in_status)
+int	open_out(char **args, char *file_name, int out_status)
 {
 	int	outfile;
 
@@ -45,38 +45,96 @@ int	open_out(char **args, char *file_name, int in_status)
 		printf_fd(2, "%s: %s: Permission denied\n", args[0], file_name);
 		return (-1);
 	}
-	if (in_status == TRUNC)
+	if (out_status == TRUNC)
 		outfile = open(file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	else if (in_status == APPEND)
+	else if (out_status == APPEND)
 		outfile = open(file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
 	return (outfile);
 }
 
-int	set_redirections(char **args, t_ast_node *node, t_minishell *sh)
+int	set_redirections(char **args, t_redir_node *redir, t_minishell *sh)
 {
-	int	in_status;
-	int	out_status;
-	int	infile;
-	int	outfile;
+	int	file;
+	int	type;
 
-	if (node->redirect == NULL)
+	if (!redir || redir->type == -1)
 		return (0);
-	in_status = node->redirect->in_type;
-	out_status = node->redirect->out_type;
-	if (in_status != -1)
+	type = redir->type;
+	if (type == IN || type == HD)
 	{
-		infile = open_in(args, node->redirect->in_str, in_status, sh);
-		if (infile == -1 || dup2(infile, STDIN_FILENO) == -1)
+		file = open_in(args, redir->str, type, sh);
+		if (file == -1 || dup2(file, STDIN_FILENO) == -1)
 			return (1);
-		close(infile);
 	}
-	if (out_status != -1)
+	else if (type == TRUNC || type == APPEND)
 	{
-		outfile = open_out(args, node->redirect->out_str, out_status);
-		if (outfile == -1 || dup2(outfile, STDOUT_FILENO) == -1)
+		file = open_out(args, redir->str, type);
+		if (file == -1 || dup2(file, STDOUT_FILENO) == -1)
 			return (1);
-		close(outfile);
 	}
+	else
+		return (1);
+	close(file);
 	return (0);
+
 }
-// ! openend outfile and infile need to be closed right?
+
+/*
+
+CHAIN OF REDIRECT
+
+What are the rules?
+
+-> We traverse the redirection chain
+	-> for each node, check validity. If valid:
+		-> for OUT: if doesn't exist we create the node.
+		-> we open the corresponding file
+		-> we duplicate the fd on corresponding std
+		-> we close the file fd
+	-> if we find an invalid nodem stop the whole command
+
+EXAMPLES
+
+touch file
+chmod 000 file
+ls > file2 < file > file4
+-> file2 is created
+-> file : permission denied
+-> stops
+
+Actually we can have mulitple redirections in line
+
+OUT:
+
+! if there is an error in IN, OUT is not taken into account
+wait that might have to do with the order
+-> yes it is excatly that
+	For what I understand, each redirect node is evaluated in line. If one fails, it stops the execution of all followig redirects
+only the last is taken to account but the previous ones create the files
+Actally no, the middle file are emptied for TRUNC
+
+IN:
+Only the last redirection is taken into account
+
+same shit
+
+EXAMPLES
+
+cat > b > c < test
+
+for OUT, 2nd file is not created if error before in the pipeline
+
+for IN
+typedef struct s_red_node
+{
+	int	type;	// HD or IN or TRUNC or APPEND
+	char	*str;	// file name or LIM (heredoc)
+	struct s_red_node	*next;
+}	t_red_node;
+
+typedef struct s_redirect
+{
+	struct s_red_node	*in;
+	struct s_red_node	*out;
+}	t_redirect;
+*/

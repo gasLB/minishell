@@ -78,7 +78,7 @@ t_ast_node	*parse_command(t_token ***tk_list_pt)
 {
 	char	**args;
 	char	*value;
-	t_redirect	*red;
+	t_redir_node	*red;
 	int	type;
 
 	red = NULL;

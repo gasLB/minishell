@@ -127,9 +127,10 @@ int	main(int ac, char **av, char **env)
 //
 // TODO:
 // [ ] do parsing
-//	[ ] handle special case of null commands with redirections
-//		[ ] first see this in the parser
-//	[ ] adapt execution (with new redirection for chain of redirs) (just return 0)
+//	[X] handle special case of null commands with redirections
+//		[X] first see this in the parser
+//	[X] adapt execution (with new redirection for chain of redirs) (just return 0)
+//	[ ] free everything
 //	[ ] test parsing with a new main
 //	[ ] test with convoluted examples
 //	[ ] rewrite free for redirection
