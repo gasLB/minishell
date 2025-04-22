@@ -70,6 +70,8 @@ typedef struct s_minishell
 	int		pipe_count;
 	int		*pipe_fds;
 	int		last_exit;
+	int		original_stdin;
+	int		original_stdout;
 }	t_minishell;
 
 enum token_types

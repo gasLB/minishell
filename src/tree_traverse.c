@@ -81,19 +81,21 @@ void	pipe_node(t_ast_node *node, t_minishell *sh)
 	(close(origin_stdout), close(origin_stdin));
 }
 
-// we have a problem with args. It doesn't seem to be working
+int	null_cmd_node(t_ast_node *node, t_minishell *sh)
+{
+	if (!node || !node->redirect)
+		return (1);
+	return (set_redirections(node->args, node->redirect, sh));
+}
+
 int	cmd_node(t_ast_node *node, t_minishell *sh)
 {
-	t_token	**token_list;
 	char	**args;
 	char	*cmd_name;
-	int	len;
 
-	len = ft_lstlen(node->args);
-	token_list = populate_tokens(len, node->args);
-	token_list = expand_tokens(token_list, sh, sh->env_list);
-	args = expanded_list(len, token_list);
-	free_token_list(token_list);
+	args = node->args;
+	if (!args[0])
+		return (null_cmd_node(node, sh));
 	if (set_redirections(args, node->redirect, sh) == 1)
 		return (1);
 	if (is_builtin(args[0]))

@@ -57,6 +57,7 @@ int	get_precedence(t_token *token)
 
 // we can have a null-command with only redirections in parse_command
 // args is initalized with init_list but args[0] = NULL
+// I forgot the pipe scenario
 t_ast_node	*parse_command(t_token ***tk_list_pt)
 {
 	char	**args;
@@ -111,6 +112,7 @@ t_ast_node	*combine_nodes(t_ast_node *left, t_ast_node *right, t_token *op)
 	return (new_node);
 }
 
+// I forgot to parse the pipe as well
 t_ast_node	*parse_expr(t_ast_node *left, int min_prec, t_token ***tkp)
 {
 	t_token		*operator;

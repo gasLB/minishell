@@ -20,35 +20,44 @@
 int	open_in(char **args, char *file_name, int in_status, t_minishell *sh)
 {
 	int	infile;
+	char	*cmd_name;
 
-	infile = -1;
 	if (in_status == HD)
 		return (here_doc(file_name, args, sh));
+	if (args[0])
+		cmd_name = ft_strdup(args[0]);
+	else
+		cmd_name = ft_strdup("minishell");
+	infile = -1;
 	if (access(file_name, F_OK) != 0)
-		printf_fd(2, "%s: %s: No such file or directory\n", args[0], file_name);
+		printf_fd(2, "%s: %s: No such file or directory\n", cmd_name, file_name);
 	else
 	{
 		infile = open(file_name, O_RDONLY, 0644);
 		if (infile == -1)
-			printf_fd(2, "%s: %s: Permission denied\n", args[0], file_name);
+			printf_fd(2, "%s: %s: Permission denied\n", cmd_name, file_name);
 	}
+	free(cmd_name);
 	return (infile);
 }
 
 int	open_out(char **args, char *file_name, int out_status)
 {
 	int	outfile;
+	char	*cmd_name;
 
+	if (args[0])
+		cmd_name = ft_strdup(args[0]);
+	else
+		cmd_name = ft_strdup("minishell");
 	outfile = -1;
 	if (access(file_name, F_OK) == 0 && access(file_name, W_OK) != 0)
-	{
-		printf_fd(2, "%s: %s: Permission denied\n", args[0], file_name);
-		return (-1);
-	}
-	if (out_status == TRUNC)
+		printf_fd(2, "%s: %s: Permission denied\n", cmd_name, file_name);
+	else if (out_status == TRUNC)
 		outfile = open(file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 	else if (out_status == APPEND)
 		outfile = open(file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
+	free(cmd_name);
 	return (outfile);
 }
 
@@ -56,27 +65,30 @@ int	set_redirections(char **args, t_redir_node *redir, t_minishell *sh)
 {
 	int	file;
 	int	type;
+	t_redir_node	*curr;
 
-	if (!redir || redir->type == -1)
+	if (!redir || !is_redirect(redir->type))
 		return (0);
-	type = redir->type;
-	if (type == IN || type == HD)
+	curr = redir;
+	while (curr)
 	{
-		file = open_in(args, redir->str, type, sh);
-		if (file == -1 || dup2(file, STDIN_FILENO) == -1)
-			return (1);
+		type = curr->type;
+		if (type == IN || type == HD)
+		{
+			file = open_in(args, curr->str, type, sh);
+			if (file == -1 || dup2(file, STDIN_FILENO) == -1)
+				return (1);
+		}
+		else if (type == TRUNC || type == APPEND)
+		{
+			file = open_out(args, curr->str, type);
+			if (file == -1 || dup2(file, STDOUT_FILENO) == -1)
+				return (1);
+		}
+		curr = curr->next;
 	}
-	else if (type == TRUNC || type == APPEND)
-	{
-		file = open_out(args, redir->str, type);
-		if (file == -1 || dup2(file, STDOUT_FILENO) == -1)
-			return (1);
-	}
-	else
-		return (1);
 	close(file);
 	return (0);
-
 }
 
 /*

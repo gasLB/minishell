@@ -14,6 +14,7 @@
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 /*
 What is to be freed ?
@@ -48,7 +49,7 @@ void	free_token_list(t_token **tk_list)
 	i = 0;
 	while (tk_list[i])
 	{
-		//ft_printf("tk_list[%d]: value: %s, expanded: %s, quote: %s\n", i, tk_list[i]->value, tk_list[i]->expanded_value, tk_list[i]->quote_mask);
+		ft_printf("tk_list[%d]: value: %s, expanded: %s, quote: %s\n", i, tk_list[i]->value, tk_list[i]->expanded_value, tk_list[i]->quote_mask);
 		free(tk_list[i]->value);
 		free(tk_list[i]->quote_mask);
 		free(tk_list[i]->expanded_value);
@@ -105,6 +106,8 @@ void	free_all_struct(t_minishell *sh, char **arg_list, char **envp)
 	free_ast(sh->ast);
 	if (sh->pipe_fds)
 		free(sh->pipe_fds);
+	close(sh->original_stdin);
+	close(sh->original_stdout);
 	free(sh);	
 	free_str_list(arg_list);
 	free_str_list(envp);

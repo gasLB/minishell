@@ -57,7 +57,7 @@ t_redir_node	*set_one_redir(t_redir_node *redir, t_token ***tkp)
 		return (NULL);
 	type = (**tkp)->type;
 	if (!redir)
-		redir = init_redir_node(type, (**tkp)->expanded_value);
+		redir = NULL;	// Instead of init_redir_ndoe
 	(*tkp)++;
 	if (!(*tkp) || !(**tkp) || !is_file((**tkp)->type))
 		return (redir);

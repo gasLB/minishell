@@ -73,17 +73,17 @@ t_token	**new_populate_tokens(t_token **tk_list, char *line, int start, int end)
 		if (!line[start])
 			break;
 		end = start;
-		while (line[++end])
+		while (line[end])
 		{
 			quote = set_quote_character(quote, line[end]);
 			if (quote == 'N' && line[end] == ' ')
 				break;
+			end++;
 		}
 		sub = correct_substr(line, start, end);
 		append_token(&tk_list, init_token(sub));
 		start = end;
 	}
-	append_token(&tk_list, NULL);
 	return (tk_list);
 }
 
@@ -130,7 +130,7 @@ void	set_each_token_type(t_token ***tk_list_pt, int grp)
 	int	type;
 
 	i = 0;
-	while (*tk_list_pt[i])
+	while ((*tk_list_pt)[i])
 	{
 		type = token_basic_type((*tk_list_pt)[i]);
 		if (type > -1)

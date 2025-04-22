@@ -39,6 +39,8 @@ t_minishell	*init_shell(t_env_list *env_list)
 	sh->last_exit = 0;
 	sh->pipe_count = 0;
 	sh->pipe_fds = NULL;
+	sh->original_stdin = dup(STDIN_FILENO);
+	sh->original_stdout = dup(STDOUT_FILENO);
 	return (sh);
 }
 
@@ -59,6 +61,11 @@ void	print_tokens(t_token **tk_list)
 	}
 }
 
+void	set_standard_fds(t_minishell *sh)
+{
+	dup2(sh->original_stdin, STDIN_FILENO);
+	dup2(sh->original_stdout, STDOUT_FILENO);
+}
 int	main(int ac, char **av, char **env)
 {
 	t_env_list	*env_list;
@@ -74,6 +81,7 @@ int	main(int ac, char **av, char **env)
 	sh = init_shell(env_list);
 	while (1)
 	{
+		set_standard_fds(sh);
 		rl = readline("\e[35m\e[1mMinishell> \e[0m");
 		if (!rl)
 			continue;
@@ -99,40 +107,14 @@ int	main(int ac, char **av, char **env)
 // then create the AST with create_ast
 // then free tk_list
 // then traverse the AST and execute with dfs_ast
-/*
-int	main(int ac, char **av, char **env)
-{
-	t_env_list	*env_list;
-	t_token		**tk_list;
-	char *rl;
-
-	(void)ac, (void)av; 
-	env_list = populate_env(env);
-	minishell_start();
-	while (1) {
-		rl = readline("\e[35m\e[1mMinishell> \e[0m");
-		if (rl)
-			add_history(rl);
-			token_list = init_token_list(rl);
-		//if (is_syntax_correct(rl))
-				parse(rl);
-		break;
-	}
-	printf("%s\n", rl);
-	free(rl);	
-	return (0);
-}
-*/
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
-// [ ] do parsing
-//	[X] handle special case of null commands with redirections
-//		[X] first see this in the parser
-//	[X] adapt execution (with new redirection for chain of redirs) (just return 0)
-//	[ ] test parsing with a new main
+// [ ] tests
+//	[ ] handle pipes
+//		[ ] tokenization problem with pipes (forgot to include in parsing)
+//	[ ] handle operators
 //	[ ] free everything
-//	[ ] test with convoluted examples
 //	[ ] rewrite free for redirection
 // [ ] implement signals
 // [ ] test with quotes and double quotes

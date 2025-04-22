@@ -67,12 +67,12 @@ int	syntax_error(t_token *token, t_minishell *sh)
 
 	if (!token)
 	{
-		printf_fd(2, "minishell: syntax error near unexpected token `newline'");
+		printf_fd(2, "minishell: syntax error near unexpected token `newline'\n");
 		sh->last_exit = 2;
 		return (2);
 	}
 	v = token->value;		// value or expanded value? Moi je pose des questions hein c'est tout
-	printf_fd(2, "minishell: syntax error near unexpected token %s", v);
+	printf_fd(2, "minishell: syntax error near unexpected token %s\n", v);
 	sh->last_exit = 2;
 	return (2);
 }
