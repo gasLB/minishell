@@ -72,16 +72,12 @@ void	free_str_list(char **lst)
 	}
 	free(lst);
 }
-
-void	free_redirect(t_redirect *red)
+/*
+void	free_redirect(t_redir_node *red)
 {
-	if (red->in_str)
-		free(red->in_str);
-	if (red->out_str)
-		free(red->out_str);
-	free(red);
-}
 
+}
+*/
 void	free_ast(t_ast_node *node)
 {
 	if (!node)
@@ -95,8 +91,10 @@ void	free_ast(t_ast_node *node)
 		free_ast(node->right);
 	if (node->args)
 		(free_str_list(node->args), node->args = NULL);
+	/*
 	if (node->redirect)
 		free_redirect(node->redirect);
+	*/
 	if (node)
 		free(node);
 }

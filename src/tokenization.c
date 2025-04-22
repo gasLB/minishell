@@ -51,7 +51,7 @@ char	*set_q_mask(char *val, char *str)
 	c = 'N';
 	while (str[i])
 	{
-		new = set_quote_character(c, str[i]));
+		new = set_quote_character(c, str[i]);
 		if (new != c)
 			c = new;
 		else

@@ -13,69 +13,22 @@
 #include "../libftprintf/libft/libft.h"
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
+#include <unistd.h>
 #include <stdlib.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
-t_redirect	*create_redirect(int n_type, char *str)
+void	minishell_start(void)
 {
-	t_redirect	*res;
-
-	res = malloc(sizeof(t_redirect));
-	if (!res)
-		return (NULL);
-	if (n_type == IN || n_type == HD)
-	{
-		res->in_type = n_type;
-		res->out_type = -1;
-		res->in_str = ft_strdup(str);
-		res->out_str = NULL;
-	}
-	else
-	{
-		res->out_type = n_type;
-		res->in_type = -1;
-		res->out_str = ft_strdup(str);
-		res->in_str = NULL;
-	}
-	return (res);
+	ft_printf("___  ____       _ _____ _          _ _\n");
+	ft_printf("|  \\/  (_)     (_)  ___| |        | | |\n");
+	ft_printf("| .  . |_ _ __  _\\ `--.| |__   ___| | |\n");
+	ft_printf("| |\\/| | | '_ \\| |`--. \\ '_ \\ / _ \\ | |\n");
+	ft_printf("| |  | | | | | | /\\__/ / | | |  __/ | |\n");
+	ft_printf("\\_|  |_/_|_| |_|_\\____/|_| |_|\\___|_|_|\n\n");
 }
 
-t_ast_node	*create_example_ast(void)
-{
-	t_ast_node	*node;
-	t_ast_node	*head;
-	char **ar1; 
-	char **ar2; 
-	char **ar3;
-
-	ar1 = malloc(3 * sizeof(char *));
-	ar2 = malloc(2 * sizeof(char *)); 
-	ar3 = malloc(3 * sizeof(char *));
-	if (!ar1 || !ar2 || !ar3)
-		return NULL; 
-
-	ar1[0] = ft_strdup("cd");
-	ar1[1] = ft_strdup("abracadabra");
-	ar1[2] = NULL;
-
-	ar2[0] = ft_strdup("ls");
-	ar2[1] = NULL;
-
-	ar3[0] = ft_strdup("cat");
-	ar3[1] = NULL;
-
-	node = create_ast_node(AND, NULL, NULL);
-	head = node;
-	//node->left = create_ast_node(CMD, ar1, create_redirect(HD, "LIM"));
-	node->left = create_ast_node(CMD, ar1, NULL);
-	node->right = create_ast_node(PIPE, NULL, NULL);
-	node = node->right;
-	node->left = create_ast_node(CMD, ar2, NULL);
-	//node->right = create_ast_node(CMD, ar3, create_redirect(TRUNC, "file2"));
-	node->right = create_ast_node(CMD, ar3, NULL);
-	return (head);
-}
-
-t_minishell	*init_shell(t_env_list *env_list, t_ast_node *ast)
+t_minishell	*init_shell(t_env_list *env_list)
 {
 	t_minishell	*sh;
 
@@ -83,7 +36,6 @@ t_minishell	*init_shell(t_env_list *env_list, t_ast_node *ast)
 	if (!sh)
 		return (NULL);
 	sh->env_list = env_list;
-	sh->ast = ast;
 	sh->last_exit = 0;
 	sh->pipe_count = 0;
 	sh->pipe_fds = NULL;
@@ -111,18 +63,66 @@ int	main(int ac, char **av, char **env)
 {
 	t_env_list	*env_list;
 	t_minishell	*sh;
+	t_token		**token_list;
 	t_ast_node	*ast;
+	char	*rl;
 
 	(void)ac;
 	(void)av;
-	ast = create_example_ast();
+	minishell_start();	
 	env_list = populate_env(env);
-	sh = init_shell(env_list, ast);
-	dfs_ast(ast, sh);
+	sh = init_shell(env_list);
+	while (1)
+	{
+		rl = readline("\e[35m\e[1mMinishell> \e[0m");
+		if (!rl)
+			continue;
+		add_history(rl);
+		token_list = init_token_list(rl);	// needs to be NULL-terminated
+		set_each_token_type(&token_list, -1);
+		if (check_syntax(token_list, sh) != 0)
+			continue;
+		token_list = expand_tokens(token_list, sh, env_list);
+		ast = create_ast(token_list);
+		free_token_list(token_list);
+		dfs_ast(ast, sh);
+		free(rl);
+	}
 	free_all_struct(sh, NULL, NULL);
 	return (0);
 }
 
+// first I get tk_list from init_token_list
+// then need to set each token type with set_each_token_type()
+// then need to check syntax with check_syntax() and continue; if error in syntax
+// then expand values
+// then create the AST with create_ast
+// then free tk_list
+// then traverse the AST and execute with dfs_ast
+/*
+int	main(int ac, char **av, char **env)
+{
+	t_env_list	*env_list;
+	t_token		**tk_list;
+	char *rl;
+
+	(void)ac, (void)av; 
+	env_list = populate_env(env);
+	minishell_start();
+	while (1) {
+		rl = readline("\e[35m\e[1mMinishell> \e[0m");
+		if (rl)
+			add_history(rl);
+			token_list = init_token_list(rl);
+		//if (is_syntax_correct(rl))
+				parse(rl);
+		break;
+	}
+	printf("%s\n", rl);
+	free(rl);	
+	return (0);
+}
+*/
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
@@ -130,13 +130,15 @@ int	main(int ac, char **av, char **env)
 //	[X] handle special case of null commands with redirections
 //		[X] first see this in the parser
 //	[X] adapt execution (with new redirection for chain of redirs) (just return 0)
-//	[ ] free everything
 //	[ ] test parsing with a new main
+//	[ ] free everything
 //	[ ] test with convoluted examples
 //	[ ] rewrite free for redirection
 // [ ] implement signals
 // [ ] test with quotes and double quotes
 // [ ] test with complex ast
 // [ ] free all memory
+// [ ] clean up unneccessary functions
 // [ ] write proper Makefile
 // [ ] minishell message and progress bar when compiling
+//

@@ -22,6 +22,9 @@
 #  define MAX_FD 1024
 # endif
 
+#include <readline/readline.h>
+#include <readline/history.h>
+
 typedef	struct s_token
 {
 	char	*value;			// the string without quotes
@@ -77,7 +80,7 @@ enum token_types
 	HD,
 	TRUNC,
 	APPEND,
-	FILE,
+	FILENAME,
 	PIPE,
 	AND,
 	OR,
@@ -107,6 +110,8 @@ void	ft_unsetenv(char *name, t_env_list *env);
 int	is_equal(char *s1, char *s2);
 char	*append_str(char *dest, char *src);
 int	is_a_number(char *str);
+char	**init_list(void);
+char	**append_to_lst(char **l, char *new_s);
 
 // builtins_utils.c
 int	is_n_option(char *s);
@@ -134,6 +139,7 @@ int	handle_tilde(char **res, t_token *tk, t_env_list *env);
 char	**expanded_list(int ac, t_token **tk_list);
 
 // tokenization.c
+t_token	*init_token(char *str);
 t_token	**populate_tokens(int ac, char **av);
 
 // free_all.c
@@ -155,11 +161,11 @@ char	**convert_envp_to_array(t_env_list *envl);
 char	*find_path(char *name, t_minishell *sh);
 
 // exec_redirection.c
-int	set_redirections(char **args, t_ast_node *node, t_minishell *sh);
+int	set_redirections(char **args, t_redir_node *redir, t_minishell *sh);
 
 // tree.c
 void	print_ast_node(t_ast_node *ast);
-t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect);
+t_ast_node	*create_ast(t_token **tk_list);
 
 // tree_traverse.c
 int	cmd_node(t_ast_node *node, t_minishell *sh);
@@ -167,11 +173,26 @@ void	pipe_node(t_ast_node *node, t_minishell *sh);
 void	dfs_ast(t_ast_node *node, t_minishell *sh);
 void	function_dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minishell *));
 
+// tree_redirection.c
+t_redir_node	*set_one_redir(t_redir_node *redir, t_token ***tkp);
+
 // here_doc.c
 int	here_doc(char *lim, char **args, t_minishell *sh);
 
 // error.c
 int	printf_fd(int fd, const char *s, ...);
 
+// check_types.c
+int	is_redirect(int type);
+int	is_operator(int type);
+int	is_command(int type);
+int	is_pipe(int type);
+int	is_file(int type);
+
+// parsing.c
+char	set_quote_character(char c, char new);
+t_token	**init_token_list(char *line);
+void	set_each_token_type(t_token ***tk_list_pt, int grp);
+int	check_syntax(t_token **tk_list, t_minishell *sh);
 
 #endif

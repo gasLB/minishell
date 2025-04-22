@@ -15,23 +15,6 @@
 #include "minishell.h"
 #include <stdlib.h>
 
-// OUTDATED FUNCTION !! kept for tests
-t_ast_node	*create_ast_node(int type, char **args, t_redirect *redirect)
-{
-	t_ast_node	*node;
-
-	node = malloc(sizeof(t_ast_node));
-	if (!node)
-		return (NULL);
-	node->type = type;
-	node->args = args;
-	node->redirect = redirect;
-	node->left = NULL;
-	node->right = NULL;
-	node->visited = 0;
-	return (node);
-}
-
 t_ast_node	*init_ast_node(void)
 {
 	t_ast_node	*node;
@@ -48,7 +31,7 @@ t_ast_node	*init_ast_node(void)
 	return (node);
 }
 
-t_ast_node	*set_ast_node(int type, char **args, t_redirect *red)
+t_ast_node	*set_ast_node(int type, char **args, t_redir_node *red)
 {
 	t_ast_node	*node;
 
@@ -82,7 +65,7 @@ t_ast_node	*parse_command(t_token ***tk_list_pt)
 	int	type;
 
 	red = NULL;
-	args = init_list();	
+	args = init_list();
 	if (!args)
 		return (NULL);
 	while (*tk_list_pt && get_precedence(**tk_list_pt) == 3)

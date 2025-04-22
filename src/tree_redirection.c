@@ -15,7 +15,7 @@
 #include "minishell.h"
 #include <stdlib.h>
 
-t_red_node	*init_redir_node(int type, char *str)
+t_redir_node	*init_redir_node(int type, char *str)
 {
 	t_redir_node	*node;
 
@@ -53,11 +53,11 @@ t_redir_node	*set_one_redir(t_redir_node *redir, t_token ***tkp)
 	int	type;
 	char	*file;
 
-	if (!redir)
-		redir = init_redir_node();
-	if (!redir || !(*tkp))
+	if (!redir && !(*tkp))
 		return (NULL);
 	type = (**tkp)->type;
+	if (!redir)
+		redir = init_redir_node(type, (**tkp)->expanded_value);
 	(*tkp)++;
 	if (!(*tkp) || !(**tkp) || !is_file((**tkp)->type))
 		return (redir);

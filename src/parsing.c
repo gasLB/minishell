@@ -63,10 +63,8 @@ void	append_token(t_token ***tk_list, t_token *token)
 t_token	**new_populate_tokens(t_token **tk_list, char *line, int start, int end)
 {
 	char	quote;
-	int	words;
 	char	*sub;
 
-	words = 0;
 	quote = 'N';
 	while (line[start])
 	{
@@ -85,6 +83,7 @@ t_token	**new_populate_tokens(t_token **tk_list, char *line, int start, int end)
 		append_token(&tk_list, init_token(sub));
 		start = end;
 	}
+	append_token(&tk_list, NULL);
 	return (tk_list);
 }
 
@@ -144,7 +143,7 @@ void	set_each_token_type(t_token ***tk_list_pt, int grp)
 		else
 		{
 			if (grp == REDIRECT)
-				(type = FILE, grp = -1);
+				(type = FILENAME, grp = -1);
 			else if (grp == COMMAND)
 				type = ARG;
 			else
@@ -155,25 +154,6 @@ void	set_each_token_type(t_token ***tk_list_pt, int grp)
 }
 
 // Refaire main propre
-int	main(int ac, char **av, char **env)
-{
-	t_env_list	*env_list;
-	t_token		**tk_list;
-	char *rl;
-
-	(void)ac; (void)av; env_list = populate_env(env); while (1) {
-		rl = readline("\e[35m\e[1mMinishell> \e[0m");
-		if (rl)
-			add_history(rl);
-			token_list = init_token_list(rl);
-			//if (is_syntax_correct(rl))
-				parse(rl);
-		break;
-	}
-	printf("%s\n", rl);
-	free(rl);	
-	return (0);
-}
 
 /*
 

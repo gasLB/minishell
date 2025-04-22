@@ -37,5 +37,5 @@ int	is_pipe(int type)
 
 int	is_file(int type)
 {
-	return (type == FILE);
+	return (type == FILENAME);
 }
