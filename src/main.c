@@ -110,16 +110,10 @@ int	main(int ac, char **av, char **env)
 // Raw input → Tokenization → Expansion → Execution
 //
 // TODO:
-// [ ] tests
-//	[ ] handle pipes
-//	[ ] prblem with wrong commands: cw > file2 -> returns "cw" into file2.
+// [ ] prblem with wrong commands: cw > file2 -> returns "cw" into file2.
 //		and doesn't print the cmd name on error
-//	[ ] error with multiple pipes
-//		fails with 3 pipes
-//		[ ] segfault
-//		[ ] ls | ls | ls > file -> also prints on the screen
-//	[ ] handle operators
-//	[ ] free everything
+// [ ] handle operators
+// [ ] free everything
 // [ ] organize everything and remove unnecessary functions
 // [ ] implement signals
 // [ ] test with quotes and double quotes

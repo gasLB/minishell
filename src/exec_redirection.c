@@ -29,7 +29,9 @@ int	open_in(char **args, char *file_name, int in_status, t_minishell *sh)
 	else
 		cmd_name = ft_strdup("minishell");
 	infile = -1;
-	if (access(file_name, F_OK) != 0)
+	if (ft_strchr(file_name, '*') != NULL)
+		printf_fd(2, "%s: %s: ambiguous redirect", cmd_name, file_name);
+	else if (access(file_name, F_OK) != 0)
 		printf_fd(2, "%s: %s: No such file or directory\n", cmd_name, file_name);
 	else
 	{
@@ -51,7 +53,9 @@ int	open_out(char **args, char *file_name, int out_status)
 	else
 		cmd_name = ft_strdup("minishell");
 	outfile = -1;
-	if (access(file_name, F_OK) == 0 && access(file_name, W_OK) != 0)
+	if (ft_strchr(file_name, '*') != NULL)
+		printf_fd(2, "%s: %s: ambiguous redirect", cmd_name, file_name);
+	else if (access(file_name, F_OK) == 0 && access(file_name, W_OK) != 0)
 		printf_fd(2, "%s: %s: Permission denied\n", cmd_name, file_name);
 	else if (out_status == TRUNC)
 		outfile = open(file_name, O_WRONLY | O_TRUNC | O_CREAT, 0644);
