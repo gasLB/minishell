@@ -49,7 +49,7 @@ void	free_token_list(t_token **tk_list)
 	i = 0;
 	while (tk_list[i])
 	{
-		ft_printf("tk_list[%d]: value: %s, expanded: %s, quote: %s\n", i, tk_list[i]->value, tk_list[i]->expanded_value, tk_list[i]->quote_mask);
+		//ft_printf("tk_list[%d]: value: %s, expanded: %s, quote: %s\n", i, tk_list[i]->value, tk_list[i]->expanded_value, tk_list[i]->quote_mask);
 		free(tk_list[i]->value);
 		free(tk_list[i]->quote_mask);
 		free(tk_list[i]->expanded_value);

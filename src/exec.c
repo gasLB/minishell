@@ -84,13 +84,15 @@ int	execute_command(char *name, char **args, char **envp, t_minishell *sh)
 	return (1);
 }
 
-int	exec_external(char *name, char **args, t_ast_node *node, t_minishell *s)
+// on some cases args are not properly initiated
+// or maybe the problem is with the free of args
+// are they NULL-terminated ?
+int	exec_external(char *name, char **args, t_minishell *s)
 {
 	int	pid;
 	char	**envp;
 	int	status;
 
-	(void)node;	//to use later
 	envp = 	convert_envp_to_array(s->env_list);// to free if execve fails
 	if (!envp)
 		return (1);

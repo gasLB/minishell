@@ -108,7 +108,7 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 		free(cmd_name);
 		return (1);
 	}
-	return (exec_external(cmd_name, args, node, sh));
+	return (exec_external(cmd_name, args, sh));
 }
 
 void	f_dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minishell *))

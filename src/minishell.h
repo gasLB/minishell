@@ -151,7 +151,7 @@ void	free_token_list(t_token **tk_list);
 void	free_ast(t_ast_node *node);
 
 // exec.c
-int	exec_external(char *n, char **args, t_ast_node *node, t_minishell *sh);
+int	exec_external(char *n, char **args, t_minishell *sh);
 int	exec_builtin(char **args, t_ast_node *node, t_minishell *sh);
 
 // exec_utils.c

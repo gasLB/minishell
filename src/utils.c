@@ -30,10 +30,11 @@ char	**init_list(void)
 {
 	char	**res;
 
-	res = malloc(sizeof(char*));
+	res = malloc(2 * sizeof(char*));
 	if (!res)
 		return (NULL);
 	res[0] = NULL;
+	res[1] = NULL;
 	return (res);
 }
 
@@ -50,8 +51,7 @@ char	**append_to_lst(char **l, char *new_s)
 	i = 0;
 	while (i < size)
 	{
-		new_l[i] = ft_strdup(l[i]);
-		free(l[i]);
+		new_l[i] = l[i];
 		i++;
 	}
 	new_l[i] = new_s;

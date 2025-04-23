@@ -57,7 +57,9 @@ int	get_precedence(t_token *token)
 
 // we can have a null-command with only redirections in parse_command
 // args is initalized with init_list but args[0] = NULL
+//
 // I forgot the pipe scenario
+
 t_ast_node	*parse_command(t_token ***tk_list_pt)
 {
 	char	**args;
@@ -74,7 +76,11 @@ t_ast_node	*parse_command(t_token ***tk_list_pt)
 		value = (**tk_list_pt)->expanded_value;
 		type = (**tk_list_pt)->type;
 		if (is_command(type))
+		{
+			if (args[0] != NULL)
+				free(args[0]);
 			args[0] = ft_strdup(value);
+		}
 		else if (type == ARG)
 			args = append_to_lst(args, ft_strdup(value));
 		else if (is_redirect(type))
@@ -113,22 +119,24 @@ t_ast_node	*combine_nodes(t_ast_node *left, t_ast_node *right, t_token *op)
 }
 
 // I forgot to parse the pipe as well
+// Did I make the same mistake with operators?
+// what should i do?
+
 t_ast_node	*parse_expr(t_ast_node *left, int min_prec, t_token ***tkp)
 {
 	t_token		*operator;
-	t_token		*lookahead;
 	t_ast_node	*right;
 
-	while (op_greater_precedence(**tkp, min_prec))
+	while (*tkp && **tkp && op_greater_precedence(**tkp, min_prec))
 	{
-		operator = (**tkp)++;
+		operator = **tkp;
+		(*tkp)++;
 		right = parse_command(tkp);
-		while (op_greater_precedence(**tkp, get_precedence(operator)))
-		{
-			lookahead = (**tkp)++;
-			right = parse_expr(right, get_precedence(lookahead), tkp);
-		}
+		if (!right)
+			return (NULL);
 		left = combine_nodes(left, right, operator);
+		if (!left)
+			return (NULL);
 	}
 	return (left);
 }
