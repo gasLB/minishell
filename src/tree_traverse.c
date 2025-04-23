@@ -88,6 +88,15 @@ int	null_cmd_node(t_ast_node *node, t_minishell *sh)
 	return (set_redirections(node->args, node->redirect, sh));
 }
 
+int	is_directory(char **args)
+{
+	if (args[0][0] != '/')
+		return (0);
+	printf_fd(2, "minishell: %s: Is a directory\n", args[0]);
+	free_str_list(args);
+	return (1);
+}
+
 int	cmd_node(t_ast_node *node, t_minishell *sh)
 {
 	char	**args;
@@ -97,6 +106,8 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 	if (!args[0])
 		return (null_cmd_node(node, sh));
 	if (set_redirections(args, node->redirect, sh) == 1)
+		return (1);
+	if (is_directory(args))
 		return (1);
 	if (is_builtin(args[0]))
 		return (exec_builtin(args, node, sh));

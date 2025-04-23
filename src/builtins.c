@@ -31,6 +31,11 @@ int	ft_echo(int ac, char **args)
 
 	n_option = 0;
 	i = 0;
+	if (ac == 0)
+	{
+		ft_printf("\n");
+		return (0);
+	}
 	while (i < ac && is_n_option(args[i]))
 		(i++, n_option = 1);
 	while (i < ac)

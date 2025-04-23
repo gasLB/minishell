@@ -72,7 +72,7 @@ int	syntax_error(t_token *token, t_minishell *sh)
 		return (2);
 	}
 	v = token->value;		// value or expanded value? Moi je pose des questions hein c'est tout
-	printf_fd(2, "minishell: syntax error near unexpected token %s\n", v);
+	printf_fd(2, "minishell: syntax error near unexpected token `%s'\n", v);
 	sh->last_exit = 2;
 	return (2);
 }

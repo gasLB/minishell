@@ -66,6 +66,21 @@ void	set_standard_fds(t_minishell *sh)
 	dup2(sh->original_stdin, STDIN_FILENO);
 	dup2(sh->original_stdout, STDOUT_FILENO);
 }
+
+int	only_space(char *str)
+{
+	int	i;
+	
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] != ' ' && str[i] != '\t')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_env_list	*env_list;
@@ -76,14 +91,14 @@ int	main(int ac, char **av, char **env)
 
 	(void)ac;
 	(void)av;
-	minishell_start();	
+	minishell_start();
 	env_list = populate_env(env);
 	sh = init_shell(env_list);
 	while (1)
 	{
 		set_standard_fds(sh);
 		rl = readline("\e[35m\e[1mMinishell> \e[0m");
-		if (!rl)
+		if (!rl || only_space(rl))
 			continue;
 		add_history(rl);
 		token_list = init_token_list(rl);	// needs to be NULL-terminated
@@ -99,27 +114,21 @@ int	main(int ac, char **av, char **env)
 	free_all_struct(sh, NULL, NULL);
 	return (0);
 }
+/*
+first I get tk_list from init_token_list
+then need to set each token type with set_each_token_type()
+then need to check syntax with check_syntax() and continue; if error in syntax
+then expand values
+then create the AST with create_ast
+then free tk_list
+then traverse the AST and execute with dfs_ast
+Raw input → Tokenization → Expansion → Execution
 
-// first I get tk_list from init_token_list
-// then need to set each token type with set_each_token_type()
-// then need to check syntax with check_syntax() and continue; if error in syntax
-// then expand values
-// then create the AST with create_ast
-// then free tk_list
-// then traverse the AST and execute with dfs_ast
-// Raw input → Tokenization → Expansion → Execution
-//
-// TODO:
-// [ ] prblem with wrong commands: cw > file2 -> returns "cw" into file2.
-//		and doesn't print the cmd name on error
-// [ ] handle operators
-// [ ] free everything
-// [ ] organize everything and remove unnecessary functions
-// [ ] implement signals
-// [ ] test with quotes and double quotes
-// [ ] test with complex ast
-// [ ] free all memory
-// [ ] clean up unneccessary functions
-// [ ] write proper Makefile
-// [ ] minishell message and progress bar when compiling
-//
+TODO:
+[ ] implement signals
+[ ] free everything
+[ ] organize everything and remove unnecessary functions
+[ ] write proper Makefile
+[ ] 800 tests minishell
+[ ] minishell message and progress bar when compiling
+*/
