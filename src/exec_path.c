@@ -76,7 +76,7 @@ char	*look_for_path(char *name, char **com_paths)
 			return (path);
 		(free(path), i++);
 	}
-	printf_fd(2, "minishell: %s: command not found\n", name);	// write on the error output
+	printf_fd(2, "minishell: %s: command not found\n", name);
 	return (NULL);
 }
 

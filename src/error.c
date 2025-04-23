@@ -17,6 +17,30 @@
 #include <errno.h>
 #include <unistd.h>
 
+static t_form	set_output_fd(t_form form, va_list apt)
+{
+	char	spec;
+
+	spec = form.specifier;
+	if (spec == 'c')
+		return (fter_char(form, apt));
+	else if (spec == 's')
+		return (fter_str(form, apt));
+	else if (spec == 'p')
+		return (fter_ptr(form, apt));
+	else if (spec == 'd' || spec == 'i')
+		return (fter_dec(form, apt));
+	else if (spec == 'u')
+		return (fter_udec(form, apt));
+	else if (spec == 'x')
+		return (fter_hexlow(form, apt));
+	else if (spec == 'X')
+		return (fter_hexup(form, apt));
+	else if (spec == '%')
+		return (fter_prct(form, apt));
+	else
+		return (new_formatter());
+}
 static int	putncount_fd(int fd, char c)
 {
 	ft_putchar_fd(c, fd);
@@ -31,6 +55,31 @@ static char	*increment_s(char *s)
 	return (s);
 }
 
+static int	print_str_fd(int fd, t_form form)
+{
+	int		len;
+
+	len = (int)ft_strlen(form.res) + form.count;
+	if (form.width > len && form.specifier != '%')
+		len = form.width;
+	write(fd, form.res, len);
+	free(form.res);
+	return (len);
+}
+
+int	f_found_fd(int fd, char *s, va_list apt)
+{
+	t_form	form;
+
+	s++;
+	form = set_flags(s, new_formatter());
+	if (form.specifier == 0)
+		return (no_specifier());
+	form = set_output_fd(form, apt);
+	form = format_output(form);
+	return (print_str_fd(fd, form));
+}
+
 int	printf_fd(int fd, const char *s, ...)
 {
 	va_list	ap;
@@ -43,7 +92,7 @@ int	printf_fd(int fd, const char *s, ...)
 	{
 		if (*s == '%' && *(s + 1))
 		{
-			ret = f_found((char *)(s), ap);
+			ret = f_found_fd(fd, (char *)(s), ap);
 			if (ret != -1)
 			{
 				count += ret;
