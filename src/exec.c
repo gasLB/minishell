@@ -89,19 +89,18 @@ int	execute_command(char *name, char **args, char **envp, t_minishell *sh)
 // are they NULL-terminated ?
 int	exec_external(char *name, char **args, t_minishell *s)
 {
-	int	pid;
 	char	**envp;
 	int	status;
 
 	envp = 	convert_envp_to_array(s->env_list);// to free if execve fails
 	if (!envp)
 		return (1);
-	pid = fork();
-	if (pid == -1)
+	g_signal_pid = fork();
+	if (g_signal_pid == -1)
 		return (1);
-	if (pid == 0)
+	if (g_signal_pid == 0)
 		execute_command(name, args, envp, s);
-	waitpid(pid, &status, 0);
+	waitpid(g_signal_pid, &status, 0);
 	s->last_exit = status;
 	free_str_list(envp);
 	free_str_list(args);

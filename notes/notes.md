@@ -103,6 +103,12 @@ k
 **tgentent** routines: set of functions included as a conversion aid for programs that use the termcap library.
 Alternative to termios
 
+### Signals 
+
+I should use at least one global variable with signals
+
+
+
 --- 
 
 ## GENERAL STEPS

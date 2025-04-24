@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 18:38:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/18 21:53:15 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:21:48 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+pid_t	g_signal_pid;
+
 void	minishell_start(void)
 {
 	ft_printf("___  ____       _ _____ _          _ _\n");
@@ -26,6 +28,7 @@ void	minishell_start(void)
 	ft_printf("| |\\/| | | '_ \\| |`--. \\ '_ \\ / _ \\ | |\n");
 	ft_printf("| |  | | | | | | /\\__/ / | | |  __/ | |\n");
 	ft_printf("\\_|  |_/_|_| |_|_\\____/|_| |_|\\___|_|_|\n\n");
+	set_signals();
 }
 
 t_minishell	*init_shell(t_env_list *env_list)
@@ -35,6 +38,7 @@ t_minishell	*init_shell(t_env_list *env_list)
 	sh = malloc(sizeof(t_minishell));
 	if (!sh)
 		return (NULL);
+	g_signal_pid = 0;
 	sh->env_list = env_list;
 	sh->last_exit = 0;
 	sh->pipe_count = 0;
@@ -81,19 +85,12 @@ int	only_space(char *str)
 	return (1);
 }
 
-int	main(int ac, char **av, char **env)
+void	minishell(t_minishell *sh, t_env_list *env_list)
 {
-	t_env_list	*env_list;
-	t_minishell	*sh;
 	t_token		**token_list;
 	t_ast_node	*ast;
-	char	*rl;
+	char		*rl;
 
-	(void)ac;
-	(void)av;
-	minishell_start();
-	env_list = populate_env(env);
-	sh = init_shell(env_list);
 	while (1)
 	{
 		set_standard_fds(sh);
@@ -110,8 +107,22 @@ int	main(int ac, char **av, char **env)
 		free_token_list(token_list);
 		dfs_ast(ast, sh);
 		free(rl);
+		g_signal_pid = 0;
 	}
 	free_all_struct(sh, NULL, NULL);
+}
+
+int	main(int ac, char **av, char **env)
+{
+	t_env_list	*env_list;
+	t_minishell	*sh;
+
+	(void)ac;
+	(void)av;
+	minishell_start();
+	env_list = populate_env(env);
+	sh = init_shell(env_list);
+	minishell(sh, env_list);
 	return (0);
 }
 /*
@@ -126,6 +137,8 @@ Raw input → Tokenization → Expansion → Execution
 
 TODO:
 [ ] implement signals
+	[X] ctrl-c and ctrl\
+	[ ] ctrl-d (not really a signal?)
 [ ] free everything
 [ ] organize everything and remove unnecessary functions
 [ ] write proper Makefile

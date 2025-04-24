@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/18 21:28:53 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:23:38 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 
 #include <readline/readline.h>
 #include <readline/history.h>
+
+extern pid_t	g_signal_pid;
 
 typedef	struct s_token
 {
@@ -197,4 +199,6 @@ t_token	**init_token_list(char *line);
 void	set_each_token_type(t_token ***tk_list_pt, int grp);
 int	check_syntax(t_token **tk_list, t_minishell *sh);
 
+// signals.c
+void	set_signals(void);
 #endif
