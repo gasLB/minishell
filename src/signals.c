@@ -17,6 +17,7 @@
 #include <signal.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <unistd.h>
 
 void	handle_sigint(int sig)
 {
@@ -31,9 +32,9 @@ void	handle_sigint(int sig)
 void	set_signals(void)
 {
 	signal(SIGINT, &handle_sigint);
-	signal()
 	signal(SIGQUIT, SIG_IGN);
 }
+
 
 /*
 
@@ -45,6 +46,11 @@ ctrl-C: displays a new prompt on a new line (^C written)
 ctrl-D: exit the shell (exit written)
 ctrl-\: does nothing
 
-where to put it?
+
+ctrl-D exits only when on readline with nothing written
+
+The only way to access it is through terminal API: tty or termios
+
+
 only at the initialization or during the parent process
 */

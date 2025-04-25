@@ -95,7 +95,9 @@ void	minishell(t_minishell *sh, t_env_list *env_list)
 	{
 		set_standard_fds(sh);
 		rl = readline("\e[35m\e[1mMinishell> \e[0m");
-		if (!rl || only_space(rl))
+		if (rl == NULL)
+			(ft_printf("\n"), exit(0));
+		if (only_space(rl))
 			continue;
 		add_history(rl);
 		token_list = init_token_list(rl);	// needs to be NULL-terminated
@@ -135,13 +137,18 @@ then free tk_list
 then traverse the AST and execute with dfs_ast
 Raw input → Tokenization → Expansion → Execution
 
+
 TODO:
-[ ] implement signals
-	[X] ctrl-c and ctrl\
-	[ ] ctrl-d (not really a signal?)
-[ ] free everything
-[ ] organize everything and remove unnecessary functions
+
+[ ] resolve minor differences between bash and minishell:
+	[ ] wrong expansion with : echo $9HOME
+	[ ] wrong expansion with: echo "'$HO''ME'"
+	[ ] wrong expansion with: echo "$"HOME
+	[ ] wrong error msg on cmds that have illegal names
+	[ ] special msg for removed current working directory with cd
+[ ] leaks
+[ ] Norm and clean code:
+	[ ] remove unused functions
+	[ ] macros for all error strings
 [ ] write proper Makefile
-[ ] 800 tests minishell
-[ ] minishell message and progress bar when compiling
 */

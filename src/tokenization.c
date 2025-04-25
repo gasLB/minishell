@@ -28,7 +28,7 @@ char	*strdup_without_quotes(char *str)	//rewrite with ft_strspd
 		return (NULL);
 	while (str[i])
 	{
-		if (str[i] != '"' && str[i] != '\\')
+		if (str[i] != '"' && str[i] != '\'')
 			res[j++] = str[i];
 		i++;
 	}
