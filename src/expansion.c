@@ -16,6 +16,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+// maybe it's here
+// it must not just check the type of the next, but check if it corresponds to
+// the one of $
 int	is_expandable(char *str, char *q_mask, int i)
 {
 	char	next;
@@ -29,6 +32,8 @@ int	is_expandable(char *str, char *q_mask, int i)
 	{
 		next = str[i + 1];
 		if (next == '\0')	
+			return (0);
+		if (q_mask[i] == 'D' && q_mask[i + 1] != 'D')
 			return (0);
 		return (ft_isalpha(next) || next == '_' || next == '?');
 	}
@@ -123,6 +128,14 @@ t_token	**expand_tokens(t_token **tk_list, t_minishell *sh, t_env_list *env)
 	}
 	return (tk_list);
 }
+
+/*
+
+should check if the changes of quote_status from the $ and not only from the 
+name's start
+
+*/
+
 // I will focus on wildcards later (with the bonuses)
 // what's up with the numbers? 
 // echo $987

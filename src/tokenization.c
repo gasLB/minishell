@@ -15,37 +15,13 @@
 #include "minishell.h"
 #include <stdlib.h>
 
-char	*strdup_without_quotes(char *str)	//rewrite with ft_strspd
-{
-	char	*res;
-	int	j;
-	int	i;
-
-	i = 0;
-	j = 0;
-	res = ft_calloc(ft_strlen(str) + 1, sizeof(char));
-	if (!res)
-		return (NULL);
-	while (str[i])
-	{
-		if (str[i] != '"' && str[i] != '\'')
-			res[j++] = str[i];
-		i++;
-	}
-	return (res);
-}
-
-char	*set_q_mask(char *val, char *str)
+void	init_quote_n_value(t_token *token, char *q_mask, char *val, char *str)
 {
 	int	i;
 	int	j;
-	char	*res;
 	char	c;
 	char	new;
 
-	res = ft_calloc(ft_strlen(val) + 1, sizeof(char));
-	if (!res)
-		return (NULL);
 	i = 0;
 	j = 0;
 	c = 'N';
@@ -55,48 +31,37 @@ char	*set_q_mask(char *val, char *str)
 		if (new != c)
 			c = new;
 		else
-			res[j++] = c;
+		{
+			q_mask[j] = c;
+			val[j] = str[i];
+			j++;
+		}
 		i++;
 	}
-	res[j] = '\0';
-	return (res);
+	token->value = val;
+	token->quote_mask = q_mask;
 }
 
 t_token	*init_token(char *str)
 {
 	t_token	*token;
+	char	*val;
+	char	*q_mask;
 
 	token = malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
-	token->value = strdup_without_quotes(str);	// to replace
-	if (!token->value)
-		return (NULL);
+	token->value = NULL;
 	token->type = -1;
 	token->expanded_value = NULL;
-	token->quote_mask = set_q_mask(token->value, str);
-	if (!token->quote_mask)
+	token->quote_mask = NULL;
+	q_mask = ft_calloc(ft_strlen(str) + 1, sizeof(char));
+	if (!q_mask)
 		return (NULL);
-	free(str);	// recently added !
+	val = ft_calloc(ft_strlen(str) + 1, sizeof(char));
+	if (!val)
+		return (NULL);
+	init_quote_n_value(token, q_mask, val, str);
+	free(str);
 	return (token);
-}
-
-t_token	**populate_tokens(int ac, char **av)
-{
-	t_token	**token_list;
-	int	i;
-
-	if (ac < 1)
-		return (NULL);
-	token_list = malloc((ac + 1) * sizeof(t_token *));
-	if (!token_list)
-		return (NULL);
-	i = 0;
-	while (i < ac)
-	{
-		token_list[i] = init_token(av[i]);
-		i++;
-	}
-	token_list[i] = NULL;
-	return (token_list);
 }

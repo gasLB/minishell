@@ -60,6 +60,32 @@ void	append_token(t_token ***tk_list, t_token *token)
 	*tk_list = new_list;
 }
 
+// problem with this lexer:
+// only whitespaces to split
+//
+int	end_operator(char *line, int end, char quote)
+{
+	char	le;
+
+	if (!len[end])
+		return (0);
+	le = line[end];
+	if (quote == 'N' && (le == '<' || le == '>' || le == '|' || le == '&'))
+	{
+		if (line[end + 1] && 
+			((line[end] == '<' && line[end + 1] == '<') ||
+			(line[end] == '>' && line[end + 1] == '>') ||
+			(line[end] == '|' && line[end + 1] == '|') ||
+			(line[end] == '&' && line[end + 1] == '&')))
+		    {
+			return (2);
+		    }
+		else
+			return (1);
+	}
+	return (0);
+}
+
 t_token	**new_populate_tokens(t_token **tk_list, char *line, int start, int end)
 {
 	char	quote;
@@ -73,9 +99,10 @@ t_token	**new_populate_tokens(t_token **tk_list, char *line, int start, int end)
 		if (!line[start])
 			break;
 		end = start;
+		//end += end_operator(line, end, quote);
 		while (line[end])
 		{
-			quote = set_quote_character(quote, line[end]);
+			quote = set_quote_character(quote, line[end]); // also need to check here
 			if (quote == 'N' && line[end] == ' ')
 				break;
 			end++;
@@ -156,6 +183,76 @@ void	set_each_token_type(t_token ***tk_list_pt, int grp)
 // Refaire main propre
 
 /*
+code from claude
+t_token **new_populate_tokens(t_token **tk_list, char *line, int start, int end)
+{
+    char quote = 'N';
+    char *sub;
+    
+    while (line[start])
+    {
+        // Skip whitespace when outside quotes
+        while (line[start] && quote == 'N' && line[start] == ' ')
+            start++;
+        
+        if (!line[start])
+            break;
+            
+        end = start;
+        
+        // Special handling for operators
+        if (quote == 'N' && (line[end] == '<' || line[end] == '>' || 
+            line[end] == '|' || line[end] == '&' || 
+            line[end] == '(' || line[end] == ')'))
+        {
+            // Handle potential double-character operators
+            if (line[end + 1] && 
+                ((line[end] == '<' && line[end + 1] == '<') ||
+                 (line[end] == '>' && line[end + 1] == '>') ||
+                 (line[end] == '|' && line[end + 1] == '|') ||
+                 (line[end] == '&' && line[end + 1] == '&')))
+            {
+                end += 2; // Move past the 2-character operator
+            }
+            else
+            {
+                end += 1; // Move past the single character operator
+            }
+        }
+        else
+        {
+            // Normal token processing
+            while (line[end])
+            {
+                // Track quote state
+                quote = set_quote_character(quote, line[end]);
+                
+                // Break if we hit whitespace outside quotes
+                if (quote == 'N' && line[end] == ' ')
+                    break;
+                    
+                // Break if we hit a special operator outside quotes
+                // But only if we're not at the start of the token (to handle existing content)
+                if (quote == 'N' && end > start && 
+                    (line[end] == '<' || line[end] == '>' || 
+                     line[end] == '|' || line[end] == '&' ||
+                     line[end] == '(' || line[end] == ')'))
+                    break;
+                    
+                end++;
+            }
+        }
+        
+        // Create and add the token
+        sub = correct_substr(line, start, end);
+        append_token(&tk_list, init_token(sub));
+        free(sub);  // Don't forget to free the substring
+        
+        start = end;
+    }
+    
+    return tk_list;
+}
 
 ---------------
 

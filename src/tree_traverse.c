@@ -134,6 +134,7 @@ void	f_dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, t_minis
 
 // I need a special data structure that stores the state of v
 /*
+
 procedure DFS(node) is
     if node is null then
         return
