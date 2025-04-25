@@ -142,7 +142,8 @@ TODO:
 
 [ ] resolve minor differences between bash and minishell:
 	[ ] wrong expansion with : echo $9HOME
-	[ ] wrong expansion with: echo "'$HO''ME'"
+	[ ] wrong expansion with: echo "'$HOME'" -> single quotes inside double 
+		-> should set_quote_char mask before strdup_without_quotes
 	[ ] wrong expansion with: echo "$"HOME
 	[ ] wrong error msg on cmds that have illegal names
 	[ ] special msg for removed current working directory with cd

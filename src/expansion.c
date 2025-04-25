@@ -109,11 +109,16 @@ char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env)
 t_token	**expand_tokens(t_token **tk_list, t_minishell *sh, t_env_list *env)
 {
 	int	i;
+	t_token	*tk;
 
 	i = 0;
 	while (tk_list[i] != NULL)
 	{
-		tk_list[i]->expanded_value = expand_variable(tk_list[i], sh, env);
+		tk = tk_list[i];
+		if (i >= 1 && tk_list[i - 1]->type == HD)
+			tk->expanded_value = ft_strdup(tk->value);
+		else
+			tk->expanded_value = expand_variable(tk, sh, env);
 		i++;
 	}
 	return (tk_list);
