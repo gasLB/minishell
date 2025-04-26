@@ -55,9 +55,13 @@ int	ft_pwd(void)
 	char	*cwd;
 
 	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		printf_fd(2, "pwd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory\n");
+		return (1);
+	}
 	ft_printf("%s\n", cwd);
-	if (cwd)
-		free(cwd);
+	free(cwd);
 	return (0);
 }
 
@@ -66,27 +70,18 @@ int	ft_cd(int ac, char **args, t_env_list *env)
 	char	*path;
 
 	if (ac > 1)
-	{
-		printf_fd(2, "minishell: cd: too many arguments\n");
-		return (1);
-	}
+		return (printf_fd(2, "minishell: cd: too many arguments\n"), 1);
 	else if (ac == 0)
 	{
 		path = ft_getenv("HOME", env);
 		if (!path)
-		{
-			printf_fd(2, "minishell: cd: HOME not set\n");
-			return (1);
-		}
+			return (printf_fd(2, "minishell: cd: HOME not set\n"), 1);
 	}
 	else if (ft_strlen(args[0]) == 1 && args[0][0] == '-')
 	{
 		path = ft_getenv("OLDPWD", env);
 		if (!path)
-		{
-			printf_fd(2, "minishell: cd: OLDPWD not set\n");
-			return (1);
-		}
+			return (printf_fd(2, "minishell: cd: OLDPWD not set\n"), 1);
 	}
 	else
 		path = args[0];
@@ -184,6 +179,7 @@ exit
 Each builtin should exit with the correct status
 
 Specific error message if cwd is removed for pwd and cd:
+
 pwd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
 chdir: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
 

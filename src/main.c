@@ -139,11 +139,9 @@ Raw input → Tokenization → Expansion → Execution
 
 TODO:
 
-[ ] resolve minor differences between bash and minishell:
-	[ ] special msg for removed current working directory with cd
-	also those one but should be ignored imho. really out of scope:
-	([ ] wrong expansion with : echo $9HOME)
-	([ ] wrong expansion with : echo $$$$$$$$$$$HOME)
+([ ] wrong expansion with : echo $9HOME)
+([ ] wrong expansion with : echo $$$$$$$$$$$HOME)	-> should not be handled
+
 [ ] all free and all leaks
 [ ] Norm and clean code:
 	[ ] remove unused functions
