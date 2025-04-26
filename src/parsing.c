@@ -63,19 +63,19 @@ void	append_token(t_token ***tk_list, t_token *token)
 // problem with this lexer:
 // only whitespaces to split
 //
-int	end_operator(char *line, int end, char quote)
+int	end_op(char *line, int end, char quote)
 {
 	char	le;
 
-	if (!len[end])
+	if (!line[end])
 		return (0);
 	le = line[end];
 	if (quote == 'N' && (le == '<' || le == '>' || le == '|' || le == '&'))
 	{
-		if (line[end + 1] && 
-			((line[end] == '<' && line[end + 1] == '<') ||
-			(line[end] == '>' && line[end + 1] == '>') ||
-			(line[end] == '|' && line[end + 1] == '|') ||
+		if (line[end + 1] && \
+			((line[end] == '<' && line[end + 1] == '<') || \
+			(line[end] == '>' && line[end + 1] == '>') || \
+			(line[end] == '|' && line[end + 1] == '|') || \
 			(line[end] == '&' && line[end + 1] == '&')))
 		    {
 			return (2);
@@ -86,10 +86,23 @@ int	end_operator(char *line, int end, char quote)
 	return (0);
 }
 
+int	update_token_end(char *line, char quote, int end)
+{
+	while (line[end])
+	{
+		quote = set_quote_character(quote, line[end]); // also need to check here
+		if (quote == 'N' && (line[end] == ' ' || end_op(line, end, quote)))
+			break;
+		end++;
+	}
+	return (end);
+}
+
 t_token	**new_populate_tokens(t_token **tk_list, char *line, int start, int end)
 {
 	char	quote;
 	char	*sub;
+	int	op_len;
 
 	quote = 'N';
 	while (line[start])
@@ -99,16 +112,13 @@ t_token	**new_populate_tokens(t_token **tk_list, char *line, int start, int end)
 		if (!line[start])
 			break;
 		end = start;
-		//end += end_operator(line, end, quote);
-		while (line[end])
-		{
-			quote = set_quote_character(quote, line[end]); // also need to check here
-			if (quote == 'N' && line[end] == ' ')
-				break;
-			end++;
-		}
+		op_len = end_op(line, end, quote);
+		if (op_len > 0)
+			end = start + op_len;
+		else
+			end = update_token_end(line, quote, end);
 		sub = correct_substr(line, start, end);
-		append_token(&tk_list, init_token(sub));
+		append_token(&tk_list, init_token(sub));	//maybe need to free sub
 		start = end;
 	}
 	return (tk_list);

@@ -139,14 +139,12 @@ Raw input → Tokenization → Expansion → Execution
 
 TODO:
 
-[ ] lexer error with whitespace: ls|cat
 [ ] resolve minor differences between bash and minishell:
-	[ ] wrong error msg on cmds that have illegal names
 	[ ] special msg for removed current working directory with cd
 	also those one but should be ignored imho. really out of scope:
 	([ ] wrong expansion with : echo $9HOME)
 	([ ] wrong expansion with : echo $$$$$$$$$$$HOME)
-[ ] leaks
+[ ] all free and all leaks
 [ ] Norm and clean code:
 	[ ] remove unused functions
 	[ ] macros for all error strings
