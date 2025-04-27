@@ -64,8 +64,6 @@ int	exec_builtin(char **args, t_ast_node *node, t_minishell *sh)
 		sh->last_exit = ft_env(sh->env_list);
 	if (is_equal(args[0], "exit"))	//maybe should free node here
 		ft_exit(ac, args + 1, sh);
-	if (args)
-		free_str_list(args);
 	return (0);
 }
 
@@ -77,7 +75,9 @@ int	execute_command(char *name, char **args, char **envp, t_minishell *sh)
 	{
 		saved_er = errno;
 		error_execution(saved_er, name);	// args[0] is not the command name anymore
-		free_all_struct(sh, args, envp);
+		free_struct(sh);
+		if (envp)
+			free_str_list(envp);
 		free(name);
 		exit(1);
 	}
@@ -103,7 +103,6 @@ int	exec_external(char *name, char **args, t_minishell *s)
 	waitpid(g_signal_pid, &status, 0);
 	s->last_exit = status;
 	free_str_list(envp);
-	free_str_list(args);
 	free(name);
 	return (status);		// should I exit or return?
 }

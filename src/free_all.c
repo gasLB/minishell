@@ -73,12 +73,25 @@ void	free_str_list(char **lst)
 	}
 	free(lst);
 }
-/*
+
 void	free_redirect(t_redir_node *red)
 {
+	t_redir_node	*n;
+	t_redir_node	*curr;
 
+	if (!red)
+		return;
+	curr = red;
+	while (curr)
+	{
+		n = curr->next;
+		if (curr->str)
+			free(curr->str);
+		free(curr);
+		curr = n;
+	}
 }
-*/
+
 void	free_ast(t_ast_node *node)
 {
 	if (!node)
@@ -91,16 +104,14 @@ void	free_ast(t_ast_node *node)
 	if (node->right && node->right->visited != 2)
 		free_ast(node->right);
 	if (node->args)
-		(free_str_list(node->args), node->args = NULL);
-	/*
+		free_str_list(node->args);
 	if (node->redirect)
 		free_redirect(node->redirect);
-	*/
 	if (node)
 		free(node);
 }
 
-void	free_all_struct(t_minishell *sh, char **arg_list, char **envp)
+void	free_struct(t_minishell *sh)
 {
 	free_env_list(sh->env_list);
 	free_ast(sh->ast);
@@ -108,7 +119,6 @@ void	free_all_struct(t_minishell *sh, char **arg_list, char **envp)
 		free(sh->pipe_fds);
 	close(sh->original_stdin);
 	close(sh->original_stdout);
+	free(sh->line);
 	free(sh);	
-	free_str_list(arg_list);
-	free_str_list(envp);
 }

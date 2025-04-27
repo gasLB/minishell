@@ -74,6 +74,7 @@ typedef struct s_minishell
 	int		last_exit;
 	int		original_stdin;
 	int		original_stdout;
+	char		*line;
 }	t_minishell;
 
 enum token_types
@@ -148,7 +149,7 @@ t_token	**populate_tokens(int ac, char **av);
 
 // free_all.c
 void	free_str_list(char **lst);
-void	free_all_struct(t_minishell *sh, char **arg_list, char **envp);
+void	free_struct(t_minishell *sh);
 void	free_token_list(t_token **tk_list);
 void	free_ast(t_ast_node *node);
 
@@ -181,7 +182,7 @@ void	function_dfs_ast(t_ast_node *node, t_minishell *sh, int (*f)(t_ast_node *, 
 t_redir_node	*set_one_redir(t_redir_node *redir, t_token ***tkp);
 
 // here_doc.c
-int	here_doc(char *lim, char **args, t_minishell *sh);
+int	here_doc(char *lim, t_minishell *sh);
 
 // error.c
 int	printf_fd(int fd, const char *s, ...);

@@ -43,6 +43,8 @@ t_minishell	*init_shell(t_env_list *env_list)
 	sh->last_exit = 0;
 	sh->pipe_count = 0;
 	sh->pipe_fds = NULL;
+	sh->line = NULL;
+	sh->ast = NULL;
 	sh->original_stdin = dup(STDIN_FILENO);
 	sh->original_stdout = dup(STDOUT_FILENO);
 	return (sh);
@@ -88,30 +90,33 @@ int	only_space(char *str)
 void	minishell(t_minishell *sh, t_env_list *env_list)
 {
 	t_token		**token_list;
-	t_ast_node	*ast;
-	char		*rl;
 
 	while (1)
 	{
 		set_standard_fds(sh);
-		rl = readline("\e[35m\e[1mMinishell> \e[0m");
-		if (rl == NULL)
+		sh->line = readline("\e[35m\e[1mMinishell> \e[0m");
+		if (sh->line == NULL)
 			(ft_printf("\n"), exit(0));
-		if (only_space(rl))
+		if (only_space(sh->line))
+		{
+			free(sh->line);
 			continue;
-		add_history(rl);
-		token_list = init_token_list(rl);	// needs to be NULL-terminated
+		}	
+		add_history(sh->line);
+		token_list = init_token_list(sh->line);	// needs to be NULL-terminated
 		set_each_token_type(&token_list, -1);
 		if (check_syntax(token_list, sh) != 0)
 			continue;
 		token_list = expand_tokens(token_list, sh, env_list);
-		ast = create_ast(token_list);
+		sh->ast = create_ast(token_list);
 		free_token_list(token_list);
-		dfs_ast(ast, sh);
-		free(rl);
+		dfs_ast(sh->ast, sh);
+		free(sh->line);
+		if (sh->ast)
+			free_ast(sh->ast);
 		g_signal_pid = 0;
 	}
-	free_all_struct(sh, NULL, NULL);
+	free_struct(sh);
 }
 
 int	main(int ac, char **av, char **env)

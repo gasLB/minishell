@@ -60,6 +60,7 @@ int	get_precedence(t_token *token)
 //
 // I forgot the pipe scenario
 
+// args[0] is apparently never freed
 t_ast_node	*parse_command(t_token ***tk_list_pt)
 {
 	char	**args;

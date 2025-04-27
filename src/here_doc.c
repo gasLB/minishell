@@ -63,7 +63,7 @@ int	get_next_line_input(char **line)
 // pb with the opened pipes in child process. They need to be closed
 // It is possible that same problem occur with exit
 
-int	here_doc(char *lim, char **args, t_minishell *sh)
+int	here_doc(char *lim, t_minishell *sh)
 {
 	int	fd[2];
 	int	pid;
@@ -80,7 +80,7 @@ int	here_doc(char *lim, char **args, t_minishell *sh)
 			if (compare_line(line, lim) == 0)
 			{
 				(close(fd[1]), close_all_pipes(sh));
-				(free_all_struct(sh, args, NULL), free(line));
+				(free_struct(sh), free(line));
 				exit(EXIT_SUCCESS);
 			}
 			ft_putstr_fd(line, fd[1]);

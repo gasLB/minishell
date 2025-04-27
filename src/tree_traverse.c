@@ -45,8 +45,18 @@ void	dfs_ast(t_ast_node *node, t_minishell *sh)
 
 void	add_pipe_fd(int fd1, int fd2, t_minishell *sh)
 {
+	if (sh->pipe_count + 2 >= MAX_FD)
+	{
+		printf_fd(2, "Error: Too many open pipes\n");
+		return;
+	}
 	if (!sh->pipe_fds)
+	{
 		sh->pipe_fds = malloc(MAX_FD * sizeof(int));
+		if (!sh->pipe_fds)
+			return;
+		sh->pipe_count = 0;
+	}
 	sh->pipe_fds[sh->pipe_count++] = fd1;
 	sh->pipe_fds[sh->pipe_count++] = fd2;
 }
