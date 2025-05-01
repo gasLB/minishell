@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 14:31:39 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/16 15:03:01 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/01 15:45:49 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,6 @@ static t_form	set_output_fd(t_form form, va_list apt)
 		return (fter_prct(form, apt));
 	else
 		return (new_formatter());
-}
-static int	putncount_fd(int fd, char c)
-{
-	ft_putchar_fd(c, fd);
-	return (1);
 }
 
 static char	*increment_s(char *s)
@@ -100,7 +95,7 @@ int	printf_fd(int fd, const char *s, ...)
 			}
 		}
 		else
-			count += putncount_fd(fd, *s);
+			(ft_putchar_fd(*s, fd), count++);
 		if (*s)
 			s++;
 	}

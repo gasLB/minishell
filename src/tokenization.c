@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 12:50:10 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/08 17:47:03 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/01 17:20:28 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 
 void	init_quote_n_value(t_token *token, char *q_mask, char *val, char *str)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
 	char	c;
 	char	new;
 

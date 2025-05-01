@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:55:46 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/08 18:07:04 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/01 16:20:17 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,17 @@
 #include "minishell.h"
 #include <unistd.h>
 #include <stdlib.h>
+
+int	translation(char **res, t_token *tk, int i)
+{
+	int	begin;
+
+	begin = i;
+	while (tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D')
+		i++;
+	*res = append_str(*res, ft_substr(tk->value, begin, i + 1));
+	return (i);
+}
 
 char	*init_str(void)
 {
@@ -47,7 +58,7 @@ int	handle_tilde(char **res, t_token *tk, t_env_list *env)
 char	**expanded_list(int ac, t_token **tk_list)
 {
 	char	**exp_list;
-	int	i;
+	int		i;
 
 	i = 0;
 	exp_list = malloc((ac + 1) * sizeof(char *));

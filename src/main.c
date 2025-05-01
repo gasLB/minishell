@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 18:38:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/24 15:21:48 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/01 18:13:00 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,75 +50,6 @@ t_minishell	*init_shell(t_env_list *env_list)
 	return (sh);
 }
 
-void	print_tokens(t_token **tk_list)
-{
-	int	i;
-
-	i = 0;
-	while (tk_list[i])
-	{
-		ft_printf("--- %d ---\n", i);
-		ft_printf("value : %s\n", tk_list[i]->value);
-		ft_printf("type : %d\n", tk_list[i]->type);
-		ft_printf("quote mask : %s\n", tk_list[i]->quote_mask);
-		ft_printf("exp value : %s\n", tk_list[i]->expanded_value);
-		ft_printf("---------\n");
-		i++;
-	}
-}
-
-void	set_standard_fds(t_minishell *sh)
-{
-	dup2(sh->original_stdin, STDIN_FILENO);
-	dup2(sh->original_stdout, STDOUT_FILENO);
-}
-
-int	only_space(char *str)
-{
-	int	i;
-	
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] != ' ' && str[i] != '\t')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-void	minishell(t_minishell *sh, t_env_list *env_list)
-{
-	t_token		**token_list;
-
-	while (1)
-	{
-		set_standard_fds(sh);
-		sh->line = readline("\e[35m\e[1mMinishell> \e[0m");
-		if (sh->line == NULL)
-			(ft_printf("\n"), exit(0));
-		if (only_space(sh->line))
-		{
-			free(sh->line);
-			continue;
-		}	
-		add_history(sh->line);
-		token_list = init_token_list(sh->line);	// needs to be NULL-terminated
-		set_each_token_type(&token_list, -1);
-		if (check_syntax(token_list, sh) != 0)
-			continue;
-		token_list = expand_tokens(token_list, sh, env_list);
-		sh->ast = create_ast(token_list);
-		free_token_list(token_list);
-		dfs_ast(sh->ast, sh);
-		free(sh->line);
-		if (sh->ast)
-			free_ast(sh->ast);
-		g_signal_pid = 0;
-	}
-	free_struct(sh);
-}
-
 int	main(int ac, char **av, char **env)
 {
 	t_env_list	*env_list;
@@ -127,7 +58,7 @@ int	main(int ac, char **av, char **env)
 	(void)ac;
 	(void)av;
 	minishell_start();
-	env_list = populate_env(env);
+	env_list = populate_env(env, -1);
 	sh = init_shell(env_list);
 	minishell(sh, env_list);
 	return (0);
@@ -142,14 +73,7 @@ then free tk_list
 then traverse the AST and execute with dfs_ast
 Raw input → Tokenization → Expansion → Execution
 
-TODO:
+ERRORS:
 
-([ ] wrong expansion with : echo $9HOME)
-([ ] wrong expansion with : echo $$$$$$$$$$$HOME)	-> should not be handled
-
-[ ] all free and all leaks
-[ ] Norm and clean code:
-	[ ] remove unused functions
-	[ ] macros for all error strings
-[ ] write proper Makefile
+- [ ] leaks with args and not found command -> rebuild this part
 */

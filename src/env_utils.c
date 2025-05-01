@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:41:29 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/22 20:10:47 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/01 15:41:14 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ void	ft_unsetenv(char *name, t_env_list *env)
 		if (is_equal(name, (node->next)->key))
 		{
 			to_remove = node->next;
-			node->next = to_remove->next;	
+			node->next = to_remove->next;
 			unset_node(to_remove);
-			break;
+			break ;
 		}
 		node = node->next;
 	}
@@ -53,7 +53,7 @@ int	ft_setenv(char *key, char *value, int overwrite, t_env_list *env)
 {
 	t_env_node	*node;
 	t_env_node	*new_node;
-	
+
 	node = env->head;
 	while (node->next)
 	{
@@ -62,7 +62,7 @@ int	ft_setenv(char *key, char *value, int overwrite, t_env_list *env)
 			if (overwrite && value)
 			{
 				free(node->value);
-				node->value = ft_strdup(value); // should I duplicate ?
+				node->value = ft_strdup(value);
 			}
 			else if (value)
 				node->value = append_str(node->value, value);

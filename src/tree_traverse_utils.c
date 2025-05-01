@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_types.c                                      :+:      :+:    :+:   */
+/*   tree_traverse_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/17 21:38:04 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 14:25:44 by gfontagn         ###   ########.fr       */
+/*   Created: 2025/05/01 17:33:41 by gfontagn          #+#    #+#             */
+/*   Updated: 2025/05/01 17:34:31 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,19 @@
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 #include <stdlib.h>
+#include <unistd.h>
 
-int	is_redirect(int type)
+int	null_cmd_node(t_ast_node *node, t_minishell *sh)
 {
-	return (type >= IN && type <= APPEND);
+	if (!node || !node->redirect)
+		return (1);
+	return (set_redirections(node->args, node->redirect, sh));
 }
 
-int	is_operator(int type)
+int	is_directory(char **args)
 {
-	return (type == OR || type == AND);
-}
-
-int	is_command(int type)
-{
-	return (type == CMD);
-}
-
-int	is_pipe(int type)
-{
-	return (type == PIPE);
-}
-
-int	is_file(int type)
-{
-	return (type == FILENAME);
+	if (args[0][0] != '/')
+		return (0);
+	printf_fd(2, "minishell: %s: Is a directory\n", args[0]);
+	return (1);
 }

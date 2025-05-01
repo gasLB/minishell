@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 13:28:44 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/08 18:08:19 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/01 16:24:50 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,6 @@
 #include "minishell.h"
 #include <stdlib.h>
 #include <unistd.h>
-
-/*
-What is to be freed ?
--> the shell element
--> env_list + all its nodes + keys (+ values)
--> token_list + all tokens + values, q_masks, expanded_values
--> arg_list
-*/
 
 void	free_env_list(t_env_list *env_list)
 {
@@ -49,11 +41,11 @@ void	free_token_list(t_token **tk_list)
 	i = 0;
 	while (tk_list[i])
 	{
-		//ft_printf("tk_list[%d]: value: %s, expanded: %s, quote: %s\n", i, tk_list[i]->value, tk_list[i]->expanded_value, tk_list[i]->quote_mask);
 		free(tk_list[i]->value);
 		free(tk_list[i]->quote_mask);
 		free(tk_list[i]->expanded_value);
 		free(tk_list[i]);
+		tk_list[i] = NULL;
 		i++;
 	}
 	free(tk_list);
@@ -64,7 +56,7 @@ void	free_str_list(char **lst)
 	int	i;
 
 	if (!lst)
-		return;
+		return ;
 	i = 0;
 	while (lst[i])
 	{
@@ -72,53 +64,22 @@ void	free_str_list(char **lst)
 		i++;
 	}
 	free(lst);
-}
-
-void	free_redirect(t_redir_node *red)
-{
-	t_redir_node	*n;
-	t_redir_node	*curr;
-
-	if (!red)
-		return;
-	curr = red;
-	while (curr)
-	{
-		n = curr->next;
-		if (curr->str)
-			free(curr->str);
-		free(curr);
-		curr = n;
-	}
-}
-
-void	free_ast(t_ast_node *node)
-{
-	if (!node)
-		return;
-	if (node->visited == 2)
-		return;
-	node->visited = 2;
-	if (node->left && node->left->visited != 2)
-		free_ast(node->left);
-	if (node->right && node->right->visited != 2)
-		free_ast(node->right);
-	if (node->args)
-		free_str_list(node->args);
-	if (node->redirect)
-		free_redirect(node->redirect);
-	if (node)
-		free(node);
+	lst = NULL;
 }
 
 void	free_struct(t_minishell *sh)
 {
-	free_env_list(sh->env_list);
-	free_ast(sh->ast);
+	if (!sh)
+		return ;
+	if (sh->env_list)
+		free_env_list(sh->env_list);
+	if (sh->ast)
+		free_ast(sh->ast);
 	if (sh->pipe_fds)
 		free(sh->pipe_fds);
 	close(sh->original_stdin);
 	close(sh->original_stdout);
-	free(sh->line);
-	free(sh);	
+	if (sh->line)
+		free(sh->line);
+	free(sh);
 }

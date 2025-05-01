@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:58:56 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/24 15:21:14 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/01 16:57:16 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,23 +34,3 @@ void	set_signals(void)
 	signal(SIGINT, &handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 }
-
-
-/*
-
-I don't understand how signals are really handled
-I should dig deepe
-handled signals:
-
-ctrl-C: displays a new prompt on a new line (^C written)
-ctrl-D: exit the shell (exit written)
-ctrl-\: does nothing
-
-
-ctrl-D exits only when on readline with nothing written
-
-The only way to access it is through terminal API: tty or termios
-
-
-only at the initialization or during the parent process
-*/

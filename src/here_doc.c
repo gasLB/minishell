@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 17:15:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/04/16 15:34:39 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/01 16:26:00 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,10 @@ int	get_next_line_input(char **line)
 	return (1);
 }
 
-// pb with the opened pipes in child process. They need to be closed
-// It is possible that same problem occur with exit
-
 int	here_doc(char *lim, t_minishell *sh)
 {
-	int	fd[2];
-	int	pid;
+	int		fd[2];
+	int		pid;
 	char	*line;
 
 	if (pipe(fd) == -1)

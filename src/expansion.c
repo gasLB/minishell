@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 12:28:51 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/03/20 18:00:48 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/01 16:19:36 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-// maybe it's here
-// it must not just check the type of the next, but check if it corresponds to
-// the one of $
 int	is_expandable(char *str, char *q_mask, int i)
 {
 	char	next;
@@ -31,7 +28,7 @@ int	is_expandable(char *str, char *q_mask, int i)
 	else if (str[i] == '$')
 	{
 		next = str[i + 1];
-		if (next == '\0')	
+		if (next == '\0')
 			return (0);
 		if (q_mask[i] == 'D' && q_mask[i + 1] != 'D')
 			return (0);
@@ -40,18 +37,7 @@ int	is_expandable(char *str, char *q_mask, int i)
 	return (0);
 }
 
-int	translation(char **res, t_token *tk, int i)
-{
-	int	begin;
-
-	begin = i;
-	while (tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D')
-		i++;
-	*res = append_str(*res, ft_substr(tk->value, begin, i + 1));
-	return (i);
-}
-
-int	is_valid_char_inside(char c_str, char c_q, char current)
+int	is_valid_inside(char c_str, char c_q, char current)
 {
 	if (!c_str || !c_q)
 		return (0);
@@ -65,13 +51,13 @@ int	is_valid_char_inside(char c_str, char c_q, char current)
 
 int	look_for_env_variable(char **res, t_token *tk, int i, t_env_list *env)
 {
-	int	begin;
+	int		begin;
 	char	*env_var;
 	char	current_q;
 
 	begin = i;
 	current_q = tk->quote_mask[i];
-	while (is_valid_char_inside(tk->value[i], tk->quote_mask[i], current_q))
+	while (is_valid_inside(tk->value[i], tk->quote_mask[i], current_q))
 		i++;
 	env_var = ft_getenv(ft_substr(tk->value, begin, i - begin), env);
 	if (!env_var)
@@ -79,18 +65,17 @@ int	look_for_env_variable(char **res, t_token *tk, int i, t_env_list *env)
 	else
 		*res = append_str(*res, ft_strdup(env_var));
 	return (i);
-	// problem: need to pudate i even if no env is found
 }
 
-char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env)
+char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env, int i)
 {
 	char	*res;
-	int	begin;
-	int	i;
+	int		begin;
 
-	(i = 0, begin = 0, res = init_str());
+	begin = 0;
+	res = init_str();
 	if (!res)
-		return(NULL);
+		return (NULL);
 	i = handle_tilde(&res, tk, env);
 	while (tk->value[i])
 	{
@@ -98,12 +83,12 @@ char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env)
 			i++;
 		res = append_str(res, ft_substr(tk->value, begin, i - begin));
 		if (!tk->value[i++])
-			break;
+			break ;
 		if ((tk->quote_mask[i - 1] == 'N') && \
 			(tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D'))
 			i = translation(&res, tk, i);
-		else if (tk->value[i] == '?')
-			(res = append_str(res, ft_itoa(sh->last_exit)), i++);
+		else if (tk->value[i++] == '?')
+			res = append_str(res, ft_itoa(sh->last_exit));
 		else
 			i = look_for_env_variable(&res, tk, i, env);
 		begin = i;
@@ -113,7 +98,7 @@ char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env)
 
 t_token	**expand_tokens(t_token **tk_list, t_minishell *sh, t_env_list *env)
 {
-	int	i;
+	int		i;
 	t_token	*tk;
 
 	i = 0;
@@ -123,208 +108,8 @@ t_token	**expand_tokens(t_token **tk_list, t_minishell *sh, t_env_list *env)
 		if (i >= 1 && tk_list[i - 1]->type == HD)
 			tk->expanded_value = ft_strdup(tk->value);
 		else
-			tk->expanded_value = expand_variable(tk, sh, env);
+			tk->expanded_value = expand_variable(tk, sh, env, 0);
 		i++;
 	}
 	return (tk_list);
 }
-
-/*
-
-should check if the changes of quote_status from the $ and not only from the 
-name's start
-
-*/
-
-// I will focus on wildcards later (with the bonuses)
-// what's up with the numbers? 
-// echo $987
-// -> 87
-// We first need a global function that takes as input the list of arguments
-// Wildcards are res AFTER variables
-
-/*
- 
-1) VARIABLES EXPANSION
-
-$: nothing.
-
-$?: The exit status of the most recently executed command
-$ABCab_32 : valid variable name -> search for it in env. If not found, returns nothing
-$PATH-abc: valid until '-' -> search for PATH and appends '-abc' next to it
-$HOME$?$-$!: valid, each block attached to each other. If HOME is not found, return just $?$-$!
-
-\$USER: just the string '$USER' -> '\' preserve litteral meaning of next character
-'\'$HOME: \/home/user -> escape the \ with single quotes
-'$VAR': return litteral string $VAR
-
-'"$?"': "$?"
-'"'$?'"': "0"
-"'$?'": '0'
-""'$?'"": $?
-
-2) WILDCARDS
-
-*: any string of characters
-ab*: all files starting with 'ab' (including 'ab' itslef)
-*slash*: all files in subdirectories
-$CWD*: all files in CWD
-"*": wildcard are treated as litterals inside double quotes
-
-
-
-just after the $ -> check if special char among $?!0#*-
-
-We define 2 types of groupings inside each variable: litteral groupings and expandables groupings
-Expandable groupings have a valid name. 
-In bash, Variable names must start with a letter or underscore, followed by any combination of letters, numbers, or underscores
-They refer to an environment variable (or special code) that may exist or not
-
-Litteral groupings are just treated as character strings
-
-
-       VARIABLE	abc$HOME-def$PATHabc7$?$+g$	
-
-       		abc $HOME -def $PATHabc7 $? $+g $
-       		--- ----- ---- --------- -- --- -
-       TYPE:		 L    E     L      E     E   L  L
-       EXIST:		      Y            N     Y     
-
-       RESULT:		abc /home/gfontagn -def 0 $+g $
-
-       (concatenated)	abc/home/gfontagn-def0$+g$
-
-
-IMPLEMENTATION
-
-We iterate on initial value. Current grouping is treated as litteral until we find a $:
-	- we write the current grouping.
-	- if $-grouping is not valid (we know by character next to $), treated as litteral until we find a $
-	- if $-grouping is valid, we try to expand it:
-		- if $-grouping doesn't refer to existing variable, we skip it
-		- if $-grouping refers to existing variable, we write it
-
-
-first, I will test this function with echo without taking into account quotes
-now implement q_mask and  handling for cases like $HOME/something 
-
-MASK:
-
-B (backslash)
-S (single quote)
-D (double quote)
-N (no quote)
-
-echo $string		:	NNNNNNN
-->
-echo $"string"		:	NDDDDDD
--> string
-echo $'string'		:	NSSSSSS
--> string
-echo $""		:	N	(!special case: empty str after $)
--> 
-echo " $ "		:	DDD
-->  $  
-echo ab"cde"		:	NNDDD
-->abcde
-echo "ab""cde"		:	DDDDD
--> abcde
-echo 'ab'cde		:	SSNNN
-->abcde
-echo 'ab'"cde"		:	SSDDD
-->abcde
-echo ''ab''		:	NN
--> ab
-echo ""ab""		:	NN
--> ab
-echo "'ab'"		:	DDDD
-->'ab'
-echo '"ab"'		:	SSSS
-->"ab"
-echo ""'ab'""		:	SS
--> ab
-echo ''"ab"''		:	DD
--> ab
-echo ""''ab''""		:	NN
--> ab
-echo '"'ab'"'		:	SNNS
-->"ab"
-echo "'"ab"'"		:	DNND
-->'ab'
-echo '"'"ab"'"'		:	SDDS
--> "ab"
-echo "'"'ab'"'"		:	DSSD
--> 'ab'
-echo abc\d		:	NNNBN
--> abcd
-echo 'abc\d'		:	SSSSS
--> abc\d
-echo "abc\d"		:	DDDDD
--> abc\d
-echo \$HOME		:	BNNNN
--> $HOME
-echo "$"HOME		:	DNNNN
--> $HOME
-echo "$HO"ME		:	DDDNN
--> ME
-echo $'\?'		:	NSS
--> ?
-echo ~
--> /home/gfontagn
-echo "~"
--> ~
-echo '~'
--> ~
-echo ~a
--> ~a
-echo a~
--> a~
-echo ~/
--> /home/gfontagn/
-echo ~/abc
--> /home/gfontagn/abc
-echo ~/~
--> /home/gfontagn/~
-echo ~$HOME
--> ~/home/gfontagn
-echo ~/"abcd"
--> /home/gfontagn/rere
-echo ~/$HOME
--> /home/gfontagn//home/gfontagn
-echo *
--> a.c b.cc.c text.md ...
-echo exp*
--> expansion.c expansion_utils.c
-echo "exp"*'c'
--> expansion.c expansion_utils.c
-echo exp*prout
--> exp*prout
-echo $HOME*prout
--> /home/gfontagn*prout
-echo *exp$HOME
--> *exp/home/gfontagn
-echo ab"$cd"ef
--> abef
-echo ab'$cd'ef
--> ab$cdef
-echo ab$cdef
--> ab
-
-
-
- Special cases:
- Inside double quotes, backslash retains its special meaning ONLY for certain characters:
-
-    \" - escapes a double quote
-    \\ - escapes a backslash
-    \$ - escapes a dollar sign
-    ``` - escapes a backtick
-    \! - escapes history expansion (when enabled)
-    \newline - line continuation
-
-
-*/
-// What to do if not valid sequence? ( like unclosed quote)
-// fuck it for now
-//
-

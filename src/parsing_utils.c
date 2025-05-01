@@ -1,0 +1,91 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_utils.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/01 16:36:03 by gfontagn          #+#    #+#             */
+/*   Updated: 2025/05/01 16:56:43 by gfontagn         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../libftprintf/libft/libft.h"
+#include "../libftprintf/include/ft_printf_bonus.h"
+#include "minishell.h"
+#include <stdlib.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+
+char	set_quote_character(char c, char new)
+{
+	if ((c == 'D' && new == '"') || (c == 'S' && new == '\''))
+		return ('N');
+	else if (c == 'N' && new == '"')
+		return ('D');
+	else if (c == 'N' && new == '\'')
+		return ('S');
+	return (c);
+}
+
+int	token_basic_type(t_token *token)
+{
+	if (is_equal(token->value, "<") && is_equal(token->quote_mask, "N"))
+		return (IN);
+	if (is_equal(token->value, "<<") && is_equal(token->quote_mask, "NN"))
+		return (HD);
+	if (is_equal(token->value, ">") && is_equal(token->quote_mask, "N"))
+		return (TRUNC);
+	if (is_equal(token->value, ">>") && is_equal(token->quote_mask, "NN"))
+		return (APPEND);
+	if (is_equal(token->value, "|") && is_equal(token->quote_mask, "N"))
+		return (PIPE);
+	if (is_equal(token->value, "&&") && is_equal(token->quote_mask, "NN"))
+		return (AND);
+	if (is_equal(token->value, "||") && is_equal(token->quote_mask, "NN"))
+		return (OR);
+	return (-1);
+}
+
+int	end_op(char *line, int end, char quote)
+{
+	char	le;
+
+	if (!line[end])
+		return (0);
+	le = line[end];
+	if (quote == 'N' && (le == '<' || le == '>' || le == '|' || le == '&'))
+	{
+		if (line[end + 1] && \
+			((line[end] == '<' && line[end + 1] == '<') || \
+			(line[end] == '>' && line[end + 1] == '>') || \
+			(line[end] == '|' && line[end + 1] == '|') || \
+			(line[end] == '&' && line[end + 1] == '&')))
+		{
+			return (2);
+		}
+		else
+			return (1);
+	}
+	return (0);
+}
+
+char	*correct_substr(char *line, int start, int end)
+{
+	if (line[end] == '\0')
+		return (ft_substr(line, start, end - start + 1));
+	return (ft_substr(line, start, end - start));
+}
+
+int	update_token_end(char *line, char quote, int end)
+{
+	while (line[end])
+	{
+		quote = set_quote_character(quote, line[end]);
+		if (quote == 'N' && \
+			(line[end] == ' ' || end_op(line, end, quote)))
+			break ;
+		end++;
+	}
+	return (end);
+}
