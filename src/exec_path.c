@@ -105,6 +105,5 @@ char	*find_path(char *name, t_minishell *sh)
 	path = look_for_path(name, common_paths);
 	if (common_paths)
 		free_str_list(common_paths);
-	free(name);
 	return (path);
 }

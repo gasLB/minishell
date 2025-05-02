@@ -76,4 +76,5 @@ Raw input → Tokenization → Expansion → Execution
 ERRORS:
 
 - [ ] leaks with args and not found command -> rebuild this part
+- [ ] remake expansion with examples like "$HO""ME"
 */

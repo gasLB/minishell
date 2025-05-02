@@ -90,6 +90,7 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 {
 	char	**args;
 	char	*cmd_name;
+	char	*cmd_path;
 
 	args = node->args;
 	if (!args[0])
@@ -101,12 +102,14 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 	if (is_builtin(args[0]))
 		return (exec_builtin(args, sh));
 	cmd_name = ft_strdup(args[0]);
-	args[0] = find_path(args[0], sh);
-	if (!args[0])
+	cmd_path = find_path(cmd_name, sh);
+	if (!cmd_path)
 	{
-		node->args++;
 		free(cmd_name);
 		return (1);
 	}
+	if (args[0])
+		free(args[0]);
+	args[0] = cmd_path;
 	return (exec_external(cmd_name, args, sh));
 }
