@@ -220,14 +220,13 @@ int			is_pipe(int type);
 int			is_file(int type);
 
 // parsing.c
-char		set_quote_character(char c, char new);
+char		get_quote_character(char c, char new, int i, int *last);
 t_token		**init_token_list(char *line);
 void		set_each_token_type(t_token ***tk_list_pt, int grp);
 int			check_syntax(t_token **tk_list, t_minishell *sh);
 int			end_op(char *line, int end, char quote);
 
 // parsing_utils
-char		set_quote_character(char c, char new);
 char		*correct_substr(char *line, int start, int end);
 int			update_token_end(char *line, char quote, int end);
 int			token_basic_type(t_token *token);

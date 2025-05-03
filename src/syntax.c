@@ -83,7 +83,7 @@ int	check_syntax(t_token **tk_list, t_minishell *sh)
 	int	type;
 
 	type = tk_list[0]->type;
-	if (!type)
+	if (type == -1)
 		return (0);
 	index = check_first_last_token(tk_list);
 	if (index != -1)

@@ -75,6 +75,16 @@ Raw input → Tokenization → Expansion → Execution
 
 ERRORS:
 
-- [ ] leaks with args and not found command -> rebuild this part
+- [X] leaks with args and not found command -> rebuild thiso part
+- [X] rebuild translation
 - [ ] remake expansion with examples like "$HO""ME"
+	-> there is smth I got wrong here. 
+
+Why does those are note fully expanded?
+- $""HOME
+- "$HO""ME"
+
+-> first case is translation (moins grave)
+-> second is really the only case I have to worry about
+$
 */

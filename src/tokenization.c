@@ -15,7 +15,34 @@
 #include "minishell.h"
 #include <stdlib.h>
 
-void	init_quote_n_value(t_token *token, char *q_mask, char *val, char *str)
+char	get_quote_character(char c, char new, int i, int *last)
+{
+	if ((c == 'D' && new == '"') || (c == 'S' && new == '\''))
+	{
+		if (last)
+			*last =  i;
+		return ('N');
+	}
+	else if (c == 'N' && new == '"')
+		return ('D');
+	else if (c == 'N' && new == '\'')
+		return ('S');
+	return (c);
+}
+
+int	check_end(char *str, int i, int last)
+{
+	if (i > 0 && last == i - 1)
+	{
+		if (str[i - 1] == '"' && str[i] == '"')
+			return (1);
+		if (str[i - 1] == '\'' && str[i] == '\'')
+			return (1);
+	}
+	return (0);
+}
+
+void	init_quote_n_value(char *val, char *q_mask, char *str, int last_end)
 {
 	int		i;
 	int		j;
@@ -27,41 +54,40 @@ void	init_quote_n_value(t_token *token, char *q_mask, char *val, char *str)
 	c = 'N';
 	while (str[i])
 	{
-		new = set_quote_character(c, str[i]);
-		if (new != c)
+		new = get_quote_character(c, str[i], i, &last_end);
+		if (new != c && !check_end(str, i, last_end))
 			c = new;
 		else
 		{
-			q_mask[j] = c;
-			val[j] = str[i];
-			j++;
+			if (check_end(str, i, last_end))
+				q_mask[j] = 'T';
+			else
+			{
+				q_mask[j] = c;
+				val[j++] = str[i];
+			}
 		}
 		i++;
 	}
-	token->value = val;
-	token->quote_mask = q_mask;
 }
 
 t_token	*init_token(char *str)
 {
 	t_token	*token;
-	char	*val;
-	char	*q_mask;
 
 	token = malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
-	token->value = NULL;
 	token->type = -1;
 	token->expanded_value = NULL;
-	token->quote_mask = NULL;
-	q_mask = ft_calloc(ft_strlen(str) + 1, sizeof(char));
-	if (!q_mask)
+	token->quote_mask = ft_calloc(ft_strlen(str) + 1, sizeof(char));
+	if (!token->quote_mask)
 		return (NULL);
-	val = ft_calloc(ft_strlen(str) + 1, sizeof(char));
-	if (!val)
+	token->value = ft_calloc(ft_strlen(str) + 1, sizeof(char));
+	if (!token->value)
 		return (NULL);
-	init_quote_n_value(token, q_mask, val, str);
+	init_quote_n_value(token->value, token->quote_mask, str, -1);
 	free(str);
 	return (token);
 }
+// I will rebuild this by splitting it into 2 functions

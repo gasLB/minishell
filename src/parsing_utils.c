@@ -17,17 +17,6 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-char	set_quote_character(char c, char new)
-{
-	if ((c == 'D' && new == '"') || (c == 'S' && new == '\''))
-		return ('N');
-	else if (c == 'N' && new == '"')
-		return ('D');
-	else if (c == 'N' && new == '\'')
-		return ('S');
-	return (c);
-}
-
 int	token_basic_type(t_token *token)
 {
 	if (is_equal(token->value, "<") && is_equal(token->quote_mask, "N"))
@@ -81,7 +70,7 @@ int	update_token_end(char *line, char quote, int end)
 {
 	while (line[end])
 	{
-		quote = set_quote_character(quote, line[end]);
+		quote = get_quote_character(quote, line[end], end, NULL);
 		if (quote == 'N' && \
 			(line[end] == ' ' || end_op(line, end, quote)))
 			break ;

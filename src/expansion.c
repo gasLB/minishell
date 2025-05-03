@@ -41,6 +41,8 @@ int	is_valid_inside(char c_str, char c_q, char current)
 {
 	if (!c_str || !c_q)
 		return (0);
+	if (c_q == 'T')
+		return (0);
 	else if (c_str != '$' && (ft_isalnum(c_str) || c_str == '_'))
 	{
 		if (c_q != 'S' && c_q == current)
