@@ -44,6 +44,7 @@ void	free_token_list(t_token **tk_list)
 		free(tk_list[i]->value);
 		free(tk_list[i]->quote_mask);
 		free(tk_list[i]->expanded_value);
+		free(tk_list[i]->transition_mask);
 		free(tk_list[i]);
 		tk_list[i] = NULL;
 		i++;

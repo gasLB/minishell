@@ -20,7 +20,7 @@ char	get_quote_character(char c, char new, int i, int *last)
 	if ((c == 'D' && new == '"') || (c == 'S' && new == '\''))
 	{
 		if (last)
-			*last =  i;
+			*last = i;
 		return ('N');
 	}
 	else if (c == 'N' && new == '"')
@@ -30,42 +30,48 @@ char	get_quote_character(char c, char new, int i, int *last)
 	return (c);
 }
 
-int	check_end(char *str, int i, int last)
+char	get_transition(char *str, int i, int last)
 {
+	if (i > 1 && last == i - 2)
+	{
+		if (str[last] == '"' && str[i - 1] == '"')
+			return ('d');
+		if (str[last] == '\'' && str[i - 1] == '\'')
+			return ('s');
+	}
 	if (i > 0 && last == i - 1)
 	{
-		if (str[i - 1] == '"' && str[i] == '"')
-			return (1);
-		if (str[i - 1] == '\'' && str[i] == '\'')
-			return (1);
+		if (str[last] == '"' && str[i] != '"')
+			return ('d');
+		if (str[last] == '\'' && str[i] != '\'')
+			return ('s');
 	}
-	return (0);
+	return ('n');
 }
 
-void	init_quote_n_value(char *val, char *q_mask, char *str, int last_end)
+void	init_quote_n_value(char *val, char *q_mask, char *tr_mask, char *str)
 {
 	int		i;
 	int		j;
 	char	c;
 	char	new;
+	int		last_end;
 
+	last_end = -1;
 	i = 0;
 	j = 0;
 	c = 'N';
 	while (str[i])
 	{
 		new = get_quote_character(c, str[i], i, &last_end);
-		if (new != c && !check_end(str, i, last_end))
+		if (new != c)
 			c = new;
 		else
 		{
-			if (check_end(str, i, last_end))
-				q_mask[j] = 'T';
-			else
-			{
-				q_mask[j] = c;
-				val[j++] = str[i];
-			}
+			q_mask[j] = c;
+			val[j] = str[i];
+			tr_mask[j] = get_transition(str, i, last_end);
+			j++;
 		}
 		i++;
 	}
@@ -86,7 +92,11 @@ t_token	*init_token(char *str)
 	token->value = ft_calloc(ft_strlen(str) + 1, sizeof(char));
 	if (!token->value)
 		return (NULL);
-	init_quote_n_value(token->value, token->quote_mask, str, -1);
+	token->transition_mask = ft_calloc(ft_strlen(str) + 1, sizeof(char));
+	if (!token->transition_mask)
+		return (NULL);
+	init_quote_n_value(token->value, token->quote_mask, \
+		token->transition_mask, str);
 	free(str);
 	return (token);
 }

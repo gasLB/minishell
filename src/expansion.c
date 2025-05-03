@@ -37,11 +37,11 @@ int	is_expandable(char *str, char *q_mask, int i)
 	return (0);
 }
 
-int	is_valid_inside(char c_str, char c_q, char current)
+int	is_valid_inside(char c_str, char c_q, char c_t, char current)
 {
-	if (!c_str || !c_q)
+	if (!c_str || !c_q || !c_t)
 		return (0);
-	if (c_q == 'T')
+	if (c_t == 's' || c_t == 'd')
 		return (0);
 	else if (c_str != '$' && (ft_isalnum(c_str) || c_str == '_'))
 	{
@@ -60,7 +60,8 @@ int	look_for_env_variable(char **res, t_token *tk, int i, t_env_list *env)
 
 	begin = i;
 	current_q = tk->quote_mask[i];
-	while (is_valid_inside(tk->value[i], tk->quote_mask[i], current_q))
+	while (is_valid_inside(tk->value[i], tk->quote_mask[i], \
+		tk->transition_mask[i], current_q))
 		i++;
 	sub = ft_substr(tk->value, begin, i - begin);
 	env_var = ft_getenv(sub, env);

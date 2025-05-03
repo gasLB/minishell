@@ -79,6 +79,7 @@ ERRORS:
 - [X] rebuild translation
 - [ ] remake expansion with examples like "$HO""ME"
 	-> there is smth I got wrong here. 
+- test with echo '''ho"l"a'
 
 Why does those are note fully expanded?
 - $""HOME

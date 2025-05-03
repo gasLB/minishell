@@ -49,6 +49,7 @@ typedef struct s_token
 	int		type;
 	char	*expanded_value;
 	char	*quote_mask;
+	char	*transition_mask;
 }	t_token;
 
 typedef struct s_env_node
