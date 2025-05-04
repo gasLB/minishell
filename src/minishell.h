@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 18:41:08 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/04 21:11:05 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 # define EXP_VALUE "export %s=\"%s\"\n"
 # define UNEXPECTED_NL "syntax error near unexpected token `newline'\n"
 # define UNEXPECTED_S "syntax error near unexpected token `%s'\n"
-# define NO_FDS "Too many open pipes\n"
+# define NO_FDS "Too many open files\n"
 
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -124,7 +124,7 @@ t_env_list	*populate_env(char **env, int i);
 
 // env_utils.c
 char		*ft_getenv(char	*name, t_env_list *env);
-int			ft_setenv(char *key, char *value, int overwrite, t_env_list *env);
+int			ft_setenv(char *key, char *valu, int overwrite, t_env_list *env);
 void		ft_unsetenv(char *name, t_env_list *env);
 
 // utils.c
@@ -238,4 +238,9 @@ void		set_signals(void);
 
 // minishell.c
 void		minishell(t_minishell *sh, t_env_list *env_list);
+
+// pipes.c
+int	dup_pipe(t_ast_node *n, int fd[2], int or_std[2], t_minishell *sh);
+void	add_pipe_fd(int fd1, int fd2, t_minishell *sh);
+
 #endif

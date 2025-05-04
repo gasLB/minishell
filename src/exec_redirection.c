@@ -16,10 +16,12 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
 
 int	open_in(char **args, char *filename, int in_status, t_minishell *sh)
 {
 	int		infile;
+	int		saved_er;
 	char	*cm_name;
 
 	if (in_status == HD)
@@ -36,16 +38,19 @@ int	open_in(char **args, char *filename, int in_status, t_minishell *sh)
 	else
 	{
 		infile = open(filename, O_RDONLY, 0644);
-		if (infile == -1)
+		saved_er = errno;
+		if (infile == -1 && saved_er == EACCES)
 			printf_fd(2, "%s: %s: " PERMISSION, cm_name, filename);
+		else if (infile == -1 && saved_er == EMFILE)
+			printf_fd(2, "error redirect: " NO_FDS);
 	}
-	free(cm_name);
-	return (infile);
+	return (free(cm_name), infile);
 }
 
-int	open_out(char **args, char *filename, int out_status)
+int	open_out(char **args, char *filename, mode_t mode)
 {
 	int		outfile;
+	int		saved_er;
 	char	*cm_name;
 
 	if (args[0])
@@ -57,12 +62,38 @@ int	open_out(char **args, char *filename, int out_status)
 		printf_fd(2, "%s: %s: ambiguous redirect", cm_name, filename);
 	else if (access(filename, F_OK) == 0 && access(filename, W_OK) != 0)
 		printf_fd(2, "%s: %s: " PERMISSION, cm_name, filename);
-	else if (out_status == TRUNC)
-		outfile = open(filename, O_WRONLY | O_TRUNC | O_CREAT, 0644);
-	else if (out_status == APPEND)
-		outfile = open(filename, O_WRONLY | O_APPEND | O_CREAT, 0644);
+	outfile = open(filename, O_WRONLY | mode | O_CREAT, 0644);
+	saved_er = errno;
+	if (outfile == -1 && saved_er == EMFILE)
+		printf_fd(2, "error redirect: " NO_FDS);
 	free(cm_name);
 	return (outfile);
+}
+
+int	duplicate_redir(char **args, int *file, t_redir_node *curr, t_minishell *sh)
+{
+	mode_t	mode;
+
+	if (curr->type == IN || curr->type == HD)
+	{
+		*file = open_in(args, curr->str, curr->type, sh);
+		if (*file == -1)
+			return (1);
+		if (dup2(*file, STDIN_FILENO) == -1)
+			return (printf_fd(2, "error redirect: " NO_FDS));
+	}
+	else if (curr->type == TRUNC || curr->type == APPEND)
+	{
+		mode = O_APPEND;
+		if (curr->type == TRUNC)
+			mode = O_TRUNC;
+		*file = open_out(args, curr->str, mode);
+		if (*file == -1)
+			return (1);
+		if (dup2(*file, STDOUT_FILENO) == -1)
+			return (printf_fd(2, "error redirect: " NO_FDS));
+	}
+	return (0);
 }
 
 int	set_redirections(char **args, t_redir_node *redir, t_minishell *sh)
@@ -75,24 +106,13 @@ int	set_redirections(char **args, t_redir_node *redir, t_minishell *sh)
 	curr = redir;
 	while (curr)
 	{
-		if (curr->type == IN || curr->type == HD)
+		if (duplicate_redir(args, &file, curr, sh) != 0)
 		{
-			file = open_in(args, curr->str, curr->type, sh);
-			if (file == -1)
-				return (1);
-			if (dup2(file, STDIN_FILENO) == -1)
-				return (printf_fd(2, "error redirect" NO_FDS));
-		}
-		else if (curr->type == TRUNC || curr->type == APPEND)
-		{
-			file = open_out(args, curr->str, curr->type);
-			if (file == -1)
-				return (1);
-			if (dup2(file, STDOUT_FILENO) == -1)
-				return (printf_fd(2, "error redirect" NO_FDS));
+			close(file);
+			return (1);
 		}
 		curr = curr->next;
+		close(file);
 	}
-	close(file);
 	return (0);
 }

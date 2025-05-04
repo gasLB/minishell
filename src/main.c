@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 18:38:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 18:13:00 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/04 20:23:10 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ int	main(int ac, char **av, char **env)
 	minishell(sh, env_list);
 	return (0);
 }
+
 /*
 first I get tk_list from init_token_list
 then need to set each token type with set_each_token_type()
@@ -75,22 +76,12 @@ Raw input → Tokenization → Expansion → Execution
 
 ERRORS:
 
-- [X] leaks with args and not found command -> rebuild thiso part
-- [X] rebuild translation
-- [X] remake expansion with examples like "$HO""ME"
-- [ ] problems with env / export
-	- [ ] no quotes "" around env variables
-	- [ ] should update env variables with export if possible
-- [X] test with nm -D authorized functions
 - [X] test with ulimit for fds and mallocs
-	-[ ] too many open files descriptors for pipes
-	-[ ] too many open files descriptors for redirections
+	-[X] too many open files descriptors for pipes
+	-[X] too many open files descriptors for redirections
+        -> use errno
+- [X] couleurs minishell
+- [ ] signals inside here_doc
 
-Why does those are note fully expanded?
-- $""HOME
-- "$HO""ME"
-
--> first case is translation (moins grave)
--> second is really the only case I have to worry about
 $
 */
