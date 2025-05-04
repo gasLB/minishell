@@ -77,9 +77,14 @@ ERRORS:
 
 - [X] leaks with args and not found command -> rebuild thiso part
 - [X] rebuild translation
-- [ ] remake expansion with examples like "$HO""ME"
-	-> there is smth I got wrong here. 
-- test with echo '''ho"l"a'
+- [X] remake expansion with examples like "$HO""ME"
+- [ ] problems with env / export
+	- [ ] no quotes "" around env variables
+	- [ ] should update env variables with export if possible
+- [X] test with nm -D authorized functions
+- [X] test with ulimit for fds and mallocs
+	-[ ] too many open files descriptors for pipes
+	-[ ] too many open files descriptors for redirections
 
 Why does those are note fully expanded?
 - $""HOME

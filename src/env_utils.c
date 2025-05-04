@@ -49,31 +49,40 @@ char	*ft_getenv(char	*name, t_env_list *env)
 	return (NULL);
 }
 
+void	update_existing_node(t_env_node *node, char *value, int overwrite)
+{
+	if (overwrite && value)
+	{
+		free(node->value);
+		node->value = ft_strdup(value);
+	}
+	else if (value)
+		node->value = append_str(node->value, value);
+}
+
 int	ft_setenv(char *key, char *value, int overwrite, t_env_list *env)
 {
 	t_env_node	*node;
 	t_env_node	*new_node;
 
 	node = env->head;
-	while (node->next)
+	while (node)
 	{
 		if (is_equal(key, node->key))
 		{
-			if (overwrite && value)
-			{
-				free(node->value);
-				node->value = ft_strdup(value);
-			}
-			else if (value)
-				node->value = append_str(node->value, value);
+			update_existing_node(node, value, overwrite);
+			return (0);
+		}
+		if (!node->next)
+		{
+			new_node = set_node(key, value);
+			if (!new_node)
+				return (1);
+			node->next = new_node;
+			env->size++;
 			return (0);
 		}
 		node = node->next;
 	}
-	new_node = set_node(key, value);
-	if (!new_node)
-		return (1);
-	node->next = new_node;
-	env->size++;
 	return (0);
 }

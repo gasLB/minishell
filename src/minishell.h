@@ -37,6 +37,7 @@
 # define EXP_VALUE "export %s=\"%s\"\n"
 # define UNEXPECTED_NL "syntax error near unexpected token `newline'\n"
 # define UNEXPECTED_S "syntax error near unexpected token `%s'\n"
+# define NO_FDS "Too many open pipes\n"
 
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -198,7 +199,7 @@ void		set_one_redir(t_redir_node **redir, t_token ***tkp);
 
 // tree_traverse.c
 int			cmd_node(t_ast_node *node, t_minishell *sh);
-void		pipe_node(t_ast_node *node, t_minishell *sh);
+int			pipe_node(t_ast_node *node, t_minishell *sh);
 void		dfs_ast(t_ast_node *node, t_minishell *sh);
 void		function_dfs_ast(t_ast_node *node, t_minishell *sh, \
 		int (*f)(t_ast_node *, t_minishell *));

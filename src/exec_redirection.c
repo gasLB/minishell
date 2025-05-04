@@ -78,14 +78,18 @@ int	set_redirections(char **args, t_redir_node *redir, t_minishell *sh)
 		if (curr->type == IN || curr->type == HD)
 		{
 			file = open_in(args, curr->str, curr->type, sh);
-			if (file == -1 || dup2(file, STDIN_FILENO) == -1)
+			if (file == -1)
 				return (1);
+			if (dup2(file, STDIN_FILENO) == -1)
+				return (printf_fd(2, "error redirect" NO_FDS));
 		}
 		else if (curr->type == TRUNC || curr->type == APPEND)
 		{
 			file = open_out(args, curr->str, curr->type);
-			if (file == -1 || dup2(file, STDOUT_FILENO) == -1)
+			if (file == -1)
 				return (1);
+			if (dup2(file, STDOUT_FILENO) == -1)
+				return (printf_fd(2, "error redirect" NO_FDS));
 		}
 		curr = curr->next;
 	}
