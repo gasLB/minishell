@@ -110,12 +110,13 @@ ERRORS:
 - [X] leaks external builtins with unset 
 - [X] no syntax check with unset
 - [X] command names with full path
-- [ ] signals inside here_doc
-- [ ] error with export HOME= with preexisting env variables
+- [X] error with export HOME= with preexisting env variables
 - [X] UPDATE SHLVL
 - [X] init correct shell if launched with env -i
 - [X] segfault if unset HOME then cd tilde
 - [ ] cat | ls or exit | ls should display ls before C^C
+	-> wrong parsing and tree creation: I mix pipes and operators
+- [ ] signals inside here_doc
 
 
 $
