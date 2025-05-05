@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 14:38:52 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 14:22:17 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/05 16:15:06 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int	ft_export(int ac, char **args, t_env_list *env)
 	while (i < ac)
 	{
 		if (is_valid_env_name(args[i]))
-			export_var(args[i], env);
+			export_var(args[i], env, 1);
 		else
 			printf_fd(2, "minishell: export: %s: " INVAL, args[i]);
 		i++;

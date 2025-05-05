@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:41:29 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 15:41:14 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/05 19:45:44 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ void	ft_unsetenv(char *name, t_env_list *env)
 			to_remove = node->next;
 			node->next = to_remove->next;
 			unset_node(to_remove);
+			env->size -= 1;
 			break ;
 		}
 		node = node->next;
 	}
-	env->size -= env->size;
 }
 
 char	*ft_getenv(char	*name, t_env_list *env)
@@ -66,6 +66,8 @@ int	ft_setenv(char *key, char *value, int overwrite, t_env_list *env)
 	t_env_node	*new_node;
 
 	node = env->head;
+	if (!node)
+		env->head = set_node(key, value);
 	while (node)
 	{
 		if (is_equal(key, node->key))

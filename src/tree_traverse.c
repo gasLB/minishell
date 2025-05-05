@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:39:59 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/04 21:08:56 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/05 15:16:56 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 		return (null_cmd_node(node, sh));
 	if (set_redirections(args, node->redirect, sh) != 0)
 		return (1);
-	if (is_directory(args))
+	if (is_directory(args[0]))
 		return (1);
 	if (is_builtin(args[0]))
 		return (exec_builtin(args, sh));

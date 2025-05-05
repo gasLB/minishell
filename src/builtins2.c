@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:28:18 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 14:15:56 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/05 19:44:58 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,10 @@ int	ft_unset(int ac, char **args, t_env_list *env)
 	i = 0;
 	while (i < ac)
 	{
-		ft_unsetenv(args[i], env);
+		if (is_valid_env_name(args[i]))
+			ft_unsetenv(args[i], env);
+		else
+			printf_fd(2, "minishell: unset: %s: " INVAL, args[i]);
 		i++;
 	}
 	return (0);
@@ -63,6 +66,7 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 		{
 			exitn = ft_atoi(args[0]) % 256;
 			sh->last_exit = exitn;
+			close_all_pipes(sh);
 			free_struct(sh);
 			exit(exitn);
 		}
@@ -71,6 +75,7 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 	else if (ac == 0)
 	{
 		exitn = sh->last_exit;
+		close_all_pipes(sh);
 		free_struct(sh);
 		exit(exitn);
 	}

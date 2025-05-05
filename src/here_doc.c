@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 17:15:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 16:26:00 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/05 19:24:51 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	close_all_pipes(t_minishell *sh)
 	i = 0;
 	while (i < sh->pipe_count)
 	{
-		close(sh->pipe_fds[i]);
+		close_pipe_safely(&(sh->pipe_fds[i]));
 		i++;
 	}
 }
@@ -76,7 +76,7 @@ int	here_doc(char *lim, t_minishell *sh)
 		{
 			if (compare_line(line, lim) == 0)
 			{
-				(close(fd[1]), close_all_pipes(sh));
+				(close_pipe_safely(&(fd[1])), close_all_pipes(sh));
 				(free_struct(sh), free(line));
 				exit(EXIT_SUCCESS);
 			}
@@ -84,7 +84,7 @@ int	here_doc(char *lim, t_minishell *sh)
 			free(line);
 		}
 	}
-	close(fd[1]);
+	close_pipe_safely(&(fd[1]));
 	waitpid(pid, NULL, 0);
 	return (fd[0]);
 }

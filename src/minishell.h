@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/04 21:11:05 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/05 19:27:18 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ int			is_n_option(char *s);
 int			change_directories(char *path);
 void		export_no_args(t_env_list *env);
 int			is_valid_env_name(char *str);
-void		export_var(char *str, t_env_list *env);
+void		export_var(char *str, t_env_list *env, int overwrite);
 
 // builtins.c;;
 int			ft_echo(int ac, char **args);
@@ -206,7 +206,7 @@ void		function_dfs_ast(t_ast_node *node, t_minishell *sh, \
 
 // tree_traverse_utils.c
 int			null_cmd_node(t_ast_node *node, t_minishell *sh);
-int			is_directory(char **args);
+int			is_directory(char *name);
 
 // here_doc.c
 int			here_doc(char *lim, t_minishell *sh);
@@ -240,7 +240,10 @@ void		set_signals(void);
 void		minishell(t_minishell *sh, t_env_list *env_list);
 
 // pipes.c
-int	dup_pipe(t_ast_node *n, int fd[2], int or_std[2], t_minishell *sh);
-void	add_pipe_fd(int fd1, int fd2, t_minishell *sh);
+int			dup_pipe(t_ast_node *n, int fd[2], int or_std[2], t_minishell *sh);
+void		add_pipe_fd(int fd1, int fd2, t_minishell *sh);
+
+void		close_all_pipes(t_minishell *sh);
+void		close_pipe_safely(int *fd);
 
 #endif

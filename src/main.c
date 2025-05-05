@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 18:38:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/04 20:23:10 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/05 19:28:12 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,34 @@ t_minishell	*init_shell(t_env_list *env_list)
 	return (sh);
 }
 
+void	update_shlvl(t_env_list *envl)
+{
+	char	*shlvl_char;
+	int		shlvl;
+
+	shlvl_char = ft_getenv("SHLVL", envl);
+	if (shlvl_char)
+	{
+		shlvl = ft_atoi(shlvl_char) + 1;
+		shlvl_char = ft_itoa(shlvl);
+		ft_setenv("SHLVL", shlvl_char, 1, envl);
+		free(shlvl_char);
+	}
+	else
+		ft_setenv("SHLVL", "1", 1, envl);
+}
+
+void	init_env_variables(t_env_list *env)
+{
+	char	*cwd;
+
+	update_shlvl(env);
+	cwd = getcwd(NULL, 0);
+	ft_setenv("PWD", cwd, 1, env);
+	ft_setenv("OLDPWD", NULL, 1, env);
+	free(cwd);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_env_list	*env_list;
@@ -60,6 +88,7 @@ int	main(int ac, char **av, char **env)
 	minishell_start();
 	env_list = populate_env(env, -1);
 	sh = init_shell(env_list);
+	init_env_variables(env_list);
 	minishell(sh, env_list);
 	return (0);
 }
@@ -76,12 +105,18 @@ Raw input → Tokenization → Expansion → Execution
 
 ERRORS:
 
-- [X] test with ulimit for fds and mallocs
-	-[X] too many open files descriptors for pipes
-	-[X] too many open files descriptors for redirections
-        -> use errno
 - [X] couleurs minishell
+- [X] leaks with cd
+- [X] leaks external builtins with unset 
+- [X] no syntax check with unset
+- [X] command names with full path
 - [ ] signals inside here_doc
+- [ ] error with export HOME= with preexisting env variables
+- [X] UPDATE SHLVL
+- [X] init correct shell if launched with env -i
+- [X] segfault if unset HOME then cd tilde
+- [ ] cat | ls or exit | ls should display ls before C^C
+
 
 $
 */

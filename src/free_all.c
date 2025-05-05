@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 13:28:44 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 16:24:50 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/05 19:27:36 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,15 @@
 #include "minishell.h"
 #include <stdlib.h>
 #include <unistd.h>
+
+void	close_pipe_safely(int *fd)
+{
+	if (fd && *fd >= 0)
+	{
+		close(*fd);
+		*fd = -1;
+	}
+}
 
 void	free_env_list(t_env_list *env_list)
 {
@@ -78,8 +87,8 @@ void	free_struct(t_minishell *sh)
 		free_ast(sh->ast);
 	if (sh->pipe_fds)
 		free(sh->pipe_fds);
-	close(sh->original_stdin);
-	close(sh->original_stdout);
+	close_pipe_safely(&(sh->original_stdin));
+	close_pipe_safely(&(sh->original_stdout));
 	if (sh->line)
 		free(sh->line);
 	free(sh);

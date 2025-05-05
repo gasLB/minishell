@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:55:46 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 16:20:17 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/05 19:09:52 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ char	*init_str(void)
 int	handle_tilde(char **res, t_token *tk, t_env_list *env)
 {
 	int	i;
+	char	*home;
 
 	if (tk->value[0] != '~')
 		return (0);
@@ -49,7 +50,10 @@ int	handle_tilde(char **res, t_token *tk, t_env_list *env)
 	i = 1;
 	while (tk->value[i])
 		i++;
-	*res = append_str(*res, ft_strdup(ft_getenv("HOME", env)));
+	home = ft_getenv("HOME", env);
+	if (!home)
+		return (0);
+	*res = append_str(*res, ft_strdup(home));
 	if (i > 1)
 		*res = append_str(*res, ft_substr(tk->value, 1, i + 1));
 	return (i);

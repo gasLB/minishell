@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:50:00 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 14:27:35 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/05 18:36:39 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,15 @@ int	is_n_option(char *s)
 
 int	change_directories(char *path)
 {
-	if (!getcwd(NULL, 0))
+	char	*cwd;
+
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
 	{
 		printf_fd(2, "chdir: " RETRIEVE "getcwd: " NO_ACCESS NO_FILE);
 		return (1);
 	}
+	free(cwd);
 	if (chdir(path) != 0)
 	{
 		printf_fd(2, "minishell: cd: %s: " NO_FILE, path);
@@ -70,14 +74,13 @@ int	is_valid_env_name(char *str)
 	return (1);
 }
 
-void	export_var(char *str, t_env_list *env)
+void	export_var(char *str, t_env_list *env, int overwrite)
 {
 	char	*pos;
 	char	*key;
 	char	*value;
-	int		overwrite;
+	char	*trimed;
 
-	overwrite = 1;
 	pos = ft_strchr(str, '=');
 	if (!pos)
 		ft_setenv(str, NULL, 0, env);
@@ -86,12 +89,17 @@ void	export_var(char *str, t_env_list *env)
 		if (*(pos - 1) == '+')
 			overwrite = 0;
 		key = ft_substr(str, 0, pos - str + overwrite - 1);
-		value = ft_substr(pos + 1, 0, ft_strlen(pos - 1));
-		if (!key || !value)
-			return ;
-		ft_setenv(key, value, overwrite, env);
-		free(key);
-		free(value);
+			value = init_str();
+		if (!(*(pos + 1)))
+			ft_setenv(key, value, overwrite, env);
+		else
+		{
+			free(value);
+			value = ft_substr(pos + 1, 0, ft_strlen(pos - 1));
+			trimed = ft_strtrim(value, " ");
+			(ft_setenv(key, trimed, overwrite, env), free(trimed));
+		}
+		(free(key), free(value));
 	}
 }
 

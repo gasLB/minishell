@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 16:27:04 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/04 20:20:37 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/05 15:28:53 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,7 @@ char	*read_one_line(t_minishell *sh)
 
 	dup2(sh->original_stdin, STDIN_FILENO);
 	dup2(sh->original_stdout, STDOUT_FILENO);
-	//line = readline("\001\e[34m\e[1mMinishell> \001\e[0m\002");
-	////line = readline("\e[35m\e[1mMinishell> \e[0m");
-	line = readline("Minishell> ");
+	line = readline("\001\033[1;35m\002Minishell> \001\033[0m\002");
 	if (line == NULL)
 	{
 		ft_printf("exit\n");
