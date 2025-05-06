@@ -40,7 +40,7 @@ char	*init_str(void)
 
 int	handle_tilde(char **res, t_token *tk, t_env_list *env)
 {
-	int	i;
+	int		i;
 	char	*home;
 
 	if (tk->value[0] != '~')

@@ -12,7 +12,7 @@ SRC := builtins.c builtins2.c builtins_utils.c check_types.c env.c \
        env_utils.c error.c exec.c exec_cmd_utils.c exec_path.c \
        exec_redirection.c expansion.c expansion_utils.c free_all.c \
        free_ast.c here_doc.c main.c minishell.c parsing.c parsing_utils.c \
-       signals.c syntax.c tokenization.c tree.c tree_redirection.c \
+       signals.c syntax.c tokenization.c tree_new.c tree_redirection.c \
        tree_traverse.c tree_traverse_utils.c tree_utils.c utils.c pipes.c
 
 OBJ := $(SRC:.c=.o)

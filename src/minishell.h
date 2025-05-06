@@ -170,8 +170,8 @@ void		free_token_list(t_token **tk_list);
 void		free_ast(t_ast_node *node);
 
 // exec.c
-int			exec_external(char *n, char **args, t_minishell *sh);
-int			exec_builtin(char **args, t_minishell *sh);
+int			exec_external(char *n, char **ar, t_redir_node *r, t_minishell *sh);
+int			exec_builtin(char **args, t_redir_node *r, t_minishell *sh);
 
 // exec_utils.c
 int			is_builtin(char *str);
@@ -183,7 +183,8 @@ char		*find_path(char *name, t_minishell *sh);
 
 // exec_redirection.c
 int			set_redirections(char **args, t_redir_node *redir, \
-		t_minishell *sh);
+			t_minishell *sh);
+void		reset_redirections(t_redir_node *redir, t_minishell *sh);
 
 // tree.c
 void		print_ast_node(t_ast_node *ast);
@@ -192,7 +193,8 @@ t_ast_node	*create_ast(t_token **tk_list);
 // tree_utils.c
 t_ast_node	*init_ast_node(void);
 t_ast_node	*set_ast_node(int type, char **args, t_redir_node *red);
-int			get_precedence(t_token *token);
+int			get_precedence(int type);
+int			is_op_or_pipe(int type);
 
 // tree_redirection.c
 void		set_one_redir(t_redir_node **redir, t_token ***tkp);
@@ -224,7 +226,7 @@ int			is_file(int type);
 // parsing.c
 char		get_quote_character(char c, char new, int i, int *last);
 t_token		**init_token_list(char *line);
-void		set_each_token_type(t_token ***tk_list_pt, int grp);
+void		set_each_token_type(t_token ***tk_list_pt);
 int			check_syntax(t_token **tk_list, t_minishell *sh);
 int			end_op(char *line, int end, char quote);
 

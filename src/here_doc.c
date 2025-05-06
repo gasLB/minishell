@@ -37,7 +37,7 @@ int	compare_line(char *line, char *lim)
 	return (1);
 }
 
-int	get_next_line_input(char **line)
+int	get_next_line_input(char **line, t_minishell *sh)
 {
 	int		i;
 	char	c;
@@ -47,12 +47,18 @@ int	get_next_line_input(char **line)
 	buffer = malloc(BUFFER_SIZE * sizeof(char));
 	if (!buffer)
 		return (0);
-	read(STDIN_FILENO, &c, 1);
+	if (read(sh->original_stdin, &c, 1) <= 0)
+		return (free(buffer), 0);
 	while (c != '\n' && c != '\0')
 	{
-		buffer[i] = c;
-		i++;
-		read(STDIN_FILENO, &c, 1);
+		buffer[i++] = c;
+		if (read(sh->original_stdin, &c, 1) <= 0)
+		{
+			buffer[i++] = '\n';
+			buffer[i] = '\0';
+			*line = buffer;
+			return (1);
+		}
 	}
 	buffer[i++] = '\n';
 	buffer[i] = '\0';
@@ -66,25 +72,25 @@ int	here_doc(char *lim, t_minishell *sh)
 	int		pid;
 	char	*line;
 
+	line = NULL;
 	if (pipe(fd) == -1)
 		return (-1);
 	pid = fork();
 	if (pid == 0)
 	{
 		close(fd[0]);
-		while (get_next_line_input(&line))
+		while (get_next_line_input(&line, sh))
 		{
 			if (compare_line(line, lim) == 0)
-			{
-				(close_pipe_safely(&(fd[1])), close_all_pipes(sh));
-				(free_struct(sh), free(line));
-				exit(EXIT_SUCCESS);
-			}
-			ft_putstr_fd(line, fd[1]);
-			free(line);
+				break ;
+			(ft_putstr_fd(line, fd[1]), free(line));
+			line = NULL;
 		}
+		(close_pipe_safely(&(fd[1])), close_all_pipes(sh), free_struct(sh));
+		if (line)
+			free(line);
+		exit(EXIT_SUCCESS);
 	}
-	close_pipe_safely(&(fd[1]));
-	waitpid(pid, NULL, 0);
+	(close_pipe_safely(&(fd[1])), waitpid(pid, NULL, 0));
 	return (fd[0]);
 }

@@ -100,4 +100,3 @@ t_token	*init_token(char *str)
 	free(str);
 	return (token);
 }
-// I will rebuild this by splitting it into 2 functions

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tree.c                                             :+:      :+:    :+:   */
+/*   tree_new.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/27 12:56:19 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 18:39:56 by gfontagn         ###   ########.fr       */
+/*   Created: 2025/05/06 13:26:21 by gfontagn          #+#    #+#             */
+/*   Updated: 2025/05/06 13:43:56 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_ast_node	*parse_command(t_token ***tk_list_pt, char **args)
 	int				type;
 
 	red = NULL;
-	while (*tk_list_pt && get_precedence(**tk_list_pt) == 3)
+	while (args && **tk_list_pt && get_precedence((**tk_list_pt)->type) == 3)
 	{
 		value = (**tk_list_pt)->expanded_value;
 		type = (**tk_list_pt)->type;
@@ -44,50 +44,45 @@ t_ast_node	*parse_command(t_token ***tk_list_pt, char **args)
 	return (set_ast_node(CMD, args, red));
 }
 
-int	op_greater_precedence(t_token *token, int min_precedence)
+int	peek_token_type(t_token *token)
 {
 	if (!token)
-		return (0);
-	if (is_operator(token->type) || is_pipe(token->type))
-	{
-		if (get_precedence(token) >= min_precedence)
-			return (1);
-	}
-	return (0);
+		return (-1);
+	return (token->type);
 }
 
-t_ast_node	*combine_nodes(t_ast_node *left, t_ast_node *right, t_token *op)
+t_ast_node	*combine_nodes(t_ast_node *left, t_ast_node *right, int op)
 {
 	t_ast_node	*new_node;
 
 	new_node = init_ast_node();
 	if (!new_node)
 		return (NULL);
-	new_node->type = op->type;
+	new_node->type = op;
 	new_node->left = left;
 	new_node->right = right;
 	return (new_node);
 }
 
-t_ast_node	*parse_expr(t_ast_node *left, int min_prec, t_token ***tkp)
+t_ast_node	*parse_expr(t_ast_node *left, int prec, t_token ***tklp)
 {
-	t_token		*operator;
+	int			look;
+	int			op;
 	t_ast_node	*right;
-	char		**args;
 
-	while (*tkp && **tkp && op_greater_precedence(**tkp, min_prec))
+	look = peek_token_type(**tklp);
+	while (is_op_or_pipe(look) && get_precedence(look) >= prec)
 	{
-		operator = **tkp;
-		(*tkp)++;
-		args = init_list();
-		if (!args)
-			return (NULL);
-		right = parse_command(tkp, args);
-		if (!right)
-			return (NULL);
-		left = combine_nodes(left, right, operator);
-		if (!left)
-			return (NULL);
+		op = look;
+		(*tklp)++;
+		right = parse_command(tklp, init_list());
+		look = peek_token_type(**tklp);
+		while (is_op_or_pipe(look) && get_precedence(look) > get_precedence(op))
+		{
+			right = parse_expr(right, get_precedence(op) + 1, tklp);
+			look = peek_token_type(**tklp);
+		}
+		left = combine_nodes(left, right, op);
 	}
 	return (left);
 }

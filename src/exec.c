@@ -39,7 +39,7 @@ void	error_execution(int ern, char *cmd_name)
 		printf_fd(2, "minishell: %s: %s\n", cmd_name, strerror(ern));
 }
 
-int	exec_builtin(char **args, t_minishell *sh)
+int	exec_builtin(char **args, t_redir_node *redir, t_minishell *sh)
 {
 	int	ac;
 
@@ -58,6 +58,7 @@ int	exec_builtin(char **args, t_minishell *sh)
 		sh->last_exit = ft_env(sh->env_list);
 	if (is_equal(args[0], "exit"))
 		ft_exit(ac, args + 1, sh);
+	reset_redirections(redir, sh);
 	return (0);
 }
 
@@ -78,7 +79,7 @@ int	execute_command(char *name, char **args, char **envp, t_minishell *sh)
 	return (1);
 }
 
-int	exec_external(char *name, char **args, t_minishell *s)
+int	exec_external(char *name, char **args, t_redir_node *redir, t_minishell *s)
 {
 	char	**envp;
 	int		status;
@@ -95,5 +96,6 @@ int	exec_external(char *name, char **args, t_minishell *s)
 	s->last_exit = status;
 	free_str_list(envp);
 	free(name);
+	reset_redirections(redir, s);
 	return (status);
 }

@@ -104,15 +104,27 @@ int	set_redirections(char **args, t_redir_node *redir, t_minishell *sh)
 	if (!redir || !is_redirect(redir->type))
 		return (0);
 	curr = redir;
+	file = -1;
 	while (curr)
 	{
 		if (duplicate_redir(args, &file, curr, sh) != 0)
 		{
-			close(file);
+			if (file != -1)
+				close(file);
 			return (1);
 		}
 		curr = curr->next;
 		close(file);
 	}
 	return (0);
+}
+
+void	reset_redirections(t_redir_node *redir, t_minishell *sh)
+{
+	if (!redir || !is_redirect(redir->type))
+		return ;
+	if (dup2(sh->original_stdin, STDIN_FILENO) == -1)
+		printf_fd(2, "error redirect: " NO_FDS);
+	if (dup2(sh->original_stdout, STDOUT_FILENO) == -1)
+		printf_fd(2, "error redirect: " NO_FDS);
 }

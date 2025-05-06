@@ -93,7 +93,7 @@ int	determine_type(int type, int *grp)
 	else if (*grp == REDIRECT)
 	{
 		final_type = FILENAME;
-		*grp = -1;
+		*grp = COMMAND;
 	}
 	else if (*grp == COMMAND)
 		final_type = ARG;
@@ -105,11 +105,13 @@ int	determine_type(int type, int *grp)
 	return (final_type);
 }
 
-void	set_each_token_type(t_token ***tk_list_pt, int grp)
+void	set_each_token_type(t_token ***tk_list_pt)
 {
 	int	i;
 	int	type;
+	int	grp;
 
+	grp = -1;
 	i = 0;
 	while ((*tk_list_pt)[i])
 	{

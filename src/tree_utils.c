@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 17:24:23 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 17:27:02 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/06 13:33:15 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,18 @@ t_ast_node	*set_ast_node(int type, char **args, t_redir_node *red)
 	return (node);
 }
 
-int	get_precedence(t_token *token)
+int	get_precedence(int type)
 {
-	if (!token)
+	if (type == -1)
 		return (-1);
-	if (is_operator(token->type))
+	if (is_operator(type))
 		return (1);
-	if (is_pipe(token->type))
+	if (is_pipe(type))
 		return (2);
 	return (3);
+}
+
+int	is_op_or_pipe(int type)
+{
+	return (is_operator(type) || is_pipe(type));
 }

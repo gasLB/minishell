@@ -114,10 +114,12 @@ ERRORS:
 - [X] UPDATE SHLVL
 - [X] init correct shell if launched with env -i
 - [X] segfault if unset HOME then cd tilde
-- [ ] cat | ls or exit | ls should display ls before C^C
+- [X] cat | ls or exit | ls should display ls before C^C
 	-> wrong parsing and tree creation: I mix pipes and operators
-- [ ] signals inside here_doc
-
-
-$
+- [X] pb redirection -> don't reset the original stds
+- [X] mixed arguments and redirections: echo hola > bonjour salut
+	-> I think to correct during tokenization
+- [X] chain of here_doc redirections
+	-> we first need to take limiters in the order of apparition
+- [X] signals inside here_doc
 */

@@ -81,7 +81,7 @@ void	minishell(t_minishell *sh, t_env_list *env_list)
 		if (only_space(&(sh->line)))
 			continue ;
 		token_list = init_token_list(sh->line);
-		set_each_token_type(&token_list, -1);
+		set_each_token_type(&token_list);
 		if (check_syntax(token_list, sh) != 0)
 		{
 			free_in_loop(&token_list, &(sh->line), &(sh->ast));
