@@ -88,7 +88,10 @@ char	**convert_envp_to_array(t_env_list *envl)
 	head = envl->head;
 	while (head)
 	{
-		envp[i] = ft_strjoin_env_node(head->key, head->value);
+		if (head->value)
+			envp[i] = ft_strjoin_env_node(head->key, head->value);
+		else
+			envp[i] = ft_strdup(head->key);
 		if (!envp[i])
 			return (NULL);
 		head = head->next;
