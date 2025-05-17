@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:50:00 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 18:36:39 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/17 18:36:46 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	is_n_option(char *s)
 	return (1);
 }
 
-int	change_directories(char *path)
+int	change_directories(char *path, t_env_list *env)
 {
 	char	*cwd;
 
@@ -50,6 +50,7 @@ int	change_directories(char *path)
 		printf_fd(2, "minishell: cd: %s: " NO_FILE, path);
 		return (1);
 	}
+	ft_setenv("PWD", getcwd(NULL, 0), 1, env);
 	return (0);
 }
 

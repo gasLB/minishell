@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 14:38:52 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 16:15:06 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/17 18:37:03 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,8 @@ int	ft_cd(int ac, char **args, t_env_list *env)
 	}
 	else
 		path = args[0];
-	return (change_directories(path));
+	ft_setenv("OLDPWD", ft_getenv("PWD", env), 1, env);
+	return (change_directories(path, env));
 }
 
 int	ft_export(int ac, char **args, t_env_list *env)

@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 19:27:18 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/17 18:38:06 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ char		**append_to_lst(char **l, char *new_s);
 
 // builtins_utils.c
 int			is_n_option(char *s);
-int			change_directories(char *path);
+int			change_directories(char *path, t_env_list *env);
 void		export_no_args(t_env_list *env);
 int			is_valid_env_name(char *str);
 void		export_var(char *str, t_env_list *env, int overwrite);
