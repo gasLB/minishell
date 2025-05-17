@@ -13,9 +13,6 @@
 #include "libft.h"
 #include <stdlib.h>
 
-// use ft_strchr
-
-
 t_list	*ft_lstnew(void *content)
 {
 	t_list	*res;

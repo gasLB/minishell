@@ -70,11 +70,12 @@ int	execute_command(char *name, char **args, char **envp, t_minishell *sh)
 	{
 		saved_er = errno;
 		error_execution(saved_er, name);
+		sh->last_exit = saved_er % 255;
 		free_struct(sh);
 		if (envp)
 			free_str_list(envp);
 		free(name);
-		exit(1);
+		exit(saved_er);
 	}
 	return (1);
 }
@@ -93,7 +94,7 @@ int	exec_external(char *name, char **args, t_redir_node *redir, t_minishell *s)
 	if (g_signal_pid == 0)
 		execute_command(name, args, envp, s);
 	waitpid(g_signal_pid, &status, 0);
-	s->last_exit = status;
+	s->last_exit = status % 255;
 	free_str_list(envp);
 	free(name);
 	reset_redirections(redir, s);

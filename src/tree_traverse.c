@@ -79,6 +79,7 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 	cmd_path = find_path(cmd_name, sh);
 	if (!cmd_path)
 	{
+		sh->last_exit = 127;
 		free(cmd_name);
 		return (1);
 	}
