@@ -66,6 +66,9 @@ int	execute_command(char *name, char **args, char **envp, t_minishell *sh)
 {
 	int	saved_er;
 
+	close(sh->original_stdin);
+	close(sh->original_stdout);
+	close_all_pipes(sh);
 	if (execve(args[0], args, envp) < 0)
 	{
 		saved_er = errno;
