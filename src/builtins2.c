@@ -45,9 +45,7 @@ int	ft_env(t_env_list *env)
 	node = env->head;
 	while (node)
 	{
-		if (node->value == NULL)
-			ft_printf("%s\n", node->key);
-		else
+		if (node->value)
 			ft_printf("%s=%s\n", node->key, node->value);
 		node = node->next;
 	}
