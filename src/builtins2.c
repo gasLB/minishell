@@ -66,17 +66,19 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 		{
 			exitn = ft_atoi(args[0]) % 256;
 			sh->last_exit = exitn;
-			close_all_pipes(sh);
-			free_struct(sh);
+			(ft_printf("exit\n"), close_all_pipes(sh), free_struct(sh));
 			exit(exitn);
 		}
 		printf_fd(2, "minishell: exit: %s: " NUMERIC_ARG, args[0]);
+		sh->last_exit = 2;
+		(ft_printf("exit\n"), close_all_pipes(sh), free_struct(sh));
+		exit(2);
 	}
 	else if (ac == 0)
 	{
 		exitn = sh->last_exit;
-		close_all_pipes(sh);
-		free_struct(sh);
+		ft_printf("exit\n");
+		(close_all_pipes(sh), free_struct(sh));
 		exit(exitn);
 	}
 }
