@@ -66,7 +66,28 @@ int	get_next_line_input(char **line, t_minishell *sh)
 	return (1);
 }
 
-int	here_doc(char *lim, t_minishell *sh)
+void	put_line_hd(char *line, int fd[2], t_minishell *sh, t_env_list *env)
+{
+	t_token	*tk;
+
+	tk = init_token(line);
+	if (!tk)
+		return ;
+	tk->expanded_value = expand_variable(tk, sh, env, 0);
+	ft_putstr_fd(tk->expanded_value, fd[1]);
+	if (tk->value)
+		free(tk->value);
+	if (tk->quote_mask)
+		free(tk->quote_mask);
+	if (tk->transition_mask)
+		free(tk->transition_mask);
+	if (tk->expanded_value)
+		free(tk->expanded_value);
+	if (tk)
+		free(tk);
+}
+
+int	here_doc(char *lim, t_minishell *sh, t_env_list *env)
 {
 	int		fd[2];
 	int		pid;
@@ -83,7 +104,7 @@ int	here_doc(char *lim, t_minishell *sh)
 		{
 			if (compare_line(line, lim) == 0)
 				break ;
-			(ft_putstr_fd(line, fd[1]), free(line));
+			put_line_hd(line, fd, sh, env);
 			line = NULL;
 		}
 		(close_pipe_safely(&(fd[1])), close_all_pipes(sh), free_struct(sh));

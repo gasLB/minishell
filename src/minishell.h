@@ -153,6 +153,7 @@ void		ft_exit(int ac, char **args, t_minishell *sh);
 // expansion.c
 t_token		**expand_tokens(t_token **token_list, t_minishell *sh, \
 		t_env_list *env);
+char		*expand_variable(t_token *t, t_minishell *s, t_env_list *e, int i);
 
 // expansion_utils.c
 int			translation(char **res, t_token *tk, int i);
@@ -211,7 +212,7 @@ int			null_cmd_node(t_ast_node *node, t_minishell *sh);
 int			is_directory(char *name);
 
 // here_doc.c
-int			here_doc(char *lim, t_minishell *sh);
+int			here_doc(char *lim, t_minishell *sh, t_env_list *env);
 
 // error.c
 int			printf_fd(int fd, const char *s, ...);

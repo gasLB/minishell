@@ -25,7 +25,7 @@ int	open_in(char **args, char *filename, int in_status, t_minishell *sh)
 	char	*cm_name;
 
 	if (in_status == HD)
-		return (here_doc(filename, sh));
+		return (here_doc(filename, sh, sh->env_list));
 	if (args[0])
 		cm_name = ft_strdup(args[0]);
 	else
