@@ -13,30 +13,35 @@
 #include "../libftprintf/libft/libft.h"
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
+#include <asm-generic/errno.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
-void	error_execution(int ern, char *cmd_name)
+int	error_execution(int ern, char *name)
 {
 	if (ern == ENOENT)
-		printf_fd(2, "minishell: %s: " NO_FILE, cmd_name);
+		return (printf_fd(2, "minishell: %s: " NO_FILE, name), 127);
 	else if (ern == EACCES)
-		printf_fd(2, "minishell: %s: " PERMISSION, cmd_name);
+		return (printf_fd(2, "minishell: %s: " PERMISSION, name), 126);
 	else if (ern == ENOMEM)
-		printf_fd(2, "minishell: %s: " MEMORY, cmd_name);
+		return (printf_fd(2, "minishell: %s: " MEMORY, name), 125);
 	else if (ern == ENOEXEC)
-		printf_fd(2, "minishell: %s: Exec format error\n", cmd_name);
+		return (printf_fd(2, "minishell: %s: " EXEC_ER, name), 126);
 	else if (ern == E2BIG)
-		printf_fd(2, "minishell: %s: " ARG_TOO_LONG, cmd_name);
+		return (printf_fd(2, "minishell: %s: " ARG_TOO_LONG, name), 126);
 	else if (ern == ETXTBSY)
-		printf_fd(2, "minishell: %s: Text file busy\n", cmd_name);
+		return (printf_fd(2, "minishell: %s: Text file busy\n", name), 126);
 	else if (ern == EISDIR)
-		printf_fd(2, "minishell: %s: Is a directory\n", cmd_name);
+		return (printf_fd(2, "minishell: %s: Is a directory\n", name), 126);
+	else if (ern == ENOTDIR)
+		return (printf_fd(2, "minishell: %s: Not a directory\n", name), 126);
+	else if (ern == ENAMETOOLONG)
+		return (printf_fd(2, "minishell: %s: Filename too long\n", name), 126);
 	else
-		printf_fd(2, "minishell: %s: %s\n", cmd_name, strerror(ern));
+		return (printf_fd(2, "minishell: %s: %s\n", name, strerror(ern)), 1);
 }
 
 int	exec_builtin(char **args, t_redir_node *redir, t_minishell *sh)
@@ -58,6 +63,7 @@ int	exec_builtin(char **args, t_redir_node *redir, t_minishell *sh)
 		sh->last_exit = ft_env(sh->env_list);
 	if (is_equal(args[0], "exit"))
 		ft_exit(ac, args + 1, sh);
+	sh->last_command_type = BUILTIN;
 	reset_redirections(redir, sh);
 	return (0);
 }
@@ -65,6 +71,7 @@ int	exec_builtin(char **args, t_redir_node *redir, t_minishell *sh)
 int	execute_command(char *name, char **args, char **envp, t_minishell *sh)
 {
 	int	saved_er;
+	int	exit_er;
 
 	close(sh->original_stdin);
 	close(sh->original_stdout);
@@ -72,34 +79,63 @@ int	execute_command(char *name, char **args, char **envp, t_minishell *sh)
 	if (execve(args[0], args, envp) < 0)
 	{
 		saved_er = errno;
-		error_execution(saved_er, name);
-		sh->last_exit = saved_er % 255;
+		exit_er = error_execution(saved_er, name);
 		free_struct(sh);
 		if (envp)
 			free_str_list(envp);
 		free(name);
-		exit(saved_er);
+		exit(exit_er);
 	}
 	return (1);
+}
+
+int	*add_pid(t_minishell *sh)
+{
+	int	i;
+	int	*ret;
+
+	if (sh->pid_count == 0)
+	{
+		sh->pids = malloc(sizeof(int));
+		if (!sh->pids)
+			return (NULL);
+		sh->pid_count++;
+		return (sh->pids);
+	}
+	i = 0;
+	ret = malloc((sh->pid_count + 1) * sizeof(int));
+	if (!ret)
+		return (NULL);
+	while (i < sh->pid_count)
+	{
+		ret[i] = sh->pids[i];
+		i++;
+	}
+	free(sh->pids);
+	sh->pids = ret;
+	return (ret + sh->pid_count++);
 }
 
 int	exec_external(char *name, char **args, t_redir_node *redir, t_minishell *s)
 {
 	char	**envp;
-	int		status;
+	int		*p_pid;
 
+	s->last_command_type = EXTERNAL;
+	p_pid = add_pid(s);
 	envp = convert_envp_to_array(s->env_list);
 	if (!envp)
 		return (1);
-	g_signal_pid = fork();
-	if (g_signal_pid == -1)
+	*p_pid = fork();
+	if (*p_pid == -1)
 		return (1);
-	if (g_signal_pid == 0)
+	if (*p_pid == 0)
 		execute_command(name, args, envp, s);
-	waitpid(g_signal_pid, &status, 0);
-	s->last_exit = status % 255;
-	free_str_list(envp);
-	free(name);
-	reset_redirections(redir, s);
-	return (status);
+	else
+	{
+		free_str_list(envp);
+		free(name);
+		reset_redirections(redir, s);
+	}
+	return (0);
 }

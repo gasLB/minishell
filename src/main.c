@@ -45,6 +45,9 @@ t_minishell	*init_shell(t_env_list *env_list)
 	sh->pipe_fds = NULL;
 	sh->line = NULL;
 	sh->ast = NULL;
+	sh->pids = NULL;
+	sh->pid_count = 0;
+	sh->last_command_type = -1;
 	sh->original_stdin = dup(STDIN_FILENO);
 	sh->original_stdout = dup(STDOUT_FILENO);
 	return (sh);

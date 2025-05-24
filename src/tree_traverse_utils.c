@@ -16,6 +16,63 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <limits.h>
+
+int	is_correct_size_exit(const char *nptr)
+{
+	int			i;
+	long long	nb;
+	long long	sign;
+
+	i = 0;
+	nb = 0;
+	sign = 1;
+	while (nptr[i] && ((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == 32))
+		i++;
+	if (nptr[i] && nptr[i] == '-')
+	{
+		sign = -1;
+		i++;
+	}
+	else if (nptr[i] && nptr[i] == '+')
+		i++;
+	while (nptr[i] && ft_isdigit(nptr[i]))
+	{
+		if (nb > LLONG_MAX / 10)
+			return (0);
+		nb = nb * 10 + (nptr[i] - 48);
+		i++;
+	}
+	return (!(sign == -1 && nb == LLONG_MAX));
+}
+
+long long	ft_atoll(const char *nptr)
+{
+	int			i;
+	long long	nb;
+	long long	sign;
+
+	i = 0;
+	nb = 0;
+	sign = 1;
+	while (nptr[i] && ((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == 32))
+		i++;
+	if (nptr[i] && nptr[i] == '-')
+	{
+		sign = -1;
+		i++;
+	}
+	else if (nptr[i] && nptr[i] == '+')
+	{
+		i++;
+	}
+	while (nptr[i] && ft_isdigit(nptr[i]))
+	{
+		nb = nb * 10 + (nptr[i] - 48);
+		i++;
+	}
+	return (nb * sign);
+}
 
 int	null_cmd_node(t_ast_node *node, t_minishell *sh)
 {

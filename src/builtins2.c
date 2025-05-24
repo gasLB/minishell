@@ -52,31 +52,33 @@ int	ft_env(t_env_list *env)
 	return (0);
 }
 
+void	exit_with_number(int n, t_minishell *sh)
+{
+	if (sh->last_command_type != -1 || sh->ast->left || sh->ast->right)
+		sh->last_exit = n;
+	else
+	{
+		close_all_pipes(sh);
+		free_struct(sh);
+		exit(n);
+	}
+}
+
 void	ft_exit(int ac, char **args, t_minishell *sh)
 {
-	int	exitn;
-
-	if (ac > 1)
-		printf_fd(2, "minishell: exit: " TOO_MANY);
-	else if (ac == 1)
+	ft_printf("exit\n");
+	if (ac == 0)
+		exit_with_number(2, sh);
+	else if (!is_a_number(args[0]) || !is_correct_size_exit(args[0]))
 	{
-		if (is_a_number(args[0]))
-		{
-			exitn = ft_atoi(args[0]) % 256;
-			sh->last_exit = exitn;
-			(ft_printf("exit\n"), close_all_pipes(sh), free_struct(sh));
-			exit(exitn);
-		}
 		printf_fd(2, "minishell: exit: %s: " NUMERIC_ARG, args[0]);
-		sh->last_exit = 2;
-		(ft_printf("exit\n"), close_all_pipes(sh), free_struct(sh));
-		exit(2);
+		exit_with_number(2, sh);
 	}
-	else if (ac == 0)
+	else if (ac > 1)
 	{
-		exitn = sh->last_exit;
-		ft_printf("exit\n");
-		(close_all_pipes(sh), free_struct(sh));
-		exit(exitn);
+		printf_fd(2, "minishell: exit: " TOO_MANY);
+		sh->last_exit = 1;
 	}
+	else
+		exit_with_number((int)(ft_atoll(args[0]) % 256), sh);
 }

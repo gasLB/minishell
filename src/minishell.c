@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <sys/wait.h>
 
 int	only_space(char **str)
 {
@@ -41,6 +42,7 @@ char	*read_one_line(t_minishell *sh)
 
 	dup2(sh->original_stdin, STDIN_FILENO);
 	dup2(sh->original_stdout, STDOUT_FILENO);
+	sh->last_command_type = -1;
 	line = readline("\001\033[1;35m\002Minishell> \001\033[0m\002");
 	if (line == NULL)
 	{
@@ -70,6 +72,24 @@ void	free_in_loop(t_token ***tkl, char **line, t_ast_node **ast)
 	}
 }
 
+void	wait_all_pids(t_minishell *sh)
+{
+	int	status;
+	int	i;
+
+	if (sh->pid_count == 0)
+		return ;
+	i = 0;
+	status = 0;
+	while (i < sh->pid_count)
+	{
+		waitpid(sh->pids[i], &status, 0);
+		i++;
+	}
+	if (sh->last_command_type == EXTERNAL)
+		sh->last_exit = status % 256;
+}
+
 void	minishell(t_minishell *sh, t_env_list *env_list)
 {
 	t_token		**token_list;
@@ -92,6 +112,7 @@ void	minishell(t_minishell *sh, t_env_list *env_list)
 		if (token_list)
 			(free_token_list(token_list), token_list = NULL);
 		dfs_ast(sh->ast, sh);
+		wait_all_pids(sh);
 		free_in_loop(&token_list, &(sh->line), &(sh->ast));
 		g_signal_pid = 0;
 	}

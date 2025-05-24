@@ -91,5 +91,8 @@ void	free_struct(t_minishell *sh)
 	close_pipe_safely(&(sh->original_stdout));
 	if (sh->line)
 		free(sh->line);
+	if (sh->pid_count)
+		free(sh->pids);
+	sh->pid_count = 0;
 	free(sh);
 }

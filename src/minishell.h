@@ -38,6 +38,7 @@
 # define UNEXPECTED_NL "syntax error near unexpected token `newline'\n"
 # define UNEXPECTED_S "syntax error near unexpected token `%s'\n"
 # define NO_FDS "Too many open files\n"
+# define EXEC_ER "Exec format error\n"
 
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -87,13 +88,22 @@ typedef struct s_minishell
 {
 	t_env_list	*env_list;
 	t_ast_node	*ast;
+	int			*pids;
+	int			pid_count;
 	int			pipe_count;
 	int			*pipe_fds;
 	int			last_exit;
 	int			original_stdin;
 	int			original_stdout;
+	int			last_command_type;
 	char		*line;
 }	t_minishell;
+
+enum e_command_types
+{
+	EXTERNAL,
+	BUILTIN,
+};
 
 enum e_token_types
 {
@@ -210,6 +220,8 @@ void		function_dfs_ast(t_ast_node *node, t_minishell *sh, \
 // tree_traverse_utils.c
 int			null_cmd_node(t_ast_node *node, t_minishell *sh);
 int			is_directory(char *name);
+int			is_correct_size_exit(const char *nptr);
+long long	ft_atoll(const char *nptr);
 
 // here_doc.c
 int			here_doc(char *lim, t_minishell *sh, t_env_list *env);
