@@ -88,6 +88,7 @@ void	wait_all_pids(t_minishell *sh)
 	}
 	if (sh->last_command_type == EXTERNAL)
 		sh->last_exit = status % 256;
+	sh->pid_count = 0;
 }
 
 void	minishell(t_minishell *sh, t_env_list *env_list)
@@ -113,7 +114,7 @@ void	minishell(t_minishell *sh, t_env_list *env_list)
 			(free_token_list(token_list), token_list = NULL);
 		dfs_ast(sh->ast, sh);
 		wait_all_pids(sh);
-		free_in_loop(&token_list, &(sh->line), &(sh->ast));
+		free_in_loop(&token_list, &(sh->line), &(sh->ast));	// not sure it is needed here. everything should had been freed before
 		g_signal_pid = 0;
 	}
 	free_struct(sh);

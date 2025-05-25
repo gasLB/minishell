@@ -27,3 +27,20 @@ invalid argument to exit = 128
 script terminated by ctrl+C = 130
 exit status out of range = 255
 
+## parenthesis
+
+I have two ideas on how to deal with parenthesis:
+1. call minishell inside minishell for the scope of the parenthesis
+2. fork the environment and set priorities
+
+Problems
+1. when to exit? also seems quite heavy on the processor. How to handle signals?
+2. it's not just the environment. For example "cd" changes directories.
+
+-> Okay I know which technique to use. There is another node type SUB. When dfs 
+encounters a SUB node, it creates a child process with fork() and executes it's left and right nodes inside the child.
+Then the parent process gets the exit status from the one of the child
+
+Problems 2
+Actually Sub is conccurential but AND and OR are sequential -> must wait for all the previous processes to end before executing
+

@@ -128,7 +128,7 @@ int	exec_external(char *name, char **args, t_redir_node *redir, t_minishell *s)
 		return (1);
 	*p_pid = fork();
 	if (*p_pid == -1)
-		return (1);
+		return (printf_fd(2, "fork error: " NO_FDS), 1);
 	if (*p_pid == 0)
 		execute_command(name, args, envp, s);
 	else

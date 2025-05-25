@@ -16,27 +16,42 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void	dfs_ast(t_ast_node *node, t_minishell *sh)
+int	operator_node(t_ast_node *node, t_minishell *sh, int type)
 {
-	node->visited = 1;
-	if (node->type == PIPE)
-		pipe_node(node, sh);
-	else if (node->type == CMD)
-		cmd_node(node, sh);
-	else if (node->type == AND)
+	if (node->left && !(node->left->visited))
+		dfs_ast(node->left, sh);
+	wait_all_pids(sh);
+	if (sh->pids)
+		free(sh->pids);
+	sh->pids = NULL;
+	sh->pid_count = 0;
+	if (((!sh->last_exit && type == AND) || (sh->last_exit && type == OR)) \
+		&& node->right && !(node->right->visited))
+		dfs_ast(node->right, sh);
+	return (0);
+}
+
+int	subshell_node(t_ast_node *node, t_minishell *sh)
+{
+	int	*sub_pid;
+
+	sub_pid = add_pid(sh);
+	*sub_pid = fork();
+	if (*sub_pid == -1)
+		return (printf_fd(2, "fork error: " NO_FDS), 1);
+	if (*sub_pid == 0)
 	{
+		close(sh->original_stdin);
+		close(sh->original_stdout);
+		close_all_pipes(sh);
 		if (node->left && !(node->left->visited))
 			dfs_ast(node->left, sh);
-		if (!sh->last_exit && node->right && !(node->right->visited))
+		if (node->right && !(node->right->visited))
 			dfs_ast(node->right, sh);
+		free_struct(sh);
+		exit(sh->last_exit);	// not sure about this
 	}
-	else if (node->type == OR)
-	{
-		if (node->left && !(node->left->visited))
-			dfs_ast(node->left, sh);
-		if (sh->last_exit && node->right && !(node->right->visited))
-			dfs_ast(node->right, sh);
-	}
+	return (0);
 }
 
 int	pipe_node(t_ast_node *node, t_minishell *sh)
@@ -87,4 +102,17 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 		free(args[0]);
 	args[0] = cmd_path;
 	return (exec_external(cmd_name, args, node->redirect, sh));
+}
+
+void	dfs_ast(t_ast_node *node, t_minishell *sh)
+{
+	node->visited = 1;
+	if (node->type == SUBSHELL)
+		subshell_node(node, sh);
+	else if (node->type == PIPE)
+		pipe_node(node, sh);
+	else if (node->type == CMD)
+		cmd_node(node, sh);
+	else if (node->type == AND || node->type == OR)
+		operator_node(node, sh, node->type);
 }

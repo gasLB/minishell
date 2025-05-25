@@ -118,6 +118,7 @@ enum e_token_types
 	PIPE,
 	AND,
 	OR,
+	SUBSHELL,	// might need left and right parenthesis types for tokens
 };
 
 enum e_group_types
@@ -183,6 +184,7 @@ void		free_ast(t_ast_node *node);
 void		free_token(t_token *tk);
 
 // exec.c
+int			*add_pid(t_minishell *sh);
 int			exec_external(char *n, char **ar, t_redir_node *r, t_minishell *sh);
 int			exec_builtin(char **args, t_redir_node *r, t_minishell *sh);
 
@@ -255,6 +257,7 @@ void		set_signals(void);
 
 // minishell.c
 void		minishell(t_minishell *sh, t_env_list *env_list);
+void		wait_all_pids(t_minishell *sh);
 
 // pipes.c
 int			dup_pipe(t_ast_node *n, int fd[2], int or_std[2], t_minishell *sh);
