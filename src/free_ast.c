@@ -34,6 +34,20 @@ void	free_redirect(t_redir_node *red)
 	}
 }
 
+void	free_token(t_token *tk)
+{
+	if (tk->value)
+		free(tk->value);
+	if (tk->expanded_value)
+		free(tk->expanded_value);
+	if (tk->quote_mask)
+		free(tk->quote_mask);
+	if (tk->transition_mask)
+		free(tk->transition_mask);
+	if (tk)
+		free(tk);
+}
+
 void	free_ast(t_ast_node *node)
 {
 	if (!node)

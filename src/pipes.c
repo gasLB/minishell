@@ -16,6 +16,18 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+void	close_all_pipes(t_minishell *sh)
+{
+	int	i;
+
+	i = 0;
+	while (i < sh->pipe_count)
+	{
+		close_pipe_safely(&(sh->pipe_fds[i]));
+		i++;
+	}
+}
+
 void	add_pipe_fd(int fd1, int fd2, t_minishell *sh)
 {
 	if (sh->pipe_count + 2 >= MAX_FD)

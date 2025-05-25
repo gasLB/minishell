@@ -48,6 +48,20 @@ t_redir_node	*add_redir_node(t_redir_node **head, int type, char *str)
 	return (new_node);
 }
 
+int	token_with_quotes(t_token *tkp)
+{
+	int	i;
+
+	i = 0;
+	while (tkp->quote_mask[i])
+	{
+		if (tkp->quote_mask[i] != 'N' || tkp->transition_mask[i] != 'n')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 void	set_one_redir(t_redir_node **redir, t_token ***tkp)
 {
 	int		type;
@@ -61,6 +75,8 @@ void	set_one_redir(t_redir_node **redir, t_token ***tkp)
 	(*tkp)++;
 	if (!(*tkp) || !(**tkp) || !is_file((**tkp)->type))
 		return ;
+	if (type == HD && token_with_quotes(**tkp))
+		type = HDQ;
 	file = ft_strdup((**tkp)->expanded_value);
 	if (!file)
 		return ;

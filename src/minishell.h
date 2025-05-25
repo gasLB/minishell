@@ -111,6 +111,7 @@ enum e_token_types
 	ARG,
 	IN,
 	HD,
+	HDQ,
 	TRUNC,
 	APPEND,
 	FILENAME,
@@ -179,6 +180,7 @@ void		free_str_list(char **lst);
 void		free_struct(t_minishell *sh);
 void		free_token_list(t_token **tk_list);
 void		free_ast(t_ast_node *node);
+void		free_token(t_token *tk);
 
 // exec.c
 int			exec_external(char *n, char **ar, t_redir_node *r, t_minishell *sh);
@@ -224,7 +226,7 @@ int			is_correct_size_exit(const char *nptr);
 long long	ft_atoll(const char *nptr);
 
 // here_doc.c
-int			here_doc(char *lim, t_minishell *sh, t_env_list *env);
+int			here_doc(char *lim, t_minishell *sh, int in_status);
 
 // error.c
 int			printf_fd(int fd, const char *s, ...);
@@ -237,7 +239,7 @@ int			is_pipe(int type);
 int			is_file(int type);
 
 // parsing.c
-char		get_quote_character(char c, char new, int i, int *last);
+char		get_quote_character(char c, char nw, int i, int *last);
 t_token		**init_token_list(char *line);
 void		set_each_token_type(t_token ***tk_list_pt);
 int			check_syntax(t_token **tk_list, t_minishell *sh);

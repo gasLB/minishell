@@ -18,18 +18,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-void	close_all_pipes(t_minishell *sh)
-{
-	int	i;
-
-	i = 0;
-	while (i < sh->pipe_count)
-	{
-		close_pipe_safely(&(sh->pipe_fds[i]));
-		i++;
-	}
-}
-
 int	compare_line(char *line, char *lim)
 {
 	if (ft_strlen(line) - 1 == ft_strlen(lim))
@@ -43,7 +31,7 @@ int	get_next_line_input(char **line, t_minishell *sh)
 	char	c;
 	char	*buffer;
 
-	i = 0;
+	(printf_fd(2, "> "), i = 0);
 	buffer = malloc(BUFFER_SIZE * sizeof(char));
 	if (!buffer)
 		return (0);
@@ -66,28 +54,53 @@ int	get_next_line_input(char **line, t_minishell *sh)
 	return (1);
 }
 
-void	put_line_hd(char *line, int fd[2], t_minishell *sh, t_env_list *env)
+char	*fill_with_char(int n, char c)
 {
-	t_token	*tk;
+	char	*res;
+	int		i;
 
-	tk = init_token(line);
-	if (!tk)
-		return ;
-	tk->expanded_value = expand_variable(tk, sh, env, 0);
-	ft_putstr_fd(tk->expanded_value, fd[1]);
-	if (tk->value)
-		free(tk->value);
-	if (tk->quote_mask)
-		free(tk->quote_mask);
-	if (tk->transition_mask)
-		free(tk->transition_mask);
-	if (tk->expanded_value)
-		free(tk->expanded_value);
-	if (tk)
-		free(tk);
+	i = 0;
+	res = malloc((n + 1) * sizeof(char));
+	if (!res)
+		return (NULL);
+	while (i < n)
+	{
+		res[i] = c;
+		i++;
+	}
+	res[i] = '\0';
+	return (res);
 }
 
-int	here_doc(char *lim, t_minishell *sh, t_env_list *env)
+void	put_line_hd(char *line, int fd[2], t_minishell *sh, int in_status)
+{
+	t_token		*tk;
+	t_env_list	*env;
+
+	env = sh->env_list;
+	tk = malloc(sizeof(t_token));
+	if (!tk)
+		return ;
+	tk->value = ft_strdup(line);
+	if (!tk->value)
+		return ;
+	tk->quote_mask = fill_with_char(ft_strlen(line), 'N');
+	if (!tk->quote_mask)
+		return ;
+	tk->transition_mask = fill_with_char(ft_strlen(line), 'n');
+	if (!tk->transition_mask)
+		return ;
+	if (in_status == HD)
+		tk->expanded_value = expand_variable(tk, sh, env, 0);
+	else if (in_status == HDQ)
+		tk->expanded_value = ft_strdup(line);
+	ft_putstr_fd(tk->expanded_value, fd[1]);
+	free_token(tk);
+	if (line)
+		free(line);
+}
+
+int	here_doc(char *lim, t_minishell *sh, int in_status)
 {
 	int		fd[2];
 	int		pid;
@@ -104,7 +117,7 @@ int	here_doc(char *lim, t_minishell *sh, t_env_list *env)
 		{
 			if (compare_line(line, lim) == 0)
 				break ;
-			put_line_hd(line, fd, sh, env);
+			put_line_hd(line, fd, sh, in_status);
 			line = NULL;
 		}
 		(close_pipe_safely(&(fd[1])), close_all_pipes(sh), free_struct(sh));

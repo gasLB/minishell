@@ -24,8 +24,8 @@ int	open_in(char **args, char *filename, int in_status, t_minishell *sh)
 	int		saved_er;
 	char	*cm_name;
 
-	if (in_status == HD)
-		return (here_doc(filename, sh, sh->env_list));
+	if (in_status == HD || in_status == HDQ)
+		return (here_doc(filename, sh, in_status));
 	if (args[0])
 		cm_name = ft_strdup(args[0]);
 	else
@@ -74,7 +74,7 @@ int	duplicate_redir(char **args, int *file, t_redir_node *curr, t_minishell *sh)
 {
 	mode_t	mode;
 
-	if (curr->type == IN || curr->type == HD)
+	if (curr->type == IN || curr->type == HD || curr->type == HDQ)
 	{
 		*file = open_in(args, curr->str, curr->type, sh);
 		if (*file == -1)
