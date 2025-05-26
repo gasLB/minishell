@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:39:59 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 15:16:56 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/26 21:29:36 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	operator_node(t_ast_node *node, t_minishell *sh, int type)
 int	subshell_node(t_ast_node *node, t_minishell *sh)
 {
 	int	*sub_pid;
+	int	last_exit;
 
 	sub_pid = add_pid(sh);
 	*sub_pid = fork();
@@ -46,10 +47,10 @@ int	subshell_node(t_ast_node *node, t_minishell *sh)
 		close_all_pipes(sh);
 		if (node->left && !(node->left->visited))
 			dfs_ast(node->left, sh);
-		if (node->right && !(node->right->visited))
-			dfs_ast(node->right, sh);
+		wait_all_pids(sh);
+		last_exit = sh->last_exit;
 		free_struct(sh);
-		exit(sh->last_exit);	// not sure about this
+		exit(last_exit);
 	}
 	return (0);
 }

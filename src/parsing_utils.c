@@ -33,6 +33,10 @@ int	token_basic_type(t_token *token)
 		return (AND);
 	if (is_equal(token->value, "||") && is_equal(token->quote_mask, "NN"))
 		return (OR);
+	if (is_equal(token->value, "(") && is_equal(token->quote_mask, "N"))
+		return (OPEN_PAR);
+	if (is_equal(token->value, ")") && is_equal(token->quote_mask, "N"))
+		return (CLOSE_PAR);
 	return (-1);
 }
 
@@ -43,7 +47,8 @@ int	end_op(char *line, int end, char quote)
 	if (!line[end])
 		return (0);
 	le = line[end];
-	if (quote == 'N' && (le == '<' || le == '>' || le == '|' || le == '&'))
+	if (quote == 'N' && (le == '<' || le == '>' || le == '|' || le == '&' \
+		|| le == '(' || le == ')'))
 	{
 		if (line[end + 1] && \
 			((line[end] == '<' && line[end + 1] == '<') || \

@@ -87,7 +87,7 @@ int	determine_type(int type, int *grp)
 		final_type = type;
 		if (is_redirect(type))
 			*grp = REDIRECT;
-		else
+		else if (!(is_open_par(type) || is_close_par(type)))	// cause parenthesis are not really operators
 			*grp = -1;
 	}
 	else if (*grp == REDIRECT)

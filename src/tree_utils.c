@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 17:24:23 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/06 13:33:15 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/26 20:17:11 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,14 @@ int	get_precedence(int type)
 		return (1);
 	if (is_pipe(type))
 		return (2);
+	if (is_close_par(type))
+		return (-1);
 	return (3);
 }
 
-int	is_op_or_pipe(int type)
+int	peek_token_type(t_token *token)
 {
-	return (is_operator(type) || is_pipe(type));
+	if (!token)
+		return (-1);
+	return (token->type);
 }

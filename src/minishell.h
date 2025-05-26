@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/17 18:38:06 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/05/26 20:30:05 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,9 @@ enum e_token_types
 	PIPE,
 	AND,
 	OR,
-	SUBSHELL,	// might need left and right parenthesis types for tokens
+	OPEN_PAR,
+	CLOSE_PAR,
+	SUBSHELL,
 };
 
 enum e_group_types
@@ -204,12 +206,13 @@ void		reset_redirections(t_redir_node *redir, t_minishell *sh);
 // tree.c
 void		print_ast_node(t_ast_node *ast);
 t_ast_node	*create_ast(t_token **tk_list);
+t_ast_node	*parse_expr(t_ast_node *left, int prec, t_token ***tklp);
 
 // tree_utils.c
 t_ast_node	*init_ast_node(void);
 t_ast_node	*set_ast_node(int type, char **args, t_redir_node *red);
 int			get_precedence(int type);
-int			is_op_or_pipe(int type);
+int			peek_token_type(t_token *token);
 
 // tree_redirection.c
 void		set_one_redir(t_redir_node **redir, t_token ***tkp);
@@ -239,6 +242,12 @@ int			is_operator(int type);
 int			is_command(int type);
 int			is_pipe(int type);
 int			is_file(int type);
+
+// check_types2.c
+int			is_op_or_pipe(int type);
+int			is_open_par(int type);
+int			is_close_par(int type);
+int			is_arg(int type);
 
 // parsing.c
 char		get_quote_character(char c, char nw, int i, int *last);

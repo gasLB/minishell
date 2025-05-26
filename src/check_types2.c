@@ -1,40 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_types.c                                      :+:      :+:    :+:   */
+/*   check_types2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/17 21:38:04 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 14:25:44 by gfontagn         ###   ########.fr       */
+/*   Created: 2025/05/26 20:02:41 by gfontagn          #+#    #+#             */
+/*   Updated: 2025/05/26 20:03:12 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
+#include <stdlib.h>
 
-int	is_redirect(int type)
+int	is_op_or_pipe(int type)
 {
-	return (type >= IN && type <= APPEND);
+	return (is_operator(type) || is_pipe(type));
 }
 
-int	is_operator(int type)
+int	is_open_par(int type)
 {
-	return (type == OR || type == AND);
+	return (type == OPEN_PAR);
 }
 
-int	is_command(int type)
+int	is_close_par(int type)
 {
-	return (type == CMD);
+	return (type == CLOSE_PAR);
 }
 
-int	is_pipe(int type)
+int	is_arg(int type)
 {
-	return (type == PIPE);
-}
-
-int	is_file(int type)
-{
-	return (type == FILENAME);
+	return (type == ARG);
 }
