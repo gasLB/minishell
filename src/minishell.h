@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/26 20:30:05 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:25:14 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ typedef struct s_token
 {
 	char	*value;
 	int		type;
-	char	*expanded_value;
 	char	*quote_mask;
 	char	*transition_mask;
 }	t_token;
@@ -80,13 +79,14 @@ typedef struct s_ast_node
 	struct s_ast_node	*right;
 	int					visited;
 	int					type;
-	char				**args;
+	t_token				**tk_args;
 	struct s_redir_node	*redirect;
 }	t_ast_node;
 
 typedef struct s_minishell
 {
 	t_env_list	*env_list;
+	t_token		**token_list;
 	t_ast_node	*ast;
 	int			*pids;
 	int			pid_count;
@@ -145,8 +145,9 @@ void		ft_unsetenv(char *name, t_env_list *env);
 int			is_equal(char *s1, char *s2);
 char		*append_str(char *dest, char *src);
 int			is_a_number(char *str);
-char		**init_list(void);
-char		**append_to_lst(char **l, char *new_s);
+int			token_lstlen(t_token **l);
+t_token		**init_list(void);
+t_token		**append_to_lst(t_token **l, t_token *new_s);
 
 // builtins_utils.c
 int			is_n_option(char *s);
@@ -165,15 +166,13 @@ int			ft_env(t_env_list *env);
 void		ft_exit(int ac, char **args, t_minishell *sh);
 
 // expansion.c
-t_token		**expand_tokens(t_token **token_list, t_minishell *sh, \
-		t_env_list *env);
+char		**expand_cmd(t_token **tk_list, t_minishell *sh);
 char		*expand_variable(t_token *t, t_minishell *s, t_env_list *e, int i);
 
 // expansion_utils.c
 int			translation(char **res, t_token *tk, int i);
 char		*init_str(void);
 int			handle_tilde(char **res, t_token *tk, t_env_list *env);
-char		**expanded_list(int ac, t_token **tk_list);
 
 // tokenization.c
 t_token		*init_token(char *str);
@@ -210,7 +209,7 @@ t_ast_node	*parse_expr(t_ast_node *left, int prec, t_token ***tklp);
 
 // tree_utils.c
 t_ast_node	*init_ast_node(void);
-t_ast_node	*set_ast_node(int type, char **args, t_redir_node *red);
+t_ast_node	*set_ast_node(int type, t_token **args, t_redir_node *red);
 int			get_precedence(int type);
 int			peek_token_type(t_token *token);
 
@@ -225,7 +224,8 @@ void		function_dfs_ast(t_ast_node *node, t_minishell *sh, \
 		int (*f)(t_ast_node *, t_minishell *));
 
 // tree_traverse_utils.c
-int			null_cmd_node(t_ast_node *node, t_minishell *sh);
+
+int			null_cmd_node(t_ast_node *node, char **args, t_minishell *sh);
 int			is_directory(char *name);
 int			is_correct_size_exit(const char *nptr);
 long long	ft_atoll(const char *nptr);
@@ -265,7 +265,7 @@ int			token_basic_type(t_token *token);
 void		set_signals(void);
 
 // minishell.c
-void		minishell(t_minishell *sh, t_env_list *env_list);
+void		minishell(t_minishell *sh);
 void		wait_all_pids(t_minishell *sh);
 
 // pipes.c
@@ -274,5 +274,11 @@ void		add_pipe_fd(int fd1, int fd2, t_minishell *sh);
 
 void		close_all_pipes(t_minishell *sh);
 void		close_pipe_safely(int *fd);
+
+// syntax_utils.c
+
+int			check_op_commands(char *has_cp, int type);
+int			check_redirections(char *exp_fp, char *has_cp, int type);
+int			check_parenthesis(t_token *tkn, char *par_lp, char has_c, int type);
 
 #endif

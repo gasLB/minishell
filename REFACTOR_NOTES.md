@@ -100,4 +100,44 @@ RULES:
 
 I think a good idea could be for SUBSHELL nodes ot only have left child
 
+## Expansion command-specific
 
+Could this help resolve the problem of commands in variable expansion ?
+-> I don't think so, and it's not the point
+
+SO from now we will have to create the ast only from non-expanded values
+wait I can't do this , bc I need the quotes.
+Aaah and what if $PIPE = |
+we can't export like this, and it's not possible in bash. So no problem
+wait no I don't need the quotes actually. Are there cases where it's needed
+
+X echo prout ">" file
+
+Plus I already have the quote_mask!
+
+What needs to be expanded are command names and arguments
+
+maybe there is no use for expanded value then
+Don't forget the case with HD limiter
+
+There is also the case with multiple args
+
+--- 
+
+=> node->args should be a token list, because I need to keep the masks to expand later 
+
+Option 1. Keep the global token list and each args is just a pointer to the start
+. Also need either a 'size' int to tell where the list stops.
+
+Option 2. Free the global token list but create multiple sub_lists each assigned to args
+
+=> have to create a sublist. But this sublist could be only composed of references to 
+the global token list.
+
+What if no args?
+-> pointer to NULL
+
+wait but I need the char **args anyway to pass it to execve().
+hmmm....
+
+Maybe need to remove expanded value of tokens

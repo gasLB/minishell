@@ -91,10 +91,9 @@ void	put_line_hd(char *line, int fd[2], t_minishell *sh, int in_status)
 	if (!tk->transition_mask)
 		return ;
 	if (in_status == HD)
-		tk->expanded_value = expand_variable(tk, sh, env, 0);
+		ft_putstr_fd(expand_variable(tk, sh, env, 0), fd[1]);
 	else if (in_status == HDQ)
-		tk->expanded_value = ft_strdup(line);
-	ft_putstr_fd(tk->expanded_value, fd[1]);
+		ft_putstr_fd(ft_strdup(line), fd[1]);
 	free_token(tk);
 	if (line)
 		free(line);

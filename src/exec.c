@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 19:12:12 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/26 20:42:03 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/27 21:09:56 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,15 @@ int	exec_builtin(char **args, t_redir_node *redir, t_minishell *sh)
 	if (is_equal(args[0], "env"))
 		sh->last_exit = ft_env(sh->env_list);
 	if (is_equal(args[0], "exit"))
-		ft_exit(ac, args + 1, sh);
+		ft_exit(ac, args, sh);
 	sh->last_command_type = BUILTIN;
 	reset_redirections(redir, sh);
+	if (args)
+		free_str_list(args);
 	return (0);
 }
 
-int	execute_command(char *name, char **args, char **envp, t_minishell *sh)
+int	execute_command(char *path, char **args, char **envp, t_minishell *sh)
 {
 	int	saved_er;
 	int	exit_er;
@@ -76,14 +78,16 @@ int	execute_command(char *name, char **args, char **envp, t_minishell *sh)
 	close(sh->original_stdin);
 	close(sh->original_stdout);
 	close_all_pipes(sh);
-	if (execve(args[0], args, envp) < 0)
+	if (execve(path, args, envp) < 0)
 	{
 		saved_er = errno;
-		exit_er = error_execution(saved_er, name);
+		exit_er = error_execution(saved_er, args[0]);
 		free_struct(sh);
+		if (args)
+			free_str_list(args);
 		if (envp)
 			free_str_list(envp);
-		free(name);
+		free(path);
 		exit(exit_er);
 	}
 	return (1);
@@ -99,7 +103,7 @@ int	*add_pid(t_minishell *sh)
 		sh->pids = malloc(sizeof(int));
 		if (!sh->pids)
 			return (NULL);
-		sh->pid_count++;
+		sh->pid_count = 1;
 		return (sh->pids);
 	}
 	i = 0;
@@ -116,8 +120,9 @@ int	*add_pid(t_minishell *sh)
 	return (ret + sh->pid_count++);
 }
 
-int	exec_external(char *name, char **args, t_redir_node *redir, t_minishell *s)
+int	exec_external(char *path, char **args, t_redir_node *redir, t_minishell *s)
 {
+	// need to free everything in all error cases
 	char	**envp;
 	int		*p_pid;
 
@@ -130,11 +135,12 @@ int	exec_external(char *name, char **args, t_redir_node *redir, t_minishell *s)
 	if (*p_pid == -1)
 		return (printf_fd(2, "fork error: " NO_FDS), 1);
 	if (*p_pid == 0)
-		execute_command(name, args, envp, s);
+		execute_command(path, args, envp, s);
 	else
 	{
 		free_str_list(envp);
-		free(name);
+		free(path);
+		free_str_list(args);
 		reset_redirections(redir, s);
 	}
 	return (0);

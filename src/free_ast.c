@@ -38,8 +38,6 @@ void	free_token(t_token *tk)
 {
 	if (tk->value)
 		free(tk->value);
-	if (tk->expanded_value)
-		free(tk->expanded_value);
 	if (tk->quote_mask)
 		free(tk->quote_mask);
 	if (tk->transition_mask)
@@ -59,8 +57,8 @@ void	free_ast(t_ast_node *node)
 		free_ast(node->left);
 	if (node->right && node->right->visited != 2)
 		free_ast(node->right);
-	if (node->args)
-		free_str_list(node->args);
+	if (node->tk_args)
+		free(node->tk_args);
 	if (node->redirect)
 		free_redirect(node->redirect);
 	if (node)

@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 14:24:24 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 15:55:46 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:21:46 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,6 @@
 #include "minishell.h"
 #include <stdlib.h>
 #include <fcntl.h>
-
-int	ft_lstlen(char **args)
-{
-	int	i;
-
-	i = 0;
-	while (args[i])
-		i++;
-	return (i);
-}
 
 int	is_builtin(char *str)
 {

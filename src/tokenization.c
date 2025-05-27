@@ -85,7 +85,6 @@ t_token	*init_token(char *str)
 	if (!token)
 		return (NULL);
 	token->type = -1;
-	token->expanded_value = NULL;
 	token->quote_mask = ft_calloc(ft_strlen(str) + 1, sizeof(char));
 	if (!token->quote_mask)
 		return (NULL);

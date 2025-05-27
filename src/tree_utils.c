@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 17:24:23 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/26 20:17:11 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:02:43 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_ast_node	*init_ast_node(void)
 	if (!node)
 		return (NULL);
 	node->type = -1;
-	node->args = NULL;
+	node->tk_args = NULL;
 	node->redirect = NULL;
 	node->left = NULL;
 	node->right = NULL;
@@ -31,14 +31,14 @@ t_ast_node	*init_ast_node(void)
 	return (node);
 }
 
-t_ast_node	*set_ast_node(int type, char **args, t_redir_node *red)
+t_ast_node	*set_ast_node(int type, t_token **args, t_redir_node *red)
 {
 	t_ast_node	*node;
 
 	node = init_ast_node();
 	if (!node)
 		return (NULL);
-	node->args = args;
+	node->tk_args = args;
 	node->type = type;
 	node->redirect = red;
 	return (node);

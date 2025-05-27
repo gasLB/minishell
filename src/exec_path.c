@@ -94,16 +94,19 @@ char	**get_all_paths(t_env_list *env)
 	return (paths);
 }
 
-char	*find_path(char *name, t_minishell *sh)
+char	*find_path(char *or_name, t_minishell *sh)
 {
 	char	**common_paths;
 	char	*path;
+	char	*name;
 
-	if (ft_strlen(name) == 0)
+	if (ft_strlen(or_name) == 0)
 		return (NULL);
+	name = ft_strdup(or_name);
 	common_paths = get_all_paths(sh->env_list);
 	path = look_for_path(name, common_paths);
 	if (common_paths)
 		free_str_list(common_paths);
+	free(name);
 	return (path);
 }

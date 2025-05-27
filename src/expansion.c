@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 12:28:51 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 16:19:36 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/27 21:02:23 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,20 +103,25 @@ char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env, int i)
 	return (res);
 }
 
-t_token	**expand_tokens(t_token **tk_list, t_minishell *sh, t_env_list *env)
+char	**expand_cmd(t_token **tk_list, t_minishell *sh)
 {
+	char	**args;
 	int		i;
-	t_token	*tk;
+	int		len;
 
+	len = token_lstlen(tk_list);
+	if (len == 0)
+		return (NULL);
+	args = malloc((len + 1) * sizeof(char *));
+	if (!args)
+		return (NULL);
 	i = 0;
-	while (tk_list[i] != NULL)
+	while (tk_list[i])
 	{
-		tk = tk_list[i];
-		if (i >= 1 && tk_list[i - 1]->type == HD)
-			tk->expanded_value = ft_strdup(tk->value);
-		else
-			tk->expanded_value = expand_variable(tk, sh, env, 0);
+		args[i] = expand_variable(tk_list[i], sh, sh->env_list, 0);
 		i++;
 	}
-	return (tk_list);
+	args[i] = NULL;
+	return (args);
 }
+// check for HEREDOCS shouldn't expand

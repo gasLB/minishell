@@ -52,12 +52,13 @@ int	ft_env(t_env_list *env)
 	return (0);
 }
 
-void	exit_with_number(int n, t_minishell *sh)
+void	exit_with_number(int n, char **args, t_minishell *sh)
 {
-	if (sh->last_command_type != -1 || sh->ast->left || sh->ast->right)
+	if (sh->last_command_type != -1 || sh->pipe_count)
 		sh->last_exit = n;
 	else
 	{
+		free_str_list(args);
 		close_all_pipes(sh);
 		free_struct(sh);
 		exit(n);
@@ -68,11 +69,11 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 {
 	ft_printf("exit\n");
 	if (ac == 0)
-		exit_with_number(2, sh);
-	else if (!is_a_number(args[0]) || !is_correct_size_exit(args[0]))
+		exit_with_number(2, args, sh);
+	else if (!is_a_number(args[1]) || !is_correct_size_exit(args[1]))
 	{
-		printf_fd(2, "minishell: exit: %s: " NUMERIC_ARG, args[0]);
-		exit_with_number(2, sh);
+		printf_fd(2, "minishell: exit: %s: " NUMERIC_ARG, args[1]);
+		exit_with_number(2, args, sh);
 	}
 	else if (ac > 1)
 	{
@@ -80,5 +81,5 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 		sh->last_exit = 1;
 	}
 	else
-		exit_with_number((int)(ft_atoll(args[0]) % 256), sh);
+		exit_with_number((int)(ft_atoll(args[1]) % 256), args, sh);
 }

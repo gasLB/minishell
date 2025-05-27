@@ -6,14 +6,13 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 15:58:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 17:16:19 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/27 14:40:11 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libftprintf/libft/libft.h"
 #include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
 
 int	check_first_last_token(t_token **tk_list)
 {
@@ -42,55 +41,18 @@ int	index_err_check(t_token **tkl, char has_c, char exp_f, char par_lvl)
 	while (tkl[++i])
 	{
 		type = tkl[i]->type;
-		if (exp_f && !is_file(type))
+		if (check_redirections(&exp_f, &has_c, type))
 			return (i);
-		else if (exp_f && is_file(type))
-		{
-			exp_f = 0;
-			has_c = 1;
-		}
-		else if (is_redirect(type))
-			exp_f = 1;
-		else if (is_close_par(type))
-		{
-			if (!par_lvl || !has_c)
-				return (i);
-			if (tkl[i + 1] && (is_command(tkl[i + 1]->type) || is_arg(tkl[i + 1]->type)))
-				return (i);
-			par_lvl--;
-		}
-		else if (is_open_par(type))
-		{
-			if (has_c)
-				return (i);
-			par_lvl++;	
-		}
-		else if (is_pipe(type) || is_operator(type))
-		{
-			if (!has_c)
-				return (i);
-			has_c = 0;
-		}
-		else if (is_command(type))
-			has_c = 1;
+		if (check_parenthesis(tkl[i + 1], &par_lvl, has_c, type))
+			return (i);
+		if (check_op_commands(&has_c, type))
+			return (i);
 	}
 	if (exp_f || !has_c || par_lvl)
 		return (i);
 	return (-1);
 }
 
-// other syntax errors:
-// (cat) Makefile
-// -> command is inside parenthesis but argument is outside
-// we must check that command and its arguments are on the same par_lvl
-// 
-// can we have a command just after closed parenthesis?
-// -> NO
-// can we have an arg just after closed parenthesis?
-// we can have commands after anything (nothing, pipe, operator, not redirect) 
-// wait be I do have arg type
-// are args just ignored?
-//
 int	syntax_error(t_token *token, t_minishell *sh)
 {
 	char	*v;

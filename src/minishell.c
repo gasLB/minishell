@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 16:27:04 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 15:28:53 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:24:20 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,23 +53,23 @@ char	*read_one_line(t_minishell *sh)
 	return (line);
 }
 
-void	free_in_loop(t_token ***tkl, char **line, t_ast_node **ast)
+void	free_in_loop(t_minishell *sh)
 {
-	if (*tkl)
-	{
-		free_token_list(*tkl);
-		*tkl = NULL;
-	}
-	if (*line)
-	{
-		free(*line);
-		*line = NULL;
-	}
-	if (*ast)
-	{
-		free_ast(*ast);
-		*ast = NULL;
-	}
+	if (sh->line)
+		free(sh->line);
+	if (sh->token_list)
+		free_token_list(sh->token_list);
+	if (sh->ast)
+		free_ast(sh->ast);
+	if (sh->pids)
+		free(sh->pids);
+	sh->line = NULL;
+	sh->token_list = NULL;
+	sh->ast = NULL;
+	sh->pids = NULL;
+	sh->pipe_count = 0;
+	sh->pid_count = 0;
+	g_signal_pid = 0;
 }
 
 void	wait_all_pids(t_minishell *sh)
@@ -88,34 +88,27 @@ void	wait_all_pids(t_minishell *sh)
 	}
 	if (sh->last_command_type == EXTERNAL)
 		sh->last_exit = status % 256;
-	sh->pid_count = 0;
 }
 
-void	minishell(t_minishell *sh, t_env_list *env_list)
+void	minishell(t_minishell *sh)
 {
-	t_token		**token_list;
-
 	while (1)
 	{
 		sh->line = read_one_line(sh);
 		add_history(sh->line);
 		if (only_space(&(sh->line)))
 			continue ;
-		token_list = init_token_list(sh->line);
-		set_each_token_type(&token_list);
-		if (check_syntax(token_list, sh) != 0)
+		sh->token_list = init_token_list(sh->line);
+		set_each_token_type(&(sh->token_list));
+		if (check_syntax(sh->token_list, sh) != 0)
 		{
-			free_in_loop(&token_list, &(sh->line), &(sh->ast));
+			free_in_loop(sh);
 			continue ;
 		}
-		token_list = expand_tokens(token_list, sh, env_list);
-		sh->ast = create_ast(token_list);
-		if (token_list)
-			(free_token_list(token_list), token_list = NULL);
+		sh->ast = create_ast(sh->token_list);
 		dfs_ast(sh->ast, sh);
 		wait_all_pids(sh);
-		free_in_loop(&token_list, &(sh->line), &(sh->ast));	// not sure it is needed here. everything should had been freed before
-		g_signal_pid = 0;
+		free_in_loop(sh);
 	}
 	free_struct(sh);
 }

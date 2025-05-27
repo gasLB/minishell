@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 13:26:21 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/26 20:26:24 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/27 21:08:26 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "minishell.h"
 #include <stdlib.h>
 
-t_ast_node	*parse_command(t_token ***tklp, char **args)
+t_ast_node	*parse_command(t_token ***tklp, t_token **args)
 {
 	char			*value;
 	t_redir_node	*red;
@@ -24,16 +24,12 @@ t_ast_node	*parse_command(t_token ***tklp, char **args)
 	red = NULL;
 	while (args && **tklp && get_precedence((**tklp)->type) == 3)
 	{
-		value = (**tklp)->expanded_value;
+		value = (**tklp)->value;
 		type = (**tklp)->type;
 		if (is_command(type))
-		{
-			if (args[0] != NULL)
-				free(args[0]);
-			args[0] = ft_strdup(value);
-		}
+			args[0] = **tklp;
 		else if (type == ARG)
-			args = append_to_lst(args, ft_strdup(value));
+			args = append_to_lst(args, **tklp);
 		else if (is_redirect(type))
 		{
 			set_one_redir(&red, tklp);
@@ -48,7 +44,7 @@ t_ast_node	*parse_primary(t_token	***tklp)
 {
 	t_ast_node	*subshell;
 	t_ast_node	*inner_expr;
-	char		**args;
+	t_token		**args;
 
 	subshell = NULL;
 	if (is_open_par((**tklp)->type))
@@ -118,12 +114,3 @@ t_ast_node	*create_ast(t_token **tk_list)
 		return (NULL);
 	return (parse_expr(head, 0, &tk_list));
 }
-
-// Ok first we don't always have command as first token
-// we can also have opened parenthesis
-//
-// starting with parenthesis level of 0
-// if there is open one, lvl++
-// if there is close one, lvl--
-// when we arrive at the end of parenthesis (close_par) for the current level, we create everything under a SUBSHELL node
-//

@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 19:41:21 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 18:39:12 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/27 15:49:07 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	set_one_redir(t_redir_node **redir, t_token ***tkp)
 		return ;
 	if (type == HD && token_with_quotes(**tkp))
 		type = HDQ;
-	file = ft_strdup((**tkp)->expanded_value);
+	file = ft_strdup((**tkp)->value);
 	if (!file)
 		return ;
 	if (!add_redir_node(redir, type, file))

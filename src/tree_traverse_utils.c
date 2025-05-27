@@ -74,13 +74,14 @@ long long	ft_atoll(const char *nptr)
 	return (nb * sign);
 }
 
-int	null_cmd_node(t_ast_node *node, t_minishell *sh)
+int	null_cmd_node(t_ast_node *node, char **args, t_minishell *sh)
 {
 	if (!node || !node->redirect)
-		return (1);
-	return (set_redirections(node->args, node->redirect, sh));
+		return (free_str_list(args), 1);
+	return (set_redirections(args, node->redirect, sh));
 }
 
+// directory permissions are not taken into account
 int	is_directory(char *name)
 {
 	DIR	*dir;
@@ -94,4 +95,3 @@ int	is_directory(char *name)
 	}
 	return (0);
 }
-// directory permissions are not taken into account

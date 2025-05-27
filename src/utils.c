@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 19:35:03 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 18:12:19 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/27 21:05:55 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,38 +24,14 @@ int	is_equal(char *s1, char *s2)
 	return (1);
 }
 
-char	**init_list(void)
+int	ft_lstlen(char **args)
 {
-	char	**res;
+	int	i;
 
-	res = malloc(2 * sizeof(char *));
-	if (!res)
-		return (NULL);
-	res[0] = NULL;
-	res[1] = NULL;
-	return (res);
-}
-
-char	**append_to_lst(char **l, char *new_s)
-{
-	char	**new_l;
-	int		i;
-	int		size;
-
-	size = ft_lstlen(l);
-	new_l = malloc((size + 2) * sizeof(char *));
-	if (!new_l)
-		return (NULL);
 	i = 0;
-	while (i < size)
-	{
-		new_l[i] = l[i];
+	while (args[i])
 		i++;
-	}
-	new_l[i] = new_s;
-	new_l[i + 1] = NULL;
-	free(l);
-	return (new_l);
+	return (i);
 }
 
 char	*append_str(char *dest, char *src)

@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:39:59 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/26 21:29:36 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:09:06 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ int	subshell_node(t_ast_node *node, t_minishell *sh)
 		return (printf_fd(2, "fork error: " NO_FDS), 1);
 	if (*sub_pid == 0)
 	{
-		close(sh->original_stdin);
-		close(sh->original_stdout);
-		close_all_pipes(sh);
 		if (node->left && !(node->left->visited))
 			dfs_ast(node->left, sh);
 		wait_all_pids(sh);
+		close(sh->original_stdin);
+		close(sh->original_stdout);
+		close_all_pipes(sh);
 		last_exit = sh->last_exit;
 		free_struct(sh);
 		exit(last_exit);
@@ -79,30 +79,25 @@ int	pipe_node(t_ast_node *node, t_minishell *sh)
 int	cmd_node(t_ast_node *node, t_minishell *sh)
 {
 	char	**args;
-	char	*cmd_name;
 	char	*cmd_path;
 
-	args = node->args;
-	if (!args[0])
-		return (null_cmd_node(node, sh));
+	args = expand_cmd(node->tk_args, sh);
+	if (!args || !args[0])
+		return (null_cmd_node(node, args, sh));
 	if (set_redirections(args, node->redirect, sh) != 0)
-		return (1);
+		return (free_str_list(args), 1);
 	if (is_directory(args[0]))
-		return (1);
+		return (free_str_list(args), 1);
 	if (is_builtin(args[0]))
 		return (exec_builtin(args, node->redirect, sh));
-	cmd_name = ft_strdup(args[0]);
-	cmd_path = find_path(cmd_name, sh);
+	cmd_path = find_path(args[0], sh);
 	if (!cmd_path)
 	{
 		sh->last_exit = 127;
-		free(cmd_name);
+		free_str_list(args);
 		return (1);
 	}
-	if (args[0])
-		free(args[0]);
-	args[0] = cmd_path;
-	return (exec_external(cmd_name, args, node->redirect, sh));
+	return (exec_external(cmd_path, args, node->redirect, sh));
 }
 
 void	dfs_ast(t_ast_node *node, t_minishell *sh)

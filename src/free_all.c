@@ -52,7 +52,6 @@ void	free_token_list(t_token **tk_list)
 	{
 		free(tk_list[i]->value);
 		free(tk_list[i]->quote_mask);
-		free(tk_list[i]->expanded_value);
 		free(tk_list[i]->transition_mask);
 		free(tk_list[i]);
 		tk_list[i] = NULL;
@@ -83,6 +82,8 @@ void	free_struct(t_minishell *sh)
 		return ;
 	if (sh->env_list)
 		free_env_list(sh->env_list);
+	if (sh->token_list)
+		free_token_list(sh->token_list);
 	if (sh->ast)
 		free_ast(sh->ast);
 	if (sh->pipe_fds)
