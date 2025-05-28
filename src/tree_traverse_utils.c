@@ -6,16 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 17:33:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 15:17:32 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 14:08:15 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <unistd.h>
-#include <dirent.h>
 
 int	null_cmd_node(t_ast_node *node, t_minishell *sh)
 {
@@ -32,7 +27,7 @@ int	is_directory(char *name)
 	if (dir)
 	{
 		closedir(dir);
-		printf_fd(2, "minishell: %s: Is a directory\n", name);
+		ft_dprintf(2, "minishell: %s: Is a directory\n", name);
 		return (1);
 	}
 	return (0);

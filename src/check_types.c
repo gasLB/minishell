@@ -6,14 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 21:38:04 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 14:25:44 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:48:48 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
 
 int	is_redirect(int type)
 {

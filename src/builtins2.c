@@ -6,20 +6,10 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 13:28:18 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 19:44:58 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 14:00:12 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <dirent.h>
-#include <termios.h>
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 
 int	ft_unset(int ac, char **args, t_env_list *env)
@@ -32,7 +22,7 @@ int	ft_unset(int ac, char **args, t_env_list *env)
 		if (is_valid_env_name(args[i]))
 			ft_unsetenv(args[i], env);
 		else
-			printf_fd(2, "minishell: unset: %s: " INVAL, args[i]);
+			ft_dprintf(2, "minishell: unset: %s: " INVAL, args[i]);
 		i++;
 	}
 	return (0);
@@ -57,7 +47,7 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 	int	exitn;
 
 	if (ac > 1)
-		printf_fd(2, "minishell: exit: " TOO_MANY);
+		ft_dprintf(2, "minishell: exit: " TOO_MANY);
 	else if (ac == 1)
 	{
 		if (is_a_number(args[0]))
@@ -67,7 +57,7 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 			(ft_printf("exit\n"), close_all_pipes(sh), free_struct(sh));
 			exit(exitn);
 		}
-		printf_fd(2, "minishell: exit: %s: " NUMERIC_ARG, args[0]);
+		ft_dprintf(2, "minishell: exit: %s: " NUMERIC_ARG, args[0]);
 		sh->last_exit = 2;
 		(ft_printf("exit\n"), close_all_pipes(sh), free_struct(sh));
 		exit(2);

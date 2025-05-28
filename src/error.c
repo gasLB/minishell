@@ -6,18 +6,13 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 14:31:39 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 15:45:49 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 14:29:00 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <errno.h>
-#include <unistd.h>
 
-static t_form	set_output_fd(t_form form, va_list apt)
+/*static t_form	set_output_fd(t_form form, va_list apt)
 {
 	char	spec;
 
@@ -102,3 +97,4 @@ int	printf_fd(int fd, const char *s, ...)
 	va_end(ap);
 	return (count);
 }
+*/

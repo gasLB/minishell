@@ -6,16 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:13:29 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 17:18:58 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:53:09 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 
 void	append_token(t_token ***tk_list, t_token *token)
 {

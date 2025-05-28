@@ -6,15 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 16:39:59 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 15:16:56 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 14:07:40 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <unistd.h>
 
 void	dfs_ast(t_ast_node *node, t_minishell *sh)
 {
@@ -46,12 +42,12 @@ int	pipe_node(t_ast_node *node, t_minishell *sh)
 
 	or_std[0] = dup(STDIN_FILENO);
 	if (or_std[0] == -1)
-		return (printf_fd(2, "pipe error: " NO_FDS));
+		return (ft_dprintf(2, "pipe error: " NO_FDS));
 	or_std[1] = dup(STDOUT_FILENO);
 	if (or_std[1] == -1)
-		return (printf_fd(2, "pipe error: " NO_FDS));
+		return (ft_dprintf(2, "pipe error: " NO_FDS));
 	if (pipe(fd) == -1)
-		return (printf_fd(2, "pipe error: " NO_FDS));
+		return (ft_dprintf(2, "pipe error: " NO_FDS));
 	add_pipe_fd(fd[0], fd[1], sh);
 	add_pipe_fd(or_std[0], or_std[1], sh);
 	dup_pipe(node, fd, or_std, sh);

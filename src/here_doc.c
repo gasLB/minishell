@@ -6,17 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 17:15:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 19:24:51 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:51:23 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/wait.h>
 
 void	close_all_pipes(t_minishell *sh)
 {

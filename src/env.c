@@ -6,14 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 17:13:13 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 18:30:59 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:49:01 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
 
 t_env_node	*set_node(char *key, char *value)
 {

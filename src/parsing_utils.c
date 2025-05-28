@@ -6,16 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 16:36:03 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 16:56:43 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:53:56 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 
 int	token_basic_type(t_token *token)
 {

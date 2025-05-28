@@ -6,16 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 13:48:33 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 15:57:50 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 14:31:04 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
 
 char	*ft_strjoin_slash(char const *s1, char const *s2)
 {
@@ -66,7 +61,7 @@ char	*look_for_path(char *name, char **com_paths)
 		return (ft_strdup(name));
 	else if (name && name[0] == '/')
 	{
-		printf_fd(2, "minishell: %s: " NO_FILE, name);
+		ft_dprintf(2, "minishell: %s: " NO_FILE, name);
 		return (NULL);
 	}
 	while (com_paths && com_paths[i])
@@ -76,7 +71,7 @@ char	*look_for_path(char *name, char **com_paths)
 			return (path);
 		(free(path), i++);
 	}
-	printf_fd(2, "minishell: %s: " NOT_FOUND, name);
+	ft_dprintf(2, "minishell: %s: " NOT_FOUND, name);
 	return (NULL);
 }
 
@@ -88,7 +83,7 @@ char	**get_all_paths(t_env_list *env)
 	path_line = ft_getenv("PATH", env);
 	if (!path_line)
 		return (NULL);
-	paths = ft_split(path_line, ':');
+	paths = ft_split(path_line, ":");
 	if (!paths)
 		return (NULL);
 	return (paths);

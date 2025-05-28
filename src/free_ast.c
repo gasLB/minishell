@@ -6,15 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 16:21:52 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 16:25:27 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:51:10 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <unistd.h>
 
 void	free_redirect(t_redir_node *red)
 {

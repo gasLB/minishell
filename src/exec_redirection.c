@@ -6,17 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:53:55 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 16:13:47 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 14:04:26 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <errno.h>
 
 int	open_in(char **args, char *filename, int in_status, t_minishell *sh)
 {
@@ -32,17 +26,17 @@ int	open_in(char **args, char *filename, int in_status, t_minishell *sh)
 		cm_name = ft_strdup("minishell");
 	infile = -1;
 	if (ft_strchr(filename, '*') != NULL)
-		printf_fd(2, "%s: %s: ambiguous redirect", cm_name, filename);
+		ft_dprintf(2, "%s: %s: ambiguous redirect", cm_name, filename);
 	else if (access(filename, F_OK) != 0)
-		printf_fd(2, "%s: %s: " NO_FILE, cm_name, filename);
+		ft_dprintf(2, "%s: %s: " NO_FILE, cm_name, filename);
 	else
 	{
 		infile = open(filename, O_RDONLY, 0644);
 		saved_er = errno;
 		if (infile == -1 && saved_er == EACCES)
-			printf_fd(2, "%s: %s: " PERMISSION, cm_name, filename);
+			ft_dprintf(2, "%s: %s: " PERMISSION, cm_name, filename);
 		else if (infile == -1 && saved_er == EMFILE)
-			printf_fd(2, "error redirect: " NO_FDS);
+			ft_dprintf(2, "error redirect: " NO_FDS);
 	}
 	return (free(cm_name), infile);
 }
@@ -59,13 +53,13 @@ int	open_out(char **args, char *filename, mode_t mode)
 		cm_name = ft_strdup("minishell");
 	outfile = -1;
 	if (ft_strchr(filename, '*') != NULL)
-		printf_fd(2, "%s: %s: ambiguous redirect", cm_name, filename);
+		ft_dprintf(2, "%s: %s: ambiguous redirect", cm_name, filename);
 	else if (access(filename, F_OK) == 0 && access(filename, W_OK) != 0)
-		printf_fd(2, "%s: %s: " PERMISSION, cm_name, filename);
+		ft_dprintf(2, "%s: %s: " PERMISSION, cm_name, filename);
 	outfile = open(filename, O_WRONLY | mode | O_CREAT, 0644);
 	saved_er = errno;
 	if (outfile == -1 && saved_er == EMFILE)
-		printf_fd(2, "error redirect: " NO_FDS);
+		ft_dprintf(2, "error redirect: " NO_FDS);
 	free(cm_name);
 	return (outfile);
 }
@@ -80,7 +74,7 @@ int	duplicate_redir(char **args, int *file, t_redir_node *curr, t_minishell *sh)
 		if (*file == -1)
 			return (1);
 		if (dup2(*file, STDIN_FILENO) == -1)
-			return (printf_fd(2, "error redirect: " NO_FDS));
+			return (ft_dprintf(2, "error redirect: " NO_FDS));
 	}
 	else if (curr->type == TRUNC || curr->type == APPEND)
 	{
@@ -91,7 +85,7 @@ int	duplicate_redir(char **args, int *file, t_redir_node *curr, t_minishell *sh)
 		if (*file == -1)
 			return (1);
 		if (dup2(*file, STDOUT_FILENO) == -1)
-			return (printf_fd(2, "error redirect: " NO_FDS));
+			return (ft_dprintf(2, "error redirect: " NO_FDS));
 	}
 	return (0);
 }
@@ -124,7 +118,7 @@ void	reset_redirections(t_redir_node *redir, t_minishell *sh)
 	if (!redir || !is_redirect(redir->type))
 		return ;
 	if (dup2(sh->original_stdin, STDIN_FILENO) == -1)
-		printf_fd(2, "error redirect: " NO_FDS);
+		ft_dprintf(2, "error redirect: " NO_FDS);
 	if (dup2(sh->original_stdout, STDOUT_FILENO) == -1)
-		printf_fd(2, "error redirect: " NO_FDS);
+		ft_dprintf(2, "error redirect: " NO_FDS);
 }

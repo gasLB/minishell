@@ -6,15 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:50:00 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/17 18:36:46 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/05/28 14:09:29 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <unistd.h>
-#include <stdlib.h>
 
 int	is_n_option(char *s)
 {
@@ -41,13 +37,13 @@ int	change_directories(char *path, t_env_list *env)
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
-		printf_fd(2, "chdir: " RETRIEVE "getcwd: " NO_ACCESS NO_FILE);
+		ft_dprintf(2, "chdir: " RETRIEVE "getcwd: " NO_ACCESS NO_FILE);
 		return (1);
 	}
 	free(cwd);
 	if (chdir(path) != 0)
 	{
-		printf_fd(2, "minishell: cd: %s: " NO_FILE, path);
+		ft_dprintf(2, "minishell: cd: %s: " NO_FILE, path);
 		return (1);
 	}
 	ft_setenv("PWD", getcwd(NULL, 0), 1, env);

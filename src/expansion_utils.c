@@ -6,15 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/08 17:55:46 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 19:09:52 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:50:50 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <unistd.h>
-#include <stdlib.h>
 
 int	translation(char **res, t_token *tk, int i)
 {

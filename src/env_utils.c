@@ -6,14 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 19:41:29 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 19:45:44 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:49:10 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
 
 void	ft_unsetenv(char *name, t_env_list *env)
 {

@@ -6,14 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 19:41:21 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 18:39:12 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:55:03 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
 
 t_redir_node	*init_redir_node(int type, char *str)
 {

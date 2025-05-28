@@ -6,14 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 19:35:03 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 18:12:19 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:55:55 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
 
 int	is_equal(char *s1, char *s2)
 {

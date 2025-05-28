@@ -6,37 +6,30 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 19:12:12 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 15:53:50 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 14:01:57 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <errno.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 
 void	error_execution(int ern, char *cmd_name)
 {
 	if (ern == ENOENT)
-		printf_fd(2, "minishell: %s: " NO_FILE, cmd_name);
+		ft_dprintf(2, "minishell: %s: " NO_FILE, cmd_name);
 	else if (ern == EACCES)
-		printf_fd(2, "minishell: %s: " PERMISSION, cmd_name);
+		ft_dprintf(2, "minishell: %s: " PERMISSION, cmd_name);
 	else if (ern == ENOMEM)
-		printf_fd(2, "minishell: %s: " MEMORY, cmd_name);
+		ft_dprintf(2, "minishell: %s: " MEMORY, cmd_name);
 	else if (ern == ENOEXEC)
-		printf_fd(2, "minishell: %s: Exec format error\n", cmd_name);
+		ft_dprintf(2, "minishell: %s: Exec format error\n", cmd_name);
 	else if (ern == E2BIG)
-		printf_fd(2, "minishell: %s: " ARG_TOO_LONG, cmd_name);
+		ft_dprintf(2, "minishell: %s: " ARG_TOO_LONG, cmd_name);
 	else if (ern == ETXTBSY)
-		printf_fd(2, "minishell: %s: Text file busy\n", cmd_name);
+		ft_dprintf(2, "minishell: %s: Text file busy\n", cmd_name);
 	else if (ern == EISDIR)
-		printf_fd(2, "minishell: %s: Is a directory\n", cmd_name);
+		ft_dprintf(2, "minishell: %s: Is a directory\n", cmd_name);
 	else
-		printf_fd(2, "minishell: %s: %s\n", cmd_name, strerror(ern));
+		ft_dprintf(2, "minishell: %s: %s\n", cmd_name, strerror(ern));
 }
 
 int	exec_builtin(char **args, t_redir_node *redir, t_minishell *sh)

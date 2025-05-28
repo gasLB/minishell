@@ -6,18 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:58:56 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 16:57:16 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:54:24 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <signal.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <unistd.h>
 
 void	handle_sigint(int sig)
 {

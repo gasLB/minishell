@@ -6,20 +6,10 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 14:38:52 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/17 18:37:03 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/05/28 14:08:54 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <dirent.h>
-#include <termios.h>
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 
 int	ft_echo(int ac, char **args)
@@ -58,7 +48,7 @@ int	ft_pwd(void)
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
-		printf_fd(2, "pwd: " RETRIEVE "getcwd: " NO_ACCESS NO_FILE);
+		ft_dprintf(2, "pwd: " RETRIEVE "getcwd: " NO_ACCESS NO_FILE);
 		return (1);
 	}
 	ft_printf("%s\n", cwd);
@@ -71,18 +61,18 @@ int	ft_cd(int ac, char **args, t_env_list *env)
 	char	*path;
 
 	if (ac > 1)
-		return (printf_fd(2, "minishell: cd: " TOO_MANY), 1);
+		return (ft_dprintf(2, "minishell: cd: " TOO_MANY), 1);
 	else if (ac == 0)
 	{
 		path = ft_getenv("HOME", env);
 		if (!path)
-			return (printf_fd(2, "minishell: cd: " NO_HOME), 1);
+			return (ft_dprintf(2, "minishell: cd: " NO_HOME), 1);
 	}
 	else if (ft_strlen(args[0]) == 1 && args[0][0] == '-')
 	{
 		path = ft_getenv("OLDPWD", env);
 		if (!path)
-			return (printf_fd(2, "minishell: cd: " NO_OLDPWD), 1);
+			return (ft_dprintf(2, "minishell: cd: " NO_OLDPWD), 1);
 	}
 	else
 		path = args[0];
@@ -105,7 +95,7 @@ int	ft_export(int ac, char **args, t_env_list *env)
 		if (is_valid_env_name(args[i]))
 			export_var(args[i], env, 1);
 		else
-			printf_fd(2, "minishell: export: %s: " INVAL, args[i]);
+			ft_dprintf(2, "minishell: export: %s: " INVAL, args[i]);
 		i++;
 	}
 	return (0);

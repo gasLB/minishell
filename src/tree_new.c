@@ -6,14 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 13:26:21 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/06 13:43:56 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:54:53 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
 
 t_ast_node	*parse_command(t_token ***tk_list_pt, char **args)
 {

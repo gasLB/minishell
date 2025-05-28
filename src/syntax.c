@@ -6,14 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 15:58:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 17:16:19 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 14:06:52 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
 
 int	check_first_last_token(t_token **tk_list)
 {
@@ -65,12 +62,12 @@ int	syntax_error(t_token *token, t_minishell *sh)
 
 	if (!token)
 	{
-		printf_fd(2, "minishell: " UNEXPECTED_NL);
+		ft_dprintf(2, "minishell: " UNEXPECTED_NL);
 		sh->last_exit = 2;
 		return (2);
 	}
 	v = token->value;
-	printf_fd(2, "minishell: " UNEXPECTED_S, v);
+	ft_dprintf(2, "minishell: " UNEXPECTED_S, v);
 	sh->last_exit = 2;
 	return (2);
 }

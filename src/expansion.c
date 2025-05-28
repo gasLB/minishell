@@ -6,15 +6,11 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 12:28:51 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 16:19:36 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/28 13:50:36 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <unistd.h>
-#include <stdlib.h>
 
 int	is_expandable(char *str, char *q_mask, int i)
 {
