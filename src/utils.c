@@ -10,10 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
 
 int	is_equal(char *s1, char *s2)
 {

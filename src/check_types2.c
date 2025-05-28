@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <stdlib.h>
 
 int	is_op_or_pipe(int type)
 {

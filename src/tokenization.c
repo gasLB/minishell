@@ -10,10 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
 
 char	get_quote_character(char c, char new, int i, int *last)
 {

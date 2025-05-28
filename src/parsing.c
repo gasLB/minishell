@@ -10,12 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 
 void	append_token(t_token ***tk_list, t_token *token)
 {

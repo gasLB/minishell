@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 
 int	check_first_last_token(t_token **tk_list)

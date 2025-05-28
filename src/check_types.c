@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
 
 int	is_redirect(int type)

@@ -10,11 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <unistd.h>
-#include <stdlib.h>
 
 int	is_expandable(char *str, char *q_mask, int i)
 {

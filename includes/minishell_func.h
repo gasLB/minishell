@@ -1,133 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   minishell_func.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/27 17:25:14 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/05 19:06:51 by walter           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef MINISHELL_FUNC_H
+# define MINISHELL_FUNC_H
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 10000
-# endif
-
-# ifndef MAX_FD
-#  define MAX_FD 1024
-# endif
-
-# define RETRIEVE "error retrieving current directory: "
-# define NO_ACCESS "cannot access parent directories: "
-
-# define NO_FILE "No such file or directory\n"
-# define TOO_MANY "too many arguments\n"
-# define ARG_TOO_LONG "Argument list too long\n"
-# define NOT_FOUND "command not found\n"
-# define NUMERIC_ARG "numeric argument required\n"
-# define PERMISSION "Permission denied\n"
-# define MEMORY "Cannot allocate memory\n"
-# define NO_HOME "HOME not set\n"
-# define NO_OLDPWD "OLDPWD not set\n"
-# define INVAL "not a valid identifier\n"
-# define EXP_VALUE "export %s=\"%s\"\n"
-# define UNEXPECTED_NL "syntax error near unexpected token `newline'\n"
-# define UNEXPECTED_S "syntax error near unexpected token `%s'\n"
-# define NO_FDS "Too many open files\n"
-# define EXEC_ER "Exec format error\n"
-
-# include <readline/readline.h>
-# include <readline/history.h>
-
-extern pid_t	g_signal_pid;
-
-typedef struct s_token
-{
-	char	*value;
-	int		type;
-	char	*quote_mask;
-	char	*transition_mask;
-}	t_token;
-
-typedef struct s_env_node
-{
-	char				*key;
-	char				*value;
-	struct s_env_node	*next;
-}	t_env_node;
-
-typedef struct s_env_list
-{
-	t_env_node	*head;		
-	int			size;
-}	t_env_list;
-
-typedef struct s_redir_node
-{
-	char				*str;
-	int					type;
-	struct s_redir_node	*next;
-}	t_redir_node;
-
-typedef struct s_ast_node
-{
-	struct s_ast_node	*left;
-	struct s_ast_node	*right;
-	int					visited;
-	int					type;
-	t_token				**tk_args;
-	struct s_redir_node	*redirect;
-}	t_ast_node;
-
-typedef struct s_minishell
-{
-	t_env_list	*env_list;
-	t_token		**token_list;
-	t_ast_node	*ast;
-	int			*pids;
-	int			pid_count;
-	int			pipe_count;
-	int			*pipe_fds;
-	int			last_exit;
-	int			original_stdin;
-	int			original_stdout;
-	int			last_command_type;
-	char		*line;
-}	t_minishell;
-
-enum e_command_types
-{
-	EXTERNAL,
-	BUILTIN,
-};
-
-enum e_token_types
-{
-	CMD,
-	ARG,
-	IN,
-	HD,
-	HDQ,
-	TRUNC,
-	APPEND,
-	FILENAME,
-	PIPE,
-	AND,
-	OR,
-	OPEN_PAR,
-	CLOSE_PAR,
-	SUBSHELL,
-};
-
-enum e_group_types
-{
-	COMMAND,
-	REDIRECT,
-};
+typedef struct s_token		t_token;
+typedef struct s_redirect	t_redirect;
+typedef struct s_ast_node	t_ast_node;
+typedef struct s_env_node	t_env_node;
+typedef struct s_env_list	t_env_list;
+typedef struct s_redir_node	t_redir_node;
+typedef struct s_minishell	t_minishell;
 
 // env.c
 t_env_node	*set_node(char *key, char *value);

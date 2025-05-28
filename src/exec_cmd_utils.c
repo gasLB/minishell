@@ -10,11 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <fcntl.h>
 
 void	free_in_cmd_exec(char **envp, char *path, char **args)
 {

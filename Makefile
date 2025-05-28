@@ -1,12 +1,16 @@
 
 NAME = minishell
-FLAGS = -Wall -Werror -Wextra -g
-LIBFTDIR = ../libftprintf
+LIBFTDIR = libftprintf
+FLAGS = -Wall -Werror -Wextra -g -Iincludes -I$(LIBFTDIR)/include \
+		-I$(LIBFTDIR)/libft
 LIBFT = -L$(LIBFTDIR)/libft -lft
 PRINTF = -L$(LIBFTDIR) -lftprintf 
 READLINE = -I. -lreadline
 
 CC = cc
+
+SRC_DIR = src
+OBJ_DIR = obj
 
 SRC := builtins.c builtins2.c builtins_utils.c check_types.c check_types2.c \
 	   env.c env_utils.c error.c exec.c exec_cmd_utils.c exec_path.c \
@@ -16,9 +20,12 @@ SRC := builtins.c builtins2.c builtins_utils.c check_types.c check_types2.c \
 	   tree_new.c tree_redirection.c tree_traverse.c tree_traverse_utils.c \
 	   tree_utils.c utils.c pipes.c
 
-OBJ := $(SRC:.c=.o)
+OBJ := $(SRC:%.c=$(OBJ_DIR)/%.o)
 
 all: $(LIBFTDIR)/libftprintf.a $(NAME)
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
 
 $(LIBFTDIR)/libftprintf.a:
 	make -C $(LIBFTDIR)
@@ -26,16 +33,16 @@ $(LIBFTDIR)/libftprintf.a:
 $(NAME): $(OBJ)	
 	$(CC) -g $(OBJ) $(FLAGS) $(LIBFT) $(READLINE) $(PRINTF) -o $(NAME)
 
-%.o: %.c 
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) -g $(FLAGS) -c $< -o $@
 
 clean: 
-	rm -f $(OBJ)
-	make -C $(LIBFTDIR) clean
+	rm -rf $(OBJ_DIR)
+	$(MAKE) -C $(LIBFTDIR) clean
 
 fclean: clean
 	rm -f $(NAME)
-	make -C $(LIBFTDIR) fclean
+	$(MAKE) -C $(LIBFTDIR) fclean
 
 re: fclean all
 

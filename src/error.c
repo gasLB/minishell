@@ -10,12 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <errno.h>
-#include <unistd.h>
 
 static t_form	set_output_fd(t_form form, va_list apt)
 {

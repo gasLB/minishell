@@ -10,12 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
 
 char	*ft_strjoin_slash(char const *s1, char const *s2)
 {

@@ -10,13 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libftprintf/libft/libft.h"
-#include "../libftprintf/include/ft_printf_bonus.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/wait.h>
 
 int	compare_line(char *line, char *lim)
 {
