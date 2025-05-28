@@ -122,7 +122,6 @@ int	*add_pid(t_minishell *sh)
 
 int	exec_external(char *path, char **args, t_redir_node *redir, t_minishell *s)
 {
-	// need to free everything in all error cases
 	char	**envp;
 	int		*p_pid;
 
@@ -130,18 +129,22 @@ int	exec_external(char *path, char **args, t_redir_node *redir, t_minishell *s)
 	p_pid = add_pid(s);
 	envp = convert_envp_to_array(s->env_list);
 	if (!envp)
+	{
+		reset_redirections(redir, s);
+		free_in_cmd_exec(envp, path, args);
 		return (1);
+	}
 	*p_pid = fork();
 	if (*p_pid == -1)
-		return (printf_fd(2, "fork error: " NO_FDS), 1);
+	{
+		reset_redirections(redir, s);
+		free_in_cmd_exec(envp, path, args);
+		printf_fd(2, "fork error: " NO_FDS);
+		return (1);
+	}
 	if (*p_pid == 0)
 		execute_command(path, args, envp, s);
 	else
-	{
-		free_str_list(envp);
-		free(path);
-		free_str_list(args);
-		reset_redirections(redir, s);
-	}
+		(reset_redirections(redir, s), free_in_cmd_exec(envp, path, args));
 	return (0);
 }

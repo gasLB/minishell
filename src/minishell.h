@@ -192,6 +192,7 @@ int			exec_builtin(char **args, t_redir_node *r, t_minishell *sh);
 // exec_utils.c
 int			is_builtin(char *str);
 int			ft_lstlen(char **args);
+void		free_in_cmd_exec(char **envp, char *path, char **args);
 char		**convert_envp_to_array(t_env_list *envl);
 
 // exec_path.c

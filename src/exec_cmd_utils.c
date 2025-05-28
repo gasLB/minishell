@@ -16,6 +16,16 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
+void	free_in_cmd_exec(char **envp, char *path, char **args)
+{
+	if (envp)
+		free_str_list(envp);
+	if (path)
+		free(path);
+	if (args)
+		free_str_list(args);
+}
+
 int	is_builtin(char *str)
 {
 	if (!str)
