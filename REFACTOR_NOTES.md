@@ -122,8 +122,6 @@ Don't forget the case with HD limiter
 
 There is also the case with multiple args
 
---- 
-
 => node->args should be a token list, because I need to keep the masks to expand later 
 
 Option 1. Keep the global token list and each args is just a pointer to the start
@@ -141,3 +139,34 @@ wait but I need the char **args anyway to pass it to execve().
 hmmm....
 
 Maybe need to remove expanded value of tokens
+
+## SIGNALS
+
+### general notes
+
+kill(pid, SIGKILL) -> kill the process
+kill(pid, SIGSTOP) -> stop the process exec
+kill(pid, SIGCONT) -> resumes the process exec
+
+struct sigaction sa;
+sa.sa_handler = &handle_sigstp;
+sigaction(SIGSTP, &sa, NULL)    -> executes handle_sigstp() when SIGSTP is launched
+OR
+signal(SIGSTP, &handle_sigstp);
+
+SIGUSR1 for user-defined actions
+ 
+Ctrl+C sends SIGNINT(interrupt signal by default)
+Ctrl+\ sends SIGQUIT
+
+Quore dump are generated with SIGQUIT, SIGSEV or SIGILL
+
+### behaviors
+
+- Ctrl+C should exit heredoc and all waiting states (cat, sleep)
+- does glbal only carry signal number?
+- Ctrl+\ should apparently exit while cat or sleep
+- Ctrl+\ -> return status 131
+- other exit values 130 it seems
+
+-> test with subshells
