@@ -12,13 +12,40 @@ CC = cc
 SRC_DIR = src
 OBJ_DIR = obj
 
-SRC := builtins.c builtins2.c builtins_utils.c check_types.c check_types2.c \
-	   env.c env_utils.c error.c exec.c exec_cmd_utils.c exec_path.c \
-       exec_redirection.c expansion.c expansion_utils.c free_all.c \
-       free_ast.c here_doc.c main.c minishell.c parsing.c parsing_utils.c \
-       signals.c syntax.c syntax_utils.c tokenization.c tokenization_utils.c \
-	   tree_new.c tree_redirection.c tree_traverse.c tree_traverse_utils.c \
-	   tree_utils.c utils.c pipes.c
+SRC := builtins.c \
+	   builtins2.c \
+	   builtins_utils.c \
+	   check_types.c \
+	   check_types2.c \
+	   env.c \
+	   env_utils.c \
+	   error.c \
+	   exec.c \
+	   exec_cmd_utils.c \
+	   exec_path.c \
+       exec_redirection.c \
+	   expansion.c \
+	   expansion_utils.c \
+	   free_all.c \
+       free_ast.c \
+	   here_doc.c \
+	   here_doc_utils.c \
+	   main.c \
+	   minishell.c \
+	   parsing.c \
+	   parsing_utils.c \
+       signals.c \
+	   syntax.c \
+	   syntax_utils.c \
+	   tokenization.c \
+	   tokenization_utils.c \
+	   tree_new.c \
+	   tree_redirection.c \
+	   tree_traverse.c \
+	   tree_traverse_utils.c \
+	   tree_utils.c \
+	   utils.c \
+	   pipes.c
 
 OBJ := $(SRC:%.c=$(OBJ_DIR)/%.o)
 

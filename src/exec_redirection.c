@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 16:53:55 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 16:13:47 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/30 18:14:55 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	open_in(char **args, char *filename, int in_status, t_minishell *sh)
 	char	*cm_name;
 
 	if (in_status == HD || in_status == HDQ)
-		return (here_doc(filename, sh, in_status));
+		return (here_doc(filename, args, in_status, sh));
 	if (args[0])
 		cm_name = ft_strdup(args[0]);
 	else

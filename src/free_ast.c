@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 16:21:52 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 16:25:27 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/30 17:56:15 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	free_ast(t_ast_node *node)
 	if (node->right && node->right->visited != 2)
 		free_ast(node->right);
 	if (node->tk_args)
-		free(node->tk_args);
+		free(node->tk_args);	// this is not properly freed
 	if (node->redirect)
 		free_redirect(node->redirect);
 	if (node)

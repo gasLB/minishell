@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 19:12:12 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/27 21:09:56 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/30 20:09:57 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int	execute_command(char *path, char **args, char **envp, t_minishell *sh)
 	int	saved_er;
 	int	exit_er;
 
+	set_signals_default();
 	close(sh->original_stdin);
 	close(sh->original_stdout);
 	close_all_pipes(sh);

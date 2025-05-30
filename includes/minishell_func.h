@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 19:06:51 by walter           ###   ########.fr       */
+/*   Updated: 2025/05/30 18:30:45 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,16 @@ int			is_correct_size_exit(const char *nptr);
 long long	ft_atoll(const char *nptr);
 
 // here_doc.c
-int			here_doc(char *lim, t_minishell *sh, int in_status);
+
+int			here_doc(char *lim, char **args, int in_status, t_minishell *sh);
+
+// here_doc_utils.c
+
+int			compare_line(char *line, char *lim);
+char		*fill_with_char(int n, char c);
+char		*expand_line(char *line, int stat, t_minishell *sh);
+void		exit_heredoc_signal(int fd[2], char *line, char *str, t_minishell *sh);
+void		exit_heredoc_lim(int fd[2], char *line, char *str, t_minishell *sh);
 
 // error.c
 int			printf_fd(int fd, const char *s, ...);
@@ -155,7 +164,12 @@ int			update_token_end(char *line, char quote, int end);
 int			token_basic_type(t_token *token);
 
 // signals.c
-void		set_signals(void);
+
+void	reset_signals_after_execution(t_minishell *sh);
+void	set_signals_default(void);
+void	set_signals_execution(void);
+void	set_signals_interactive(void);
+void	set_signals_heredoc(void);
 
 // minishell.c
 void		minishell(t_minishell *sh);

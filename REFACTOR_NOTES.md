@@ -170,3 +170,8 @@ Quore dump are generated with SIGQUIT, SIGSEV or SIGILL
 - other exit values 130 it seems
 
 -> test with subshells
+
+
+## LEAKS
+
+-> leak in heredoc with command expansion

@@ -6,13 +6,13 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:02:07 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/27 21:09:04 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/30 16:47:11 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-pid_t	g_signal_pid;
+pid_t	g_signal;
 
 void	minishell_start(void)
 {
@@ -22,7 +22,6 @@ void	minishell_start(void)
 	ft_printf("| |\\/| | | '_ \\| |`--. \\ '_ \\ / _ \\ | |\n");
 	ft_printf("| |  | | | | | | /\\__/ / | | |  __/ | |\n");
 	ft_printf("\\_|  |_/_|_| |_|_\\____/|_| |_|\\___|_|_|\n\n");
-	set_signals();
 }
 
 t_minishell	*init_shell(t_env_list *env_list)
@@ -32,7 +31,7 @@ t_minishell	*init_shell(t_env_list *env_list)
 	sh = malloc(sizeof(t_minishell));
 	if (!sh)
 		return (NULL);
-	g_signal_pid = 0;
+	g_signal = 0;
 	sh->env_list = env_list;
 	sh->token_list = NULL;
 	sh->last_exit = 0;

@@ -6,11 +6,13 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 16:27:04 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/27 16:24:20 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/30 20:22:25 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "ft_printf_bonus.h"
+#include "minishell_func.h"
 
 int	only_space(char **str)
 {
@@ -33,6 +35,7 @@ char	*read_one_line(t_minishell *sh)
 {
 	char	*line;
 
+	set_signals_interactive();
 	dup2(sh->original_stdin, STDIN_FILENO);
 	dup2(sh->original_stdout, STDOUT_FILENO);
 	sh->last_command_type = -1;
@@ -42,6 +45,13 @@ char	*read_one_line(t_minishell *sh)
 		ft_printf("exit\n");
 		free_struct(sh);
 		exit(0);
+	}
+	ft_printf("g_signal in read one line: %d\n", g_signal);
+	ft_printf("last exit in read one line: %d\n", sh->last_exit);
+	if (g_signal != 0)
+	{
+		sh->last_exit = 128 + g_signal;
+		g_signal = 0;
 	}
 	return (line);
 }
@@ -62,7 +72,7 @@ void	free_in_loop(t_minishell *sh)
 	sh->pids = NULL;
 	sh->pipe_count = 0;
 	sh->pid_count = 0;
-	g_signal_pid = 0;
+	g_signal = 0;
 }
 
 void	wait_all_pids(t_minishell *sh)
@@ -79,8 +89,13 @@ void	wait_all_pids(t_minishell *sh)
 		waitpid(sh->pids[i], &status, 0);
 		i++;
 	}
-	if (sh->last_command_type == EXTERNAL)
-		sh->last_exit = status % 256;
+	if (g_signal != 0)
+	{
+		sh->last_exit = g_signal + 128;
+		g_signal = 0;
+	}
+	else if (sh->last_command_type == EXTERNAL)
+		sh->last_exit = status % 255;
 }
 
 void	minishell(t_minishell *sh)
@@ -99,8 +114,10 @@ void	minishell(t_minishell *sh)
 			continue ;
 		}
 		sh->ast = create_ast(sh->token_list);
+		set_signals_execution();
 		dfs_ast(sh->ast, sh);
 		wait_all_pids(sh);
+		set_signals_interactive();
 		free_in_loop(sh);
 	}
 	free_struct(sh);

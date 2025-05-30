@@ -45,6 +45,6 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-extern pid_t	g_signal_pid;
+extern pid_t	g_signal;
 
 #endif

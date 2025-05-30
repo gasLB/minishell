@@ -6,18 +6,13 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 17:15:41 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/05 19:24:51 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/05/30 20:50:06 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "minishell.h"
-
-int	compare_line(char *line, char *lim)
-{
-	if (ft_strlen(line) - 1 == ft_strlen(lim))
-		return (ft_strncmp(line, lim, ft_strlen(lim)));
-	return (1);
-}
+#include "minishell_func.h"
 
 int	get_next_line_input(char **line, t_minishell *sh)
 {
@@ -48,76 +43,72 @@ int	get_next_line_input(char **line, t_minishell *sh)
 	return (1);
 }
 
-char	*fill_with_char(int n, char c)
+int	wait_for_heredoc_child(int fd[2], char *str, int pid, t_minishell *sh)
 {
-	char	*res;
-	int		i;
+	int	status;
 
-	i = 0;
-	res = malloc((n + 1) * sizeof(char));
-	if (!res)
-		return (NULL);
-	while (i < n)
+	if (str)
+		free(str);
+	close_pipe_safely(&(fd[1]));
+	waitpid(pid, &status, 0);
+	sh->last_exit = status;
+	set_signals_execution();
+	printf_fd(2, "g_signal in wait_for_heredoc: %d\n", g_signal);
+	if (g_signal != 0)
 	{
-		res[i] = c;
-		i++;
+		g_signal = 0;
+		return (-1);
 	}
-	res[i] = '\0';
-	return (res);
+	return (fd[0]);
 }
 
-void	put_line_hd(char *line, int fd[2], t_minishell *sh, int in_status)
+char	*append_line_to_str(char *line, char *str, int stat, t_minishell *sh)
 {
-	t_token		*tk;
-	t_env_list	*env;
+	char	*new_line;
 
-	env = sh->env_list;
-	tk = malloc(sizeof(t_token));
-	if (!tk)
-		return ;
-	tk->value = ft_strdup(line);
-	if (!tk->value)
-		return ;
-	tk->quote_mask = fill_with_char(ft_strlen(line), 'N');
-	if (!tk->quote_mask)
-		return ;
-	tk->transition_mask = fill_with_char(ft_strlen(line), 'n');
-	if (!tk->transition_mask)
-		return ;
-	if (in_status == HD)
-		ft_putstr_fd(expand_variable(tk, sh, env, 0), fd[1]);
-	else if (in_status == HDQ)
-		ft_putstr_fd(ft_strdup(line), fd[1]);
-	free_token(tk);
-	if (line)
-		free(line);
+	new_line = expand_line(line, stat, sh);
+	if (!new_line)
+		return (str);
+	return (append_str(str, new_line));
 }
 
-int	here_doc(char *lim, t_minishell *sh, int in_status)
+int	init_heredoc_values(char **line, char **str, int fd[2])
+{
+
+	set_signals_heredoc();
+	*line = NULL;
+	*str = init_str();
+	if (!(*str))
+		return (-1);
+	if (pipe(fd) == -1)
+		return (-1);
+	return (0);
+}
+
+int	here_doc(char *lim, char **args, int in_status, t_minishell *sh)
 {
 	int		fd[2];
 	int		pid;
 	char	*line;
+	char	*str;
 
-	line = NULL;
-	if (pipe(fd) == -1)
+	if (init_heredoc_values(&line, &str, fd) == -1)
 		return (-1);
 	pid = fork();
 	if (pid == 0)
 	{
-		close(fd[0]);
+		close_pipe_safely(&(fd[0]));
 		while (get_next_line_input(&line, sh))
 		{
+			if (g_signal == SIGINT)
+				(free_str_list(args), exit_heredoc_signal(fd, line, str, sh));
 			if (compare_line(line, lim) == 0)
 				break ;
-			put_line_hd(line, fd, sh, in_status);
-			line = NULL;
+			str = append_line_to_str(line, str, in_status, sh);
 		}
-		(close_pipe_safely(&(fd[1])), close_all_pipes(sh), free_struct(sh));
-		if (line)
-			free(line);
-		exit(EXIT_SUCCESS);
+		(free_str_list(args), exit_heredoc_lim(fd, line, str, sh));
 	}
-	(close_pipe_safely(&(fd[1])), waitpid(pid, NULL, 0));
-	return (fd[0]);
+	return (wait_for_heredoc_child(fd, str, pid, sh));
 }
+
+// handle the case with EOF (CTRL+D)
