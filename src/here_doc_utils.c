@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "minishell_func.h"
 
 int	compare_line(char *line, char *lim)
 {
@@ -62,26 +63,28 @@ char	*expand_line(char *line, int stat, t_minishell *sh)
 	else if (stat == HDQ)
 		res = ft_strdup(line);
 	free_token(tk);
-	(free(line), line = NULL);
+	if (line)
+		(free(line), line = NULL);
 	return (res);
 }
 
-void	exit_heredoc_signal(int fd[2], char *line, char *str, t_minishell *sh)
+void	exit_heredoc_signal(int fd[2], char **args, char *str, t_minishell *sh)
 {
-	if (line)
-		free(line);
-	line = NULL;
+	if (args)
+		free_str_list(args);
 	if (str)
 		free(str);
 	str = NULL;
 	close_pipe_safely(&(fd[1]));
 	close_all_pipes(sh);
 	free_struct(sh);
+	g_signal = 0;
 	exit(130);
 }
 
 void	exit_heredoc_lim(int fd[2], char *line, char *str, t_minishell *sh)
 {
+	//printf_fd(2, "exit lim\n");
 	if (str)
 	{
 		ft_putstr_fd(str, fd[1]);

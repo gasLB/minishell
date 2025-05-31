@@ -132,7 +132,7 @@ int			here_doc(char *lim, char **args, int in_status, t_minishell *sh);
 int			compare_line(char *line, char *lim);
 char		*fill_with_char(int n, char c);
 char		*expand_line(char *line, int stat, t_minishell *sh);
-void		exit_heredoc_signal(int fd[2], char *line, char *str, t_minishell *sh);
+void		exit_heredoc_signal(int fd[2], char **a, char *s, t_minishell *sh);
 void		exit_heredoc_lim(int fd[2], char *line, char *str, t_minishell *sh);
 
 // error.c

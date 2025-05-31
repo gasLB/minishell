@@ -55,6 +55,7 @@ int	pipe_node(t_ast_node *node, t_minishell *sh)
 {
 	int	fd[2];
 	int	or_std[2];
+	int	res;
 
 	or_std[0] = dup(STDIN_FILENO);
 	if (or_std[0] == -1)
@@ -66,22 +67,24 @@ int	pipe_node(t_ast_node *node, t_minishell *sh)
 		return (printf_fd(2, "pipe error: " NO_FDS));
 	add_pipe_fd(fd[0], fd[1], sh);
 	add_pipe_fd(or_std[0], or_std[1], sh);
-	dup_pipe(node, fd, or_std, sh);
+	res = dup_pipe(node, fd, or_std, sh);
 	(close(fd[0]), close(fd[1]));
 	(close(or_std[1]), close(or_std[0]));
-	return (0);
+	return (res);
 }
 
 int	cmd_node(t_ast_node *node, t_minishell *sh)
 {
 	char	**args;
 	char	*cmd_path;
+	int		redir;
 
 	args = expand_cmd(node->tk_args, sh);
 	if (!args || !args[0])
 		return (null_cmd_node(node, args, sh));
-	if (set_redirections(args, node->redirect, sh) != 0)
-		return (free_str_list(args), 1);
+	redir = set_redirections(args, node->redirect, sh);
+	if (redir != 0)
+		return (free_str_list(args), redir);
 	if (is_directory(args[0]))
 		return (free_str_list(args), 1);
 	if (is_builtin(args[0]))
@@ -98,6 +101,8 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 
 void	dfs_ast(t_ast_node *node, t_minishell *sh)
 {
+	if (sh->heredoc_interrupted)
+		return ;
 	node->visited = 1;
 	if (node->type == SUBSHELL)
 		subshell_node(node, sh);

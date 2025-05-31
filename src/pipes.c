@@ -11,6 +11,30 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "minishell_func.h"
+
+int		wait_if_heredoc(t_ast_node *n, t_minishell *sh)
+{
+	t_redir_node	*curr;
+
+	if (!(n->redirect))
+		return (0);
+	curr = n->redirect;
+	while (curr)
+	{
+		if (curr->type == HD || curr->type == HDQ)
+		{
+			wait_all_pids(sh);
+			if (sh->pids)
+				free(sh->pids);
+			sh->pids = NULL;
+			sh->pid_count = 0;
+			return (1);
+		}
+		curr = curr->next;
+	}
+	return (0);
+}
 
 void	close_all_pipes(t_minishell *sh)
 {
@@ -53,6 +77,9 @@ int	dup_pipe(t_ast_node *n, int fd[2], int or_std[2], t_minishell *sh)
 		if (dup2(or_std[1], STDOUT_FILENO) == -1)
 			return (printf_fd(2, "pipe error: " NO_FDS));
 	}
+	wait_if_heredoc(n->left, sh);
+	if (sh->heredoc_interrupted)
+		return (1);	
 	if (n->right && !(n->right->visited))
 	{
 		if (dup2(fd[0], STDIN_FILENO) == -1)

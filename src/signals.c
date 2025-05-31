@@ -30,7 +30,6 @@ void	handle_sigint_execution(int sig)
 void	handle_sigint_heredoc(int sig)
 {
 	g_signal = sig;
-	ft_printf("\n");
 }
 
 void	handle_sigquit_execution(int sig)
@@ -41,7 +40,18 @@ void	handle_sigquit_execution(int sig)
 
 void	set_signals_heredoc(void)
 {
-	signal(SIGINT, &handle_sigint_heredoc);
+	struct sigaction	sa;
+
+	sa.sa_handler = handle_sigint_heredoc;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, NULL);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	set_ignore_signals(void)
+{
+	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }
 
@@ -82,7 +92,11 @@ void	set_signals_default(void)
 // -> reset g_signal to 0 when needed
 // what is 131?
 //
-//
+// FOR heredoc:
+// Should I use SA_RESTART in HEREDOC?
+// -> I want to exit all processes 
+// 
+// Should I wait all pids before heredoc or before the pipe?
 //
 // ------- TESTS
 //
@@ -98,5 +112,17 @@ void	set_signals_default(void)
 //				ctrl+\:			OK | OK | OK 
 //
 // In HEREDOC:
-//				ctrl+C:			KO
-//
+//				ctrl+C:			~~ | OK | OK
+//				ctrl+D:			~~ | OK | OK
+///Minishell> << LIM
+/*
+> ^C
+
+Minishell> << LIM
+> ^C
+
+Minishell> << LIM | echo prou
+> ^C
+Minishell> 
+
+*/

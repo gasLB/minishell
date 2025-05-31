@@ -64,6 +64,7 @@ typedef struct s_minishell
 	int			original_stdin;
 	int			original_stdout;
 	int			last_command_type;
+	int			heredoc_interrupted;
 	char		*line;
 }	t_minishell;
 

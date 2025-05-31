@@ -36,6 +36,7 @@ char	*read_one_line(t_minishell *sh)
 	char	*line;
 
 	set_signals_interactive();
+	sh->heredoc_interrupted = 0;
 	dup2(sh->original_stdin, STDIN_FILENO);
 	dup2(sh->original_stdout, STDOUT_FILENO);
 	sh->last_command_type = -1;
@@ -46,8 +47,6 @@ char	*read_one_line(t_minishell *sh)
 		free_struct(sh);
 		exit(0);
 	}
-	ft_printf("g_signal in read one line: %d\n", g_signal);
-	ft_printf("last exit in read one line: %d\n", sh->last_exit);
 	if (g_signal != 0)
 	{
 		sh->last_exit = 128 + g_signal;

@@ -42,6 +42,7 @@ t_minishell	*init_shell(t_env_list *env_list)
 	sh->pids = NULL;
 	sh->pid_count = 0;
 	sh->last_command_type = -1;
+	sh->heredoc_interrupted = 0;
 	sh->original_stdin = dup(STDIN_FILENO);
 	sh->original_stdout = dup(STDOUT_FILENO);
 	return (sh);

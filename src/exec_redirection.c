@@ -71,7 +71,7 @@ int	duplicate_redir(char **args, int *file, t_redir_node *curr, t_minishell *sh)
 	if (curr->type == IN || curr->type == HD || curr->type == HDQ)
 	{
 		*file = open_in(args, curr->str, curr->type, sh);
-		if (*file == -1)
+		if (*file < 0)
 			return (1);
 		if (dup2(*file, STDIN_FILENO) == -1)
 			return (printf_fd(2, "error redirect: " NO_FDS));
@@ -103,6 +103,8 @@ int	set_redirections(char **args, t_redir_node *redir, t_minishell *sh)
 	{
 		if (duplicate_redir(args, &file, curr, sh) != 0)
 		{
+			if (file == -2)
+				return (-2);
 			if (file != -1)
 				close(file);
 			return (1);
