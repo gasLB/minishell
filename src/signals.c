@@ -112,8 +112,10 @@ void	set_signals_default(void)
 //				ctrl+\:			OK | OK | OK 
 //
 // In HEREDOC:
-//				ctrl+C:			~~ | OK | OK
-//				ctrl+D:			~~ | OK | OK
+//				ctrl+C:			OK | OK | OK
+//				ctrl+D:			~~ | OK | OK (spam touche)
+//				ctrl+\:			
+//
 ///Minishell> << LIM
 /*
 > ^C

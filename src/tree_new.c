@@ -14,14 +14,12 @@
 
 t_ast_node	*parse_command(t_token ***tklp, t_token **args)
 {
-	char			*value;
 	t_redir_node	*red;
 	int				type;
 
 	red = NULL;
 	while (args && **tklp && get_precedence((**tklp)->type) == 3)
 	{
-		value = (**tklp)->value;
 		type = (**tklp)->type;
 		if (is_command(type))
 			args[0] = **tklp;

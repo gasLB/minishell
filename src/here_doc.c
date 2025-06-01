@@ -78,7 +78,6 @@ int	wait_for_heredoc_child(int fd[2], char *str, int pid, t_minishell *sh)
 	exit_code = WEXITSTATUS(status);
 	if (exit_code == 130)
 	{
-		printf_fd(2, "\n");
 		sh->heredoc_interrupted = 1;
 		sh->last_exit = 130;
 		set_signals_interactive();

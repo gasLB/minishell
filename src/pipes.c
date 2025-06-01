@@ -13,7 +13,7 @@
 #include "minishell.h"
 #include "minishell_func.h"
 
-int		wait_if_heredoc(t_ast_node *n, t_minishell *sh)
+int	wait_if_heredoc(t_ast_node *n, t_minishell *sh)
 {
 	t_redir_node	*curr;
 
@@ -79,7 +79,7 @@ int	dup_pipe(t_ast_node *n, int fd[2], int or_std[2], t_minishell *sh)
 	}
 	wait_if_heredoc(n->left, sh);
 	if (sh->heredoc_interrupted)
-		return (1);	
+		return (printf_fd(or_std[1], "\n"), 1);	
 	if (n->right && !(n->right->visited))
 	{
 		if (dup2(fd[0], STDIN_FILENO) == -1)

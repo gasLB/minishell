@@ -101,8 +101,6 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 
 void	dfs_ast(t_ast_node *node, t_minishell *sh)
 {
-	if (sh->heredoc_interrupted)
-		return ;
 	node->visited = 1;
 	if (node->type == SUBSHELL)
 		subshell_node(node, sh);
