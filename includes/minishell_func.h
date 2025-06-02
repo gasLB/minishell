@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/30 18:30:45 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/06/02 18:33:04 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,12 +128,11 @@ long long	ft_atoll(const char *nptr);
 int			here_doc(char *lim, char **args, int in_status, t_minishell *sh);
 
 // here_doc_utils.c
-
-int			compare_line(char *line, char *lim);
-char		*fill_with_char(int n, char c);
+char		*add_bsn(char *line);
 char		*expand_line(char *line, int stat, t_minishell *sh);
-void		exit_heredoc_signal(int fd[2], char **a, char *s, t_minishell *sh);
-void		exit_heredoc_lim(int fd[2], char *line, char *str, t_minishell *sh);
+char		*fill_with_char(int n, char c);
+int			compare_line(char *line, char *lim);
+int			get_line_heredoc(char **line, char *lim, t_minishell *sh);
 
 // error.c
 int			printf_fd(int fd, const char *s, ...);
@@ -163,13 +162,22 @@ char		*correct_substr(char *line, int start, int end);
 int			update_token_end(char *line, char quote, int end);
 int			token_basic_type(t_token *token);
 
-// signals.c
+// signals_set.c
 
-void	reset_signals_after_execution(t_minishell *sh);
-void	set_signals_default(void);
-void	set_signals_execution(void);
-void	set_signals_interactive(void);
-void	set_signals_heredoc(void);
+void		reset_signals_after_execution(t_minishell *sh);
+void		set_signals_default(void);
+void		set_signals_execution(void);
+void		set_signals_interactive(void);
+void		set_signals_heredoc(void);
+void		set_ignore_signals(void);
+
+// signals_handle.c
+
+void		handle_sigint_interactive(int sig);
+void		handle_sigint_execution(int sig);
+void		handle_sigint_heredoc(int sig);
+void		handle_sigquit_execution(int sig);
+int			check_heredoc_signal(void);
 
 // minishell.c
 void		minishell(t_minishell *sh);

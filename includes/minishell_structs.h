@@ -6,7 +6,7 @@
 /*   By: walter <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 16:51:37 by walter            #+#    #+#             */
-/*   Updated: 2025/05/30 17:51:46 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:46:16 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,9 @@ typedef struct s_minishell
 	int			original_stdout;
 	int			last_command_type;
 	int			heredoc_interrupted;
+	int			heredoc_count;
+	int			current_hd_input;
+	int			current_hd_output;
 	char		*line;
 }	t_minishell;
 

@@ -6,7 +6,7 @@
 /*   By: walter <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 01:44:02 by walter            #+#    #+#             */
-/*   Updated: 2025/05/04 15:23:29 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:34:44 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,7 @@
 # define UNEXPECTED_S "syntax error near unexpected token `%s'\n"
 # define NO_FDS "Too many open files\n"
 # define EXEC_ER "Exec format error\n"
+
+# define HDW "here-document at line %d delimited by end-of-file (wanted `%s')\n"
 
 #endif

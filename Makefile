@@ -23,18 +23,19 @@ SRC := builtins.c \
 	   exec.c \
 	   exec_cmd_utils.c \
 	   exec_path.c \
-       exec_redirection.c \
+	   exec_redirection.c \
 	   expansion.c \
 	   expansion_utils.c \
 	   free_all.c \
-       free_ast.c \
+	   free_ast.c \
 	   here_doc.c \
 	   here_doc_utils.c \
 	   main.c \
 	   minishell.c \
 	   parsing.c \
 	   parsing_utils.c \
-       signals.c \
+	   signals_set.c \
+	   signals_handle.c \
 	   syntax.c \
 	   syntax_utils.c \
 	   tokenization.c \

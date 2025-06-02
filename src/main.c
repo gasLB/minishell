@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:02:07 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/30 16:47:11 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:19:17 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@ t_minishell	*init_shell(t_env_list *env_list)
 	sh->pid_count = 0;
 	sh->last_command_type = -1;
 	sh->heredoc_interrupted = 0;
+	sh->heredoc_count = 0;
+	sh->current_hd_input = 0;
+	sh->current_hd_output = 0;
 	sh->original_stdin = dup(STDIN_FILENO);
 	sh->original_stdout = dup(STDOUT_FILENO);
 	return (sh);
