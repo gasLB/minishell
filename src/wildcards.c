@@ -6,7 +6,7 @@
 /*   By: wbeschon <wbeschon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 18:53:35 by wbeschon          #+#    #+#             */
-/*   Updated: 2025/06/02 11:50:08 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/03 22:20:23 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int	create_wild_toks(char *wild, t_token **wild_toks)
 		free(wild_dup);
 		entry = readdir(dir);
 	}
+	closedir(dir);
 	return (0);
 }
 
@@ -85,6 +86,7 @@ int	insert_wild_toks(t_minishell *sh, int *wild, int tab_size)
 	new_array = malloc(sizeof(t_token *) * (list_size(wild_toks) + tab_size + 1));
 	if (!new_array)
 		return (1);											//frees later
+	free_token(tok_array[*wild]);
 	i = 0;
 	while (i != *wild)
 	{
