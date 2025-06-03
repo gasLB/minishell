@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 16:27:04 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/02 15:54:39 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/06/03 21:03:41 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ void	minishell(t_minishell *sh)
 			continue ;
 		sh->token_list = init_token_list(sh->line);
 		set_each_token_type(&(sh->token_list));
+		globbing(sh);
 		if (check_syntax(sh->token_list, sh) != 0)
 		{
 			free_in_loop(sh);

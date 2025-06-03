@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/27 17:25:14 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/06/03 20:43:45 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,6 @@
 # ifndef MAX_FD
 #  define MAX_FD 1024
 # endif
-
-# include "minishell_error_message.h"
-# include "minishell_func.h"
-# include "minishell_structs.h"
 
 # include "../libftprintf/libft/libft.h"
 # include "../libftprintf/include/ft_printf_bonus.h"
@@ -44,6 +40,11 @@
 
 # include <readline/readline.h>
 # include <readline/history.h>
+
+# include "minishell_error_message.h"
+# include "minishell_func.h"
+# include "minishell_structs.h"
+
 
 extern pid_t	g_signal;
 

@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/02 18:33:04 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/06/03 21:05:00 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ int			handle_tilde(char **res, t_token *tk, t_env_list *env);
 
 // tokenization.c
 t_token		*init_token(char *str);
+void		init_quote_n_value(char *val, char *q_mask, char *tr_mask, char *str);
 
 // free_all.c and free-ast.c
 void		free_str_list(char **lst);
@@ -195,5 +196,21 @@ void		close_pipe_safely(int *fd);
 int			check_op_commands(char *has_cp, int type);
 int			check_redirections(char *exp_fp, char *has_cp, int type);
 int			check_parenthesis(t_token *tkn, char *par_lp, char has_c, int type);
+
+// wildcards.c
+
+int			are_matching(char *wild,  char *s);
+int			globbing(t_minishell *sh);
+
+//wildcards_utils.c
+
+char		*ft_strtok(char *s, char const *delim);
+size_t		ft_strspn(char const *s, char const *accept);
+size_t		ft_strcspn(char const *s, char const *reject);
+int			ft_strcmp(char const *s1, char const *s2);
+char		*ft_strstr(char const *haystack, char const *needle);
+
+//wildcards_tokens.c
+t_token		*init_wild_token(char *entry);
 
 #endif

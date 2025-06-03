@@ -1,7 +1,7 @@
 
 NAME = minishell
 LIBFTDIR = libftprintf
-FLAGS = -Wall -Werror -Wextra -g -Iincludes -I$(LIBFTDIR)/include \
+FLAGS = -Wall -Werror -Wextra -gdwarf-4 -Iincludes -I$(LIBFTDIR)/include \
 		-I$(LIBFTDIR)/libft
 LIBFT = -L$(LIBFTDIR)/libft -lft
 PRINTF = -L$(LIBFTDIR) -lftprintf 
@@ -46,7 +46,11 @@ SRC := builtins.c \
 	   tree_traverse_utils.c \
 	   tree_utils.c \
 	   utils.c \
-	   pipes.c
+	   pipes.c \
+	   wildcards.c \
+	   wildcards_matching.c \
+	   wildcards_tokens.c \
+	   wildcards_utils.c
 
 OBJ := $(SRC:%.c=$(OBJ_DIR)/%.o)
 

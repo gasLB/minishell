@@ -6,7 +6,7 @@
 /*   By: walter <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 16:51:37 by walter            #+#    #+#             */
-/*   Updated: 2025/06/02 17:46:16 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/06/03 20:48:35 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 
 typedef struct s_token
 {
-	char	*value;
-	int		type;
-	char	*quote_mask;
-	char	*transition_mask;
+	char			*value;
+	int				type;
+	char			*quote_mask;
+	char			*transition_mask;
+	struct s_token	*next;
 }	t_token;
 
 typedef struct s_env_node
