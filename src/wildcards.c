@@ -6,7 +6,7 @@
 /*   By: wbeschon <wbeschon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 18:53:35 by wbeschon          #+#    #+#             */
-/*   Updated: 2025/06/03 22:20:23 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/04 09:03:59 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,16 +49,15 @@ size_t	list_size(t_token *head)
 }
 
 void	fill_new_array(t_minishell *sh, t_token *wild_toks, int *wild,
-		t_token **tok_array)
+		t_token **new_array)
 {
-	t_token	**new_array;
 	int		i;
 	int		j;
 
 	i = 0;
 	while (i != *wild)
 	{
-		new_array[i] = tok_array[i];
+		new_array[i] = sh->token_list[i];
 		i++;
 	}
 	j = 0;
@@ -70,18 +69,16 @@ void	fill_new_array(t_minishell *sh, t_token *wild_toks, int *wild,
 	}
 	new_array[i + j] = NULL;
 	*wild += j;
-	free(tok_array);
+	free(sh->token_list);
 	sh->token_list = new_array;
 }
 
 int	insert_wild_toks(t_minishell *sh, int *wild, int tab_size)
 {
 	t_token	*wild_toks;
-	t_token	**tok_array;
 	t_token	**new_array;
 
-	tok_array = sh->token_list;
-	create_wild_toks(tok_array[*wild]->value, &wild_toks);
+	create_wild_toks(sh->token_list[*wild]->value, &wild_toks);
 	if (!wild_toks)
 	{
 		(*wild)++;
@@ -91,8 +88,8 @@ int	insert_wild_toks(t_minishell *sh, int *wild, int tab_size)
 			* (list_size(wild_toks) + tab_size + 1));
 	if (!new_array)
 		return (1);
-	free_token(tok_array[*wild]);
-	fill_new_array(sh, wild_toks, wild);
+	free_token(sh->token_list[*wild]);
+	fill_new_array(sh, wild_toks, wild, new_array);
 	return (0);
 }
 //better frees up there

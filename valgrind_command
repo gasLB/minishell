@@ -1,0 +1,1 @@
+valgrind --leak-check=full --track-fds=all --trace-children=yes --suppressions=readline.supp ./minishell
