@@ -6,7 +6,7 @@
 /*   By: seetwoo <waltibee@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 23:58:32 by seetwoo           #+#    #+#             */
-/*   Updated: 2025/06/01 03:33:46 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/04 15:20:39 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,18 @@
 
 int	ft_strcmp(char const *s1, char const *s2)
 {
-	while (*s1 && *s2)
+	int	i;
+
+	if (!s1 || !s2)
+		return (0);
+	i = 0;
+	while (s1[i] && s2[i])
 	{
-		s1++;
-		s2++;
+		if (s1[i] != s2[i])
+			return (s1[i] - s2[i]);
+		i++;
 	}
-	return (*s1 - *s2);
+	return (s1[i] - s2[i]);
 }
 
 size_t	ft_strspn(char const *s, char const *accept)
@@ -51,7 +57,7 @@ char	*ft_strtok(char *s, char const *sep)
 	if (s)
 		current = s;
 	current += ft_strspn(current, sep);
-	if (!current)
+	if (*current)
 		s = current;
 	else
 		return (current = NULL);
