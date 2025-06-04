@@ -76,6 +76,7 @@ void		free_str_list(char **lst);
 void		free_struct(t_minishell *sh);
 void		free_token_list(t_token **tk_list);
 void		free_ast(t_ast_node *node);
+void		free_env_list(t_env_list *env_list);
 t_token		*free_token(t_token *tk);
 
 // exec.c

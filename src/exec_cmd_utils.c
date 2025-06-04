@@ -89,7 +89,10 @@ char	**convert_envp_to_array(t_env_list *envl)
 		else
 			envp[i] = ft_strdup(head->key);
 		if (!envp[i])
-			return (NULL);
+		{
+			envp[i] = NULL;
+			return (free_str_list(envp), NULL);
+		}
 		head = head->next;
 		i++;
 	}

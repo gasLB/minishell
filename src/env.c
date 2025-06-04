@@ -84,7 +84,7 @@ t_env_list	*populate_env(char **env, int i)
 		{
 			current_node = init_node(env[i]);
 			if (!current_node)
-				return (NULL);
+				break ;
 			if (previous_node != NULL)
 				previous_node->next = current_node;
 			if (!env_list->head)

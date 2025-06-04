@@ -45,7 +45,6 @@
 # include "minishell_func.h"
 # include "minishell_structs.h"
 
-
 extern pid_t	g_signal;
 
 #endif

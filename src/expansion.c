@@ -16,7 +16,6 @@ int	is_expandable(char *str, char *q_mask, int i)
 {
 	char	next;
 
-	next = 0;
 	if (!str[i])
 		return (1);
 	if (q_mask[i] == 'S')

@@ -50,13 +50,13 @@ char	*expand_line(char *line, int stat, t_minishell *sh)
 		return (NULL);
 	tk->value = ft_strdup(line);
 	if (!tk->value)
-		return (NULL);
+		return (free_token(tk), NULL);
 	tk->quote_mask = fill_with_char(ft_strlen(line), 'N');
 	if (!tk->quote_mask)
-		return (NULL);
+		return (free_token(tk), NULL);
 	tk->transition_mask = fill_with_char(ft_strlen(line), 'n');
 	if (!tk->transition_mask)
-		return (NULL);
+		return (free_token(tk), NULL);
 	if (stat == HD)
 		res = expand_variable(tk, sh, sh->env_list, 0);
 	else if (stat == HDQ)

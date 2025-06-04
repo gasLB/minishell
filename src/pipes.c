@@ -17,7 +17,7 @@ int	wait_if_heredoc(t_ast_node *n)
 {
 	t_redir_node	*curr;
 
-	if (!(n->redirect))
+	if (!n || !(n->redirect))
 		return (0);
 	curr = n->redirect;
 	while (curr)

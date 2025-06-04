@@ -51,7 +51,6 @@ int	open_out(char **args, char *filename, mode_t mode)
 		cm_name = ft_strdup(args[0]);
 	else
 		cm_name = ft_strdup("minishell");
-	outfile = -1;
 	if (ft_strchr(filename, '*') != NULL)
 		printf_fd(2, "%s: %s: ambiguous redirect", cm_name, filename);
 	else if (access(filename, F_OK) == 0 && access(filename, W_OK) != 0)
