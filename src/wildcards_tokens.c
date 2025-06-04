@@ -6,7 +6,7 @@
 /*   By: seetwoo <waltibee@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 17:19:40 by seetwoo           #+#    #+#             */
-/*   Updated: 2025/06/04 09:40:08 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/04 11:44:04 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,29 @@ int	add_wild_tok(t_token **wild_toks, char *entry)
 			current = current->next;
 		current->next = new;
 	}
+	return (0);
+}
+
+int	create_wild_toks(char *wild, t_token **wild_toks)
+{
+	struct dirent	*entry;
+	DIR				*dir;
+	char			*wild_dup;
+
+	*wild_toks = NULL;
+	dir = opendir(".");
+	if (!dir)
+		return (printf("does not work"));
+	entry = readdir(dir);
+	while (entry)
+	{
+		wild_dup = ft_strdup(wild);
+		if (are_matching(wild_dup, entry->d_name))
+			add_wild_tok(wild_toks, entry->d_name);
+		free(wild_dup);
+		entry = readdir(dir);
+	}
+	closedir(dir);
 	return (0);
 }
 

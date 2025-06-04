@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/04 09:40:39 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/04 11:44:45 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,5 +214,6 @@ char		*ft_strstr(char const *haystack, char const *needle);
 t_token		*init_wild_token(char *entry);
 void		free_wild_toks(t_token *head);
 int			add_wild_tok(t_token **wild_toks, char *entry);
+int			create_wild_toks(char *wild, t_token **wild_toks);
 
 #endif

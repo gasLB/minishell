@@ -1,7 +1,7 @@
 
 NAME = minishell
 LIBFTDIR = libftprintf
-FLAGS = -Wall -Werror -Wextra -gdwarf-4 -Iincludes -I$(LIBFTDIR)/include \
+FLAGS = -Wall -Werror -Wextra -g3 -Iincludes -I$(LIBFTDIR)/include \
 		-I$(LIBFTDIR)/libft
 LIBFT = -L$(LIBFTDIR)/libft -lft
 PRINTF = -L$(LIBFTDIR) -lftprintf 

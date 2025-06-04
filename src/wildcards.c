@@ -6,34 +6,11 @@
 /*   By: wbeschon <wbeschon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 18:53:35 by wbeschon          #+#    #+#             */
-/*   Updated: 2025/06/04 09:55:18 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/04 13:41:12 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	create_wild_toks(char *wild, t_token **wild_toks)
-{
-	struct dirent	*entry;
-	DIR				*dir;
-	char			*wild_dup;
-
-	*wild_toks = NULL;
-	dir = opendir(".");
-	if (!dir)
-		return (printf("does not work"));
-	entry = readdir(dir);
-	while (entry)
-	{
-		wild_dup = ft_strdup(wild);
-		if (are_matching(wild_dup, entry->d_name))
-			add_wild_tok(wild_toks, entry->d_name);
-		free(wild_dup);
-		entry = readdir(dir);
-	}
-	closedir(dir);
-	return (0);
-}
 
 size_t	list_size(t_token *head)
 {
@@ -48,30 +25,54 @@ size_t	list_size(t_token *head)
 	return (i);
 }
 
+
 void	fill_new_array(t_minishell *sh, t_token *wild_toks, int *wild,
 		t_token **new_array)
 {
 	int		i;
 	int		j;
 
-	i = 0;
-	while (i != *wild)
-	{
-		new_array[i] = sh->token_list[i];
-		i++;
-	}
+	i = -1;
 	j = 0;
+	while (++i != *wild)
+		new_array[i] = sh->token_list[i];
 	while (wild_toks)
 	{
 		new_array[i + j] = wild_toks;
 		wild_toks = wild_toks->next;
 		j++;
 	}
+	if (sh->token_list[*wild + 1])
+	{
+		i++;
+		while (sh->token_list[i])
+		{
+			new_array[i + j - 1] = sh->token_list[i];
+			i++;
+		}
+		i--;
+	}
 	new_array[i + j] = NULL;
-	*wild += j;
+	free_token(sh->token_list[*wild]);
 	free(sh->token_list);
 	sh->token_list = new_array;
+	*wild += j;
 }
+
+/*void	print_tok(t_token **toks)
+{
+	int	i;
+
+	i = 0;
+	printf("\ntoks are \n\n");
+	while (toks[i])
+	{
+		printf("%s\n", toks[i]->value);
+		i++;
+	}
+	printf("\n");
+}
+ */
 
 int	insert_wild_toks(t_minishell *sh, int *wild, int tab_size)
 {
@@ -92,8 +93,8 @@ int	insert_wild_toks(t_minishell *sh, int *wild, int tab_size)
 		free_wild_toks(wild_toks);
 		return (1);
 	}
-	free_token(sh->token_list[*wild]);
 	fill_new_array(sh, wild_toks, wild, new_array);
+	//print_tok(new_array);
 	return (0);
 }
 //better frees up there
@@ -109,6 +110,11 @@ int	globbing(t_minishell *sh)
 	while (sh->token_list[i])
 	{
 		ast = ft_strchr(sh->token_list[i]->value, '*');
+		if (ast && ft_strchr(sh->token_list[i]->value, '/'))
+		{
+			ast = NULL;
+			printf_fd(2, "minishell: wildcards work only in the working directory\n");
+		}
 		ast_pos = ast - sh->token_list[i]->value;
 		if (!ast || sh->token_list[i]->type != ARG
 			|| sh->token_list[i]->quote_mask[ast_pos] != 'N')
