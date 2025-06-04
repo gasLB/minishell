@@ -33,6 +33,7 @@ int	is_n_option(char *s)
 int	change_directories(char *path, t_env_list *env)
 {
 	char	*cwd;
+	char	*pwd;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
@@ -46,7 +47,9 @@ int	change_directories(char *path, t_env_list *env)
 		printf_fd(2, "minishell: cd: %s: " NO_FILE, path);
 		return (1);
 	}
-	ft_setenv("PWD", getcwd(NULL, 0), 1, env);
+	pwd = getcwd(NULL, 0);
+	ft_setenv("PWD", pwd, 1, env);
+	free(pwd);
 	return (0);
 }
 
