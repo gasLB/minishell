@@ -1,4 +1,4 @@
-/* ************************************************************************* */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   wildcards.c                                        :+:      :+:    :+:   */
@@ -11,26 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	add_wild_tok(t_token **wild_toks, char *entry)
-{
-	t_token	*current;
-	t_token	*new;
-
-	new = init_wild_token(entry);
-	if (!new)
-		return (1);
-	if (!(*wild_toks))
-		*wild_toks = new;
-	else
-	{
-		current = *wild_toks;
-		while (current->next)
-			current = current->next;
-		current->next = new;
-	}
-	return (0);
-}
 
 int	create_wild_toks(char *wild, t_token **wild_toks)
 {
@@ -55,7 +35,7 @@ int	create_wild_toks(char *wild, t_token **wild_toks)
 	return (0);
 }
 
-size_t	list_size(t_token* head)
+size_t	list_size(t_token *head)
 {
 	size_t	i;
 
@@ -68,25 +48,13 @@ size_t	list_size(t_token* head)
 	return (i);
 }
 
-int	insert_wild_toks(t_minishell *sh, int *wild, int tab_size)
+void	fill_new_array(t_minishell *sh, t_token *wild_toks, int *wild,
+		t_token **tok_array)
 {
-	t_token	*wild_toks;
-	t_token	**tok_array;
 	t_token	**new_array;
 	int		i;
 	int		j;
 
-	tok_array = sh->token_list;
-	create_wild_toks(tok_array[*wild]->value, &wild_toks);
-	if (!wild_toks)
-	{
-		(*wild)++;
-		return (1);
-	}
-	new_array = malloc(sizeof(t_token *) * (list_size(wild_toks) + tab_size + 1));
-	if (!new_array)
-		return (1);											//frees later
-	free_token(tok_array[*wild]);
 	i = 0;
 	while (i != *wild)
 	{
@@ -104,8 +72,30 @@ int	insert_wild_toks(t_minishell *sh, int *wild, int tab_size)
 	*wild += j;
 	free(tok_array);
 	sh->token_list = new_array;
+}
+
+int	insert_wild_toks(t_minishell *sh, int *wild, int tab_size)
+{
+	t_token	*wild_toks;
+	t_token	**tok_array;
+	t_token	**new_array;
+
+	tok_array = sh->token_list;
+	create_wild_toks(tok_array[*wild]->value, &wild_toks);
+	if (!wild_toks)
+	{
+		(*wild)++;
+		return (1);
+	}
+	new_array = malloc(sizeof(t_token *)
+			* (list_size(wild_toks) + tab_size + 1));
+	if (!new_array)
+		return (1);
+	free_token(tok_array[*wild]);
+	fill_new_array(sh, wild_toks, wild);
 	return (0);
 }
+//better frees up there
 
 int	globbing(t_minishell *sh)
 {
@@ -119,7 +109,8 @@ int	globbing(t_minishell *sh)
 	{
 		ast = ft_strchr(sh->token_list[i]->value, '*');
 		ast_pos = ast - sh->token_list[i]->value;
-		if (!ast || sh->token_list[i]->type != ARG || sh->token_list[i]->quote_mask[ast_pos] != 'N')
+		if (!ast || sh->token_list[i]->type != ARG
+			|| sh->token_list[i]->quote_mask[ast_pos] != 'N')
 		{
 			i++;
 			continue ;

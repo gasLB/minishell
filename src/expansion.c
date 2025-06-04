@@ -56,8 +56,8 @@ int	look_for_env_variable(char **res, t_token *tk, int i, t_env_list *env)
 
 	begin = i;
 	current_q = tk->quote_mask[i];
-	while (is_valid_inside(tk->value[i], tk->quote_mask[i], \
-		tk->transition_mask[i], current_q))
+	while (is_valid_inside(tk->value[i], tk->quote_mask[i],
+			tk->transition_mask[i], current_q))
 		i++;
 	sub = ft_substr(tk->value, begin, i - begin);
 	env_var = ft_getenv(sub, env);
@@ -87,8 +87,8 @@ char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env, int i)
 		res = append_str(res, ft_substr(tk->value, begin, i - begin));
 		if (!tk->value[i++])
 			break ;
-		if ((tk->quote_mask[i - 1] == 'N') && \
-			(tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D'))
+		if ((tk->quote_mask[i - 1] == 'N')
+			&& (tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D'))
 			i = translation(&res, tk, i);
 		else if (tk->value[i] == '?' && i++)
 			res = append_str(res, ft_itoa(sh->last_exit));

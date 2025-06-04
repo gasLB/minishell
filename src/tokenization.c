@@ -91,7 +91,7 @@ t_token	*init_token(char *str)
 	token->transition_mask = ft_calloc(ft_strlen(str) + 1, sizeof(char));
 	if (!token->transition_mask)
 		return (NULL);
-	init_quote_n_value(token->value, token->quote_mask, \
+	init_quote_n_value(token->value, token->quote_mask,
 		token->transition_mask, str);
 	free(str);
 	return (token);

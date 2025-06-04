@@ -86,7 +86,7 @@ void	export_var(char *str, t_env_list *env, int overwrite)
 		if (*(pos - 1) == '+')
 			overwrite = 0;
 		key = ft_substr(str, 0, pos - str + overwrite - 1);
-			value = init_str();
+		value = init_str();
 		if (!(*(pos + 1)))
 			ft_setenv(key, value, overwrite, env);
 		else
@@ -113,4 +113,4 @@ void	export_no_args(t_env_list *env)
 			ft_printf(EXP_VALUE, node->key, node->value);
 		node = node->next;
 	}
-}	
+}

@@ -57,7 +57,7 @@ char	*ft_strtok(char *s, char const *sep)
 		return (current = NULL);
 	current += ft_strcspn(current, sep);
 	if (*current)
-		*current++= '\0';
+		*current++ = '\0';
 	else
 		current = NULL;
 	return (s);

@@ -24,7 +24,7 @@ int	check_first_last_token(t_token **tk_list)
 	while (tk_list[i])
 		i++;
 	type = tk_list[i - 1]->type;
-	if (is_pipe(type) || is_operator(type) || is_redirect(type) \
+	if (is_pipe(type) || is_operator(type) || is_redirect(type)
 		|| is_open_par(type))
 		return (i);
 	return (-1);

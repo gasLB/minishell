@@ -14,7 +14,7 @@
 
 t_token	*init_wild_token(char *entry)
 {
-	t_token *token;
+	t_token	*token;
 
 	token = malloc(sizeof(t_token));
 	if (!token)
@@ -30,7 +30,27 @@ t_token	*init_wild_token(char *entry)
 	if (!token->transition_mask)
 		return (NULL);
 	token->next = NULL;
-	init_quote_n_value(token->value, token->quote_mask, \
+	init_quote_n_value(token->value, token->quote_mask,
 		token->transition_mask, entry);
 	return (token);
+}
+
+int	add_wild_tok(t_token **wild_toks, char *entry)
+{
+	t_token	*current;
+	t_token	*new;
+
+	new = init_wild_token(entry);
+	if (!new)
+		return (1);
+	if (!(*wild_toks))
+		*wild_toks = new;
+	else
+	{
+		current = *wild_toks;
+		while (current->next)
+			current = current->next;
+		current->next = new;
+	}
+	return (0);
 }

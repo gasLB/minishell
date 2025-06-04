@@ -42,14 +42,14 @@ int	end_op(char *line, int end, char quote)
 	if (!line[end])
 		return (0);
 	le = line[end];
-	if (quote == 'N' && (le == '<' || le == '>' || le == '|' || le == '&' \
-		|| le == '(' || le == ')'))
+	if (quote == 'N' && (le == '<' || le == '>' || le == '|' || le == '&'
+			|| le == '(' || le == ')'))
 	{
-		if (line[end + 1] && \
-			((line[end] == '<' && line[end + 1] == '<') || \
-			(line[end] == '>' && line[end + 1] == '>') || \
-			(line[end] == '|' && line[end + 1] == '|') || \
-			(line[end] == '&' && line[end + 1] == '&')))
+		if (line[end + 1]
+			&& ((line[end] == '<' && line[end + 1] == '<')
+				|| (line[end] == '>' && line[end + 1] == '>')
+				|| (line[end] == '|' && line[end + 1] == '|')
+				|| (line[end] == '&' && line[end + 1] == '&')))
 		{
 			return (2);
 		}
@@ -71,8 +71,8 @@ int	update_token_end(char *line, char quote, int end)
 	while (line[end])
 	{
 		quote = get_quote_character(quote, line[end], end, NULL);
-		if (quote == 'N' && \
-			(line[end] == ' ' || end_op(line, end, quote)))
+		if (quote == 'N'
+			&& (line[end] == ' ' || end_op(line, end, quote)))
 			break ;
 		end++;
 	}

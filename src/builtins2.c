@@ -29,7 +29,7 @@ int	ft_unset(int ac, char **args, t_env_list *env)
 }
 
 int	ft_env(t_env_list *env)
-{	
+{
 	t_env_node	*node;
 
 	node = env->head;

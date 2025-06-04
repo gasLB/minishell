@@ -212,5 +212,6 @@ char		*ft_strstr(char const *haystack, char const *needle);
 
 //wildcards_tokens.c
 t_token		*init_wild_token(char *entry);
+int			add_wild_tok(t_token **wild_toks, char *entry);
 
 #endif

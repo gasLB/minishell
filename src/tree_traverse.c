@@ -21,7 +21,7 @@ int	operator_node(t_ast_node *node, t_minishell *sh, int type)
 		free(sh->pids);
 	sh->pids = NULL;
 	sh->pid_count = 0;
-	if (((!sh->last_exit && type == AND) || (sh->last_exit && type == OR)) \
+	if (((!sh->last_exit && type == AND) || (sh->last_exit && type == OR))
 		&& node->right && !(node->right->visited))
 		dfs_ast(node->right, sh);
 	return (0);
