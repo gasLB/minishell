@@ -6,7 +6,7 @@
 /*   By: seetwoo <waltibee@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 17:19:40 by seetwoo           #+#    #+#             */
-/*   Updated: 2025/06/04 11:44:04 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:06:40 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,19 +59,20 @@ int	create_wild_toks(char *wild, t_token **wild_toks)
 {
 	struct dirent	*entry;
 	DIR				*dir;
-	char			*wild_dup;
+	char			wild_dup[256];
 
 	*wild_toks = NULL;
+	if (ft_strlen(wild) >= 255)
+		return (1);
 	dir = opendir(".");
 	if (!dir)
 		return (printf("does not work"));
 	entry = readdir(dir);
 	while (entry)
 	{
-		wild_dup = ft_strdup(wild);
+		ft_strcpy(wild_dup, wild);
 		if (are_matching(wild_dup, entry->d_name))
 			add_wild_tok(wild_toks, entry->d_name);
-		free(wild_dup);
 		entry = readdir(dir);
 	}
 	closedir(dir);

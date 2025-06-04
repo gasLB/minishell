@@ -50,7 +50,8 @@ SRC := builtins.c \
 	   wildcards.c \
 	   wildcards_matching.c \
 	   wildcards_tokens.c \
-	   wildcards_utils.c
+	   wildcards_utils.c \
+	   wildcards_utils2.c
 
 OBJ := $(SRC:%.c=$(OBJ_DIR)/%.o)
 

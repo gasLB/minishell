@@ -6,7 +6,7 @@
 /*   By: wbeschon <wbeschon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 12:17:29 by wbeschon          #+#    #+#             */
-/*   Updated: 2025/06/04 15:23:39 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:00:52 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,14 @@ int	are_matching(char *wild, char *s)
 		return (0);
 	if (!end_match(wild, s))
 		return (0);
-	to_find = strtok(wild, "*");
+	to_find = ft_strtok(wild, "*");
 	while (to_find)
 	{
 		found = ft_strstr(s, to_find);
 		if (!found)
 			return (0);
 		s = found + ft_strlen(to_find);
-		to_find = strtok(NULL, "*");
+		to_find = ft_strtok(NULL, "*");
 	}
 	return (1);
 }

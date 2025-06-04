@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/04 11:44:45 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:04:03 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,6 +209,10 @@ size_t		ft_strspn(char const *s, char const *accept);
 size_t		ft_strcspn(char const *s, char const *reject);
 int			ft_strcmp(char const *s1, char const *s2);
 char		*ft_strstr(char const *haystack, char const *needle);
+
+// wildcards_utils2.c
+
+char		*ft_strcpy(char *dest, char const *src);
 
 //wildcards_tokens.c
 t_token		*init_wild_token(char *entry);
