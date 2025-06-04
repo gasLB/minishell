@@ -6,7 +6,7 @@
 /*   By: seetwoo <waltibee@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 17:19:40 by seetwoo           #+#    #+#             */
-/*   Updated: 2025/06/02 12:49:47 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/04 09:40:08 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,16 @@ int	add_wild_tok(t_token **wild_toks, char *entry)
 		current->next = new;
 	}
 	return (0);
+}
+
+void	free_wild_toks(t_token *head)
+{
+	t_token	*temp;
+
+	while (head)
+	{
+		temp = head;
+		head = head->next;
+		free_token(temp);
+	}
 }
