@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/04 16:04:03 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:58:11 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,14 +68,15 @@ int			handle_tilde(char **res, t_token *tk, t_env_list *env);
 
 // tokenization.c
 t_token		*init_token(char *str);
-void		init_quote_n_value(char *val, char *q_mask, char *tr_mask, char *str);
+void		init_quote_n_value(char *val,
+				char *q_mask, char *tr_mask, char *str);
 
 // free_all.c and free-ast.c
 void		free_str_list(char **lst);
 void		free_struct(t_minishell *sh);
 void		free_token_list(t_token **tk_list);
 void		free_ast(t_ast_node *node);
-void		free_token(t_token *tk);
+t_token		*free_token(t_token *tk);
 
 // exec.c
 int			*add_pid(t_minishell *sh);
@@ -199,7 +200,7 @@ int			check_parenthesis(t_token *tkn, char *par_lp, char has_c, int type);
 
 // wildcards.c
 
-int			are_matching(char *wild,  char *s);
+int			are_matching(char *wild, char *s);
 int			globbing(t_minishell *sh);
 
 //wildcards_utils.c

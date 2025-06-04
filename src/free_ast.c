@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 16:21:52 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/02 18:35:27 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:51:34 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	free_redirect(t_redir_node *red)
 	}
 }
 
-void	free_token(t_token *tk)
+t_token	*free_token(t_token *tk)
 {
 	if (tk->value)
 		free(tk->value);
@@ -40,6 +40,7 @@ void	free_token(t_token *tk)
 		free(tk->transition_mask);
 	if (tk)
 		free(tk);
+	return (NULL);
 }
 
 void	free_ast(t_ast_node *node)

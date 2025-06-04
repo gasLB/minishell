@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 12:50:10 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/01 17:20:28 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:52:31 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,17 +80,17 @@ t_token	*init_token(char *str)
 
 	token = malloc(sizeof(t_token));
 	if (!token)
-		return (NULL);
+		return (free_token(token));
 	token->type = -1;
 	token->quote_mask = ft_calloc(ft_strlen(str) + 1, sizeof(char));
 	if (!token->quote_mask)
-		return (NULL);
+		return (free_token(token));
 	token->value = ft_calloc(ft_strlen(str) + 1, sizeof(char));
 	if (!token->value)
-		return (NULL);
+		return (free_token(token));
 	token->transition_mask = ft_calloc(ft_strlen(str) + 1, sizeof(char));
 	if (!token->transition_mask)
-		return (NULL);
+		return (free_token(token));
 	init_quote_n_value(token->value, token->quote_mask,
 		token->transition_mask, str);
 	free(str);

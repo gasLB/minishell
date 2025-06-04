@@ -6,7 +6,7 @@
 /*   By: wbeschon <wbeschon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/28 12:17:29 by wbeschon          #+#    #+#             */
-/*   Updated: 2025/06/04 16:00:52 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:55:39 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int	begin_match(char *wild, char *s)
 	}
 	return (1);
 }
-
 
 int	are_matching(char *wild, char *s)
 {
