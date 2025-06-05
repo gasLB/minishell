@@ -57,7 +57,7 @@ char	*look_for_path(char *name, char **com_paths)
 	i = 0;
 	if (!name)
 		return (NULL);
-	if (is_path_found(name))
+	if (ft_strchr(name, '/') && is_path_found(name))
 		return (ft_strdup(name));
 	else if (name && name[0] == '/')
 	{
@@ -105,3 +105,11 @@ char	*find_path(char *or_name, t_minishell *sh)
 	free(name);
 	return (path);
 }
+/*
+Scenarios: 
+- buitlin
+- external command "grep"
+- absolute path "/bin/grep"
+- relative path "src/exec" "./minishell"
+
+* */
