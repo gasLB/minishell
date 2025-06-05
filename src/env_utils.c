@@ -18,6 +18,13 @@ void	ft_unsetenv(char *name, t_env_list *env)
 	t_env_node	*to_remove;
 
 	node = env->head;
+	if (node && is_equal(name, node->key))
+	{
+		env->head = node->next;
+		unset_node(node);
+		env->size = -1;
+		return ;
+	}
 	while (node->next)
 	{
 		if (is_equal(name, (node->next)->key))
