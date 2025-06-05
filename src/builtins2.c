@@ -15,17 +15,22 @@
 int	ft_unset(int ac, char **args, t_env_list *env)
 {
 	int	i;
+	int	res;
 
 	i = 0;
+	res = 0;
 	while (i < ac)
 	{
 		if (is_valid_env_name(args[i]))
 			ft_unsetenv(args[i], env);
 		else
-			printf_fd(2, "minishell: unset: %s: " INVAL, args[i]);
+		{
+			printf_fd(2, "minishell: unset: ʻ%s': " INVAL, args[i]);
+			res = 1;
+		}
 		i++;
 	}
-	return (0);
+	return (res);
 }
 
 int	ft_env(t_env_list *env)

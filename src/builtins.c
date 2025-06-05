@@ -83,8 +83,10 @@ int	ft_cd(int ac, char **args, t_env_list *env)
 int	ft_export(int ac, char **args, t_env_list *env)
 {
 	int	i;
+	int	res;
 
 	i = 0;
+	res = 0;
 	if (ac == 0)
 	{
 		export_no_args(env);
@@ -95,8 +97,11 @@ int	ft_export(int ac, char **args, t_env_list *env)
 		if (is_valid_env_name(args[i]))
 			export_var(args[i], env, 1);
 		else
-			printf_fd(2, "minishell: export: %s: " INVAL, args[i]);
+		{
+			printf_fd(2, "minishell: export: ʻ%s': " INVAL, args[i]);
+			res = 1;
+		}
 		i++;
 	}
-	return (0);
+	return (res);
 }
