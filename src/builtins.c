@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "minishell_func.h"
 
 int	ft_echo(int ac, char **args)
 {
@@ -63,7 +64,7 @@ int	ft_cd(int ac, char **args, t_env_list *env)
 
 	if (ac > 1)
 		return (printf_fd(2, "minishell: cd: " TOO_MANY), 1);
-	else if (ac == 0)
+	else if (ac == 0 || (ac == 1 && is_equal(args[0], "~")))
 	{
 		path = ft_getenv("HOME", env);
 		if (!path)
