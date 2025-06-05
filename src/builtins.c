@@ -59,6 +59,7 @@ int	ft_pwd(void)
 int	ft_cd(int ac, char **args, t_env_list *env)
 {
 	char	*path;
+	int		res;
 
 	if (ac > 1)
 		return (printf_fd(2, "minishell: cd: " TOO_MANY), 1);
@@ -76,8 +77,9 @@ int	ft_cd(int ac, char **args, t_env_list *env)
 	}
 	else
 		path = args[0];
+	res = change_directories(path, env);
 	ft_setenv("OLDPWD", ft_getenv("PWD", env), 1, env);
-	return (change_directories(path, env));
+	return (res);
 }
 
 int	ft_export(int ac, char **args, t_env_list *env)
