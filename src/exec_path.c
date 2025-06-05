@@ -105,11 +105,3 @@ char	*find_path(char *or_name, t_minishell *sh)
 	free(name);
 	return (path);
 }
-/*
-Scenarios: 
-- buitlin
-- external command "grep"
-- absolute path "/bin/grep"
-- relative path "src/exec" "./minishell"
-
-* */
