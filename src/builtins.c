@@ -78,8 +78,8 @@ int	ft_cd(int ac, char **args, t_env_list *env)
 	}
 	else
 		path = args[0];
-	res = change_directories(path, env);
 	ft_setenv("OLDPWD", ft_getenv("PWD", env), 1, env);
+	res = change_directories(path, env);
 	return (res);
 }
 

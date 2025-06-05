@@ -12,13 +12,6 @@
 
 #include "minishell.h"
 
-typedef struct s_idx	t_idx;
-struct s_idx
-{
-	int	i;
-	int	j;
-};
-
 size_t	list_size(t_token *head)
 {
 	size_t	i;

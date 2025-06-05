@@ -72,6 +72,14 @@ typedef struct s_minishell
 	char		*line;
 }	t_minishell;
 
+typedef struct s_idx	t_idx;
+
+struct s_idx
+{
+	int	i;
+	int	j;
+};
+
 enum e_command_types
 {
 	EXTERNAL,
