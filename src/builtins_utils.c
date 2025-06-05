@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "minishell_func.h"
 
 int	is_n_option(char *s)
 {
@@ -34,6 +35,7 @@ int	change_directories(char *path, t_env_list *env)
 {
 	char	*cwd;
 	char	*pwd;
+	DIR		*dir;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
@@ -42,11 +44,13 @@ int	change_directories(char *path, t_env_list *env)
 		return (1);
 	}
 	free(cwd);
+	dir = opendir(path);
+	if (dir)
+		closedir(dir);
+	else
+		return (printf_fd(2, "minishell: cd: %s: Not a directory\n", path), 1);
 	if (chdir(path) != 0)
-	{
-		printf_fd(2, "minishell: cd: %s: " NO_FILE, path);
-		return (1);
-	}
+		return (printf_fd(2, "minishell: cd: %s: " NO_FILE, path), 1);
 	pwd = getcwd(NULL, 0);
 	ft_setenv("PWD", pwd, 1, env);
 	free(pwd);
