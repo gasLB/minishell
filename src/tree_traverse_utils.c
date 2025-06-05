@@ -75,8 +75,7 @@ int	null_cmd_node(t_ast_node *node, char **args, t_minishell *sh)
 	return (set_redirections(args, node->redirect, sh));
 }
 
-// directory permissions are not taken into account
-int	is_directory(char *name)
+int	is_directory(char *name, t_minishell *sh)
 {
 	DIR	*dir;
 
@@ -85,6 +84,7 @@ int	is_directory(char *name)
 	{
 		closedir(dir);
 		printf_fd(2, "minishell: %s: Is a directory\n", name);
+		sh->last_exit = 126;
 		return (1);
 	}
 	return (0);

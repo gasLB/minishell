@@ -122,7 +122,7 @@ void		function_dfs_ast(t_ast_node *node, t_minishell *sh, \
 // tree_traverse_utils.c
 
 int			null_cmd_node(t_ast_node *node, char **args, t_minishell *sh);
-int			is_directory(char *name);
+int			is_directory(char *name, t_minishell *sh);
 int			is_correct_size_exit(const char *nptr);
 long long	ft_atoll(const char *nptr);
 

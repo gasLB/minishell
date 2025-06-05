@@ -85,7 +85,7 @@ int	cmd_node(t_ast_node *node, t_minishell *sh)
 	redir = set_redirections(args, node->redirect, sh);
 	if (redir != 0)
 		return (free_str_list(args), redir);
-	if (is_directory(args[0]))
+	if (is_directory(args[0], sh))
 		return (free_str_list(args), 1);
 	if (is_builtin(args[0]))
 		return (exec_builtin(args, node->redirect, sh));
