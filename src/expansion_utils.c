@@ -19,7 +19,7 @@ int	translation(char **res, t_token *tk, int i)
 	begin = i;
 	while (tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D')
 		i++;
-	*res = append_str(*res, ft_substr(tk->value, begin, i - 1));
+	*res = append_str(*res, ft_substr(tk->value, begin, i - begin));
 	return (i);
 }
 
