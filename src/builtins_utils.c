@@ -44,11 +44,14 @@ int	change_directories(char *path, t_env_list *env)
 		return (1);
 	}
 	free(cwd);
-	dir = opendir(path);
-	if (dir)
-		closedir(dir);
-	else
-		return (printf_fd(2, "minishell: cd: %s: Not a directory\n", path), 1);
+	if (access(path, F_OK) == 0)
+	{
+		dir = opendir(path);
+		if (dir)
+			closedir(dir);
+		else
+			return (printf_fd(2, "minishell: cd: %s: " NO_DIR, path), 1);
+	}
 	if (chdir(path) != 0)
 		return (printf_fd(2, "minishell: cd: %s: " NO_FILE, path), 1);
 	pwd = getcwd(NULL, 0);

@@ -17,6 +17,7 @@
 # define NO_ACCESS "cannot access parent directories: "
 
 # define NO_FILE "No such file or directory\n"
+# define NO_DIR "Not a directory\n"
 # define TOO_MANY "too many arguments\n"
 # define ARG_TOO_LONG "Argument list too long\n"
 # define NOT_FOUND "command not found\n"
