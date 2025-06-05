@@ -14,7 +14,7 @@
 # define MINISHELL_ERROR_MESSAGE_H
 
 # define RETRIEVE "error retrieving current directory: "
-# define NO_ACCESS "cannot access parent directories: "
+# define ACCESS "cannot access parent directories: "
 
 # define NO_FILE "No such file or directory\n"
 # define NO_DIR "Not a directory\n"

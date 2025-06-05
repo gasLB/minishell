@@ -49,7 +49,7 @@ int	ft_pwd(void)
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
-		printf_fd(2, "pwd: " RETRIEVE "getcwd: " NO_ACCESS NO_FILE);
+		printf_fd(2, "pwd: " RETRIEVE "getcwd: " ACCESS NO_FILE);
 		return (1);
 	}
 	ft_printf("%s\n", cwd);

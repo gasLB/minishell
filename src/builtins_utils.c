@@ -38,12 +38,10 @@ int	change_directories(char *path, t_env_list *env)
 	DIR		*dir;
 
 	cwd = getcwd(NULL, 0);
-	if (!cwd)
-	{
-		printf_fd(2, "chdir: " RETRIEVE "getcwd: " NO_ACCESS NO_FILE);
-		return (1);
-	}
-	free(cwd);
+	if (!cwd && path && path[0] != '/')
+		return (printf_fd(2, "chdir: " RETRIEVE "getcwd: " ACCESS NO_FILE), 1);
+	if (cwd)
+		free(cwd);
 	if (access(path, F_OK) == 0)
 	{
 		dir = opendir(path);
@@ -55,8 +53,8 @@ int	change_directories(char *path, t_env_list *env)
 	if (chdir(path) != 0)
 		return (printf_fd(2, "minishell: cd: %s: " NO_FILE, path), 1);
 	pwd = getcwd(NULL, 0);
-	ft_setenv("PWD", pwd, 1, env);
-	free(pwd);
+	if (pwd)
+		(ft_setenv("PWD", pwd, 1, env), free(pwd));
 	return (0);
 }
 

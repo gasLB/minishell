@@ -14,7 +14,8 @@
 # define FT_PRINTF_H
 # include <stdarg.h>
 
-typedef struct s_form {
+typedef struct s_form
+{
 	int		minus;
 	int		zero;
 	int		hash;
