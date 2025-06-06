@@ -57,10 +57,10 @@ char	*expand_line(char *line, int stat, t_minishell *sh)
 	tk->transition_mask = fill_with_char(ft_strlen(line), 'n');
 	if (!tk->transition_mask)
 		return (free_token(tk), NULL);
-	if (stat == HD)
-		res = expand_variable(tk, sh, sh->env_list, 0);
 	else if (stat == HDQ)
 		res = ft_strdup(line);
+	else
+		res = expand_variable(tk, sh, sh->env_list, 0);
 	if (line)
 		(free(line), line = NULL);
 	return (free_token(tk), res);

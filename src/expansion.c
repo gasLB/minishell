@@ -119,4 +119,3 @@ char	**expand_cmd(t_token **tk_list, t_minishell *sh)
 	args[i] = NULL;
 	return (args);
 }
-// check for HEREDOCS shouldn't expand

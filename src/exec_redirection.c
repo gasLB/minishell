@@ -80,6 +80,7 @@ int	duplicate_redir(char **args, int *file, t_redir_node *curr, t_minishell *sh)
 		mode = O_APPEND;
 		if (curr->type == TRUNC)
 			mode = O_TRUNC;
+		curr->str = expand_line(curr->str, curr->type, sh);
 		*file = open_out(args, curr->str, mode);
 		if (*file == -1)
 			return (1);
