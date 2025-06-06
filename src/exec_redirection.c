@@ -106,6 +106,7 @@ int	set_redirections(char **args, t_redir_node *redir, t_minishell *sh)
 				return (-2);
 			if (file != -1)
 				close(file);
+			sh->last_exit = 1;
 			return (1);
 		}
 		curr = curr->next;
