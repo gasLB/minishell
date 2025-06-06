@@ -20,7 +20,7 @@ int	open_in(char **args, char *filename, int in_status, t_minishell *sh)
 
 	if (in_status == HD || in_status == HDQ)
 		return (here_doc(filename, args, in_status, sh));
-	if (args[0])
+	if (args && args[0])
 		cm_name = ft_strdup(args[0]);
 	else
 		cm_name = ft_strdup("minishell");
@@ -47,7 +47,7 @@ int	open_out(char **args, char *filename, mode_t mode)
 	int		saved_er;
 	char	*cm_name;
 
-	if (args[0])
+	if (args && args[0])
 		cm_name = ft_strdup(args[0]);
 	else
 		cm_name = ft_strdup("minishell");
