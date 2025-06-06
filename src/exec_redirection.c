@@ -26,7 +26,7 @@ int	open_in(char **args, char *filename, int in_status, t_minishell *sh)
 		cm_name = ft_strdup("minishell");
 	infile = -1;
 	if (ft_strchr(filename, '*') != NULL)
-		printf_fd(2, "%s: %s: ambiguous redirect", cm_name, filename);
+		printf_fd(2, "%s: %s: ambiguous redirect\n", cm_name, filename);
 	else if (access(filename, F_OK) != 0)
 		printf_fd(2, "%s: %s: " NO_FILE, cm_name, filename);
 	else
@@ -51,8 +51,8 @@ int	open_out(char **args, char *filename, mode_t mode)
 		cm_name = ft_strdup(args[0]);
 	else
 		cm_name = ft_strdup("minishell");
-	if (ft_strchr(filename, '*') != NULL)
-		printf_fd(2, "%s: %s: ambiguous redirect", cm_name, filename);
+	if (ft_strchr(filename, '*') != NULL || ft_strlen(filename) == 0)
+		printf_fd(2, "%s: %s: ambiguous redirect\n", cm_name, filename);
 	else if (access(filename, F_OK) == 0 && access(filename, W_OK) != 0)
 		printf_fd(2, "%s: %s: " PERMISSION, cm_name, filename);
 	outfile = open(filename, O_WRONLY | mode | O_CREAT, 0644);
