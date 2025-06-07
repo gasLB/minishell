@@ -52,6 +52,7 @@ int	change_directories(char *path, t_env_list *env)
 	}
 	if (chdir(path) != 0)
 		return (printf_fd(2, "minishell: cd: %s: " NO_FILE, path), 1);
+	ft_setenv("OLDPWD", ft_getenv("PWD", env), 1, env);
 	pwd = getcwd(NULL, 0);
 	if (pwd)
 		(ft_setenv("PWD", pwd, 1, env), free(pwd));
