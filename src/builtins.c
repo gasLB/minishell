@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 14:38:52 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/17 18:37:03 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/06/07 12:06:46 by wbeschon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	ft_echo(int ac, char **args)
 		ft_printf("%s", args[i]);
 		if (i + 1 == ac && n_option == 0)
 			ft_printf("\n");
-		else if (i + 1 != ac)
+		else if (i + 1 != ac && args[i] && args[i][0])
 			ft_printf(" ");
 		i++;
 	}
