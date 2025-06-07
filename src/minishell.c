@@ -88,7 +88,7 @@ void	wait_all_pids(t_minishell *sh)
 		waitpid(sh->pids[i], &status, 0);
 		i++;
 	}
-	if (g_signal != 0)
+	if (g_signal != 0 && sh->last_command_type == EXTERNAL && status != 0)
 	{
 		sh->last_exit = g_signal + 128;
 		g_signal = 0;
