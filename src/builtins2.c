@@ -65,7 +65,7 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 	ft_printf("exit\n");
 	if (ac == 0)
 		exit_with_number(sh->last_exit, args, sh);
-	else if (!is_a_number(args[1]) || !is_correct_size_exit(args[1]))
+	else if (!is_a_number(args[1]))
 	{
 		printf_fd(2, "minishell: exit: %s: " NUMERIC_ARG, args[1]);
 		exit_with_number(2, args, sh);

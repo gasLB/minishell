@@ -21,6 +21,16 @@
 #  define MAX_FD 1024
 # endif
 
+# ifndef LLMAX_STR
+#  define LLMAX_STR "9223372036854775807"
+# endif
+# ifndef LLMIN_STR
+#  define LLMIN_STR "9223372036854775808"
+# endif
+# ifndef LLMAX_LEN
+#  define LLMAX_LEN 19
+# endif
+
 # include "../libftprintf/libft/libft.h"
 # include "../libftprintf/include/ft_printf_bonus.h"
 
