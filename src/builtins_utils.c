@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "minishell_func.h"
 
 int	is_n_option(char *s)
 {
@@ -89,7 +88,10 @@ void	export_var(char *str, t_env_list *env, int overwrite)
 
 	pos = ft_strchr(str, '=');
 	if (!pos)
+	{
 		ft_setenv(str, NULL, overwrite, env);
+		env->size++;
+	}
 	else
 	{
 		if (*(pos - 1) == '+')

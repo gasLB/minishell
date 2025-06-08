@@ -71,14 +71,14 @@ int	ft_setenv(char *key, char *value, int overwrite, t_env_list *env)
 
 	node = env->head;
 	if (!node)
+	{
 		env->head = set_node(key, value);
+		env->size++;
+	}
 	while (node)
 	{
 		if (is_equal(key, node->key))
-		{
-			update_existing_node(node, value, overwrite);
-			return (0);
-		}
+			return (update_existing_node(node, value, overwrite), 0);
 		if (!node->next)
 		{
 			new_node = set_node(key, value);
