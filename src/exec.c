@@ -73,6 +73,7 @@ int	execute_command(char *path, char **args, char **envp, t_minishell *sh)
 	close_all_pipes(sh);
 	if (execve(path, args, envp) < 0)
 	{
+		printf_fd(2, "error command\n");
 		saved_er = errno;
 		exit_er = error_execution(saved_er, args[0]);
 		free_struct(sh);

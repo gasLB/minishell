@@ -21,21 +21,9 @@ void	handle_sigint_interactive(int sig)
 	rl_redisplay();
 }
 
-void	handle_sigint_execution(int sig)
-{
-	g_signal = sig;
-	ft_printf("\n");
-}
-
 void	handle_sigint_heredoc(int sig)
 {
 	g_signal = sig;
-}
-
-void	handle_sigquit_execution(int sig)
-{
-	g_signal = sig;
-	ft_printf("Quit (core dumped)\n");
 }
 
 int	check_heredoc_signal(void)

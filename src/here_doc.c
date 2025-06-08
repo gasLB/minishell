@@ -62,7 +62,7 @@ int	wait_heredoc_parent(int fd[2], char *str, int pid, t_minishell *sh)
 		return (-2);
 	}
 	sh->last_exit = exit_code;
-	set_signals_execution();
+	set_ignore_signals();
 	return (fd[0]);
 }
 

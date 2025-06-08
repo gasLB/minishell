@@ -13,6 +13,7 @@
 #include "minishell.h"
 #include "ft_printf_bonus.h"
 #include "minishell_func.h"
+#include <sys/wait.h>
 
 int	only_space(char **str)
 {
@@ -77,6 +78,7 @@ void	free_in_loop(t_minishell *sh)
 void	wait_all_pids(t_minishell *sh)
 {
 	int	status;
+	int	sig;
 	int	i;
 
 	if (sh->pid_count == 0)
@@ -88,13 +90,18 @@ void	wait_all_pids(t_minishell *sh)
 		waitpid(sh->pids[i], &status, 0);
 		i++;
 	}
-	if (g_signal != 0 && sh->last_command_type == EXTERNAL && status != 0)
+	if (WIFSIGNALED(status))
 	{
-		sh->last_exit = g_signal + 128;
-		g_signal = 0;
+		sig = WTERMSIG(status);
+		if (sig == SIGINT)
+			ft_printf("\n");
+		else if (sig == SIGQUIT)
+			ft_printf("Quit (core dumped)\n");
+		if (sh->last_command_type == EXTERNAL)
+			sh->last_exit = 128 + sig;
 	}
-	else if (sh->last_command_type == EXTERNAL)
-		sh->last_exit = status % 255;
+	if (WIFEXITED(status) && sh->last_command_type == EXTERNAL)
+		sh->last_exit = WEXITSTATUS(status);
 }
 
 void	minishell(t_minishell *sh)
@@ -114,7 +121,7 @@ void	minishell(t_minishell *sh)
 			continue ;
 		}
 		sh->ast = create_ast(sh->token_list);
-		set_signals_execution();
+		set_ignore_signals();
 		dfs_ast(sh->ast, sh);
 		wait_all_pids(sh);
 		set_signals_interactive();

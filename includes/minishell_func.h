@@ -169,7 +169,6 @@ int			token_basic_type(t_token *token);
 
 void		reset_signals_after_execution(t_minishell *sh);
 void		set_signals_default(void);
-void		set_signals_execution(void);
 void		set_signals_interactive(void);
 void		set_signals_heredoc(void);
 void		set_ignore_signals(void);
@@ -177,9 +176,7 @@ void		set_ignore_signals(void);
 // signals_handle.c
 
 void		handle_sigint_interactive(int sig);
-void		handle_sigint_execution(int sig);
 void		handle_sigint_heredoc(int sig);
-void		handle_sigquit_execution(int sig);
 int			check_heredoc_signal(void);
 
 // minishell.c

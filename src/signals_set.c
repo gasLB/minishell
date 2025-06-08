@@ -36,12 +36,6 @@ void	set_signals_interactive(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	set_signals_execution(void)
-{
-	signal(SIGINT, &handle_sigint_execution);
-	signal(SIGQUIT, &handle_sigquit_execution);
-}
-
 void	set_signals_default(void)
 {
 	signal(SIGINT, SIG_DFL);
