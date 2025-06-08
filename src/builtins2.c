@@ -53,6 +53,7 @@ void	exit_with_number(int n, char **args, t_minishell *sh)
 		sh->last_exit = n;
 	else
 	{
+		ft_printf("exit\n");
 		free_str_list(args);
 		close_all_pipes(sh);
 		free_struct(sh);
@@ -62,7 +63,6 @@ void	exit_with_number(int n, char **args, t_minishell *sh)
 
 void	ft_exit(int ac, char **args, t_minishell *sh)
 {
-	ft_printf("exit\n");
 	if (ac == 0)
 		exit_with_number(sh->last_exit, args, sh);
 	else if (!is_a_number(args[1]))
@@ -72,6 +72,7 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 	}
 	else if (ac > 1)
 	{
+		ft_printf("exit\n");
 		printf_fd(2, "minishell: exit: " TOO_MANY);
 		sh->last_exit = 1;
 	}
