@@ -32,6 +32,7 @@ t_env_list	*populate_env(char **env, int i);
 char		*ft_getenv(char	*name, t_env_list *env);
 int			ft_setenv(char *key, char *valu, int overwrite, t_env_list *env);
 void		ft_unsetenv(char *name, t_env_list *env);
+void		update_shlvl(t_env_list *envl);
 
 // utils.c
 int			is_equal(char *s1, char *s2);
@@ -46,7 +47,7 @@ int			is_n_option(char *s);
 int			change_directories(char *path, t_env_list *env);
 void		export_no_args(t_env_list *env);
 int			is_valid_env_name(char *str);
-void		export_var(char *str, t_env_list *env, int overwrite);
+int			export_var(char *str, t_env_list *env, int overwrite);
 
 // builtins.c;;
 int			ft_echo(int ac, char **args);
@@ -65,6 +66,7 @@ char		*expand_variable(t_token *t, t_minishell *s, t_env_list *e, int i);
 int			translation(char **res, t_token *tk, int i);
 char		*init_str(void);
 int			handle_tilde(char **res, t_token *tk, t_env_list *env);
+int			expand_dollar_question(char c, char **res, t_minishell *sh);
 
 // tokenization.c
 t_token		*init_token(char *str);

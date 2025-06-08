@@ -27,7 +27,7 @@ int	is_expandable(char *str, char *q_mask, int i)
 			return (0);
 		if (q_mask[i] == 'D' && q_mask[i + 1] != 'D')
 			return (0);
-		return (ft_isalpha(next) || next == '_' || next == '?');
+		return (ft_isalpha(next) || next == '_' || next == '?' || next == '$');
 	}
 	return (0);
 }
@@ -89,8 +89,8 @@ char	*expand_variable(t_token *tk, t_minishell *sh, t_env_list *env, int i)
 		if ((tk->quote_mask[i - 1] == 'N')
 			&& (tk->quote_mask[i] == 'S' || tk->quote_mask[i] == 'D'))
 			i = translation(&res, tk, i);
-		else if (tk->value[i] == '?' && i++)
-			res = append_str(res, ft_itoa(sh->last_exit));
+		else if (tk->value[i] == '?' || tk->value[i] == '$')
+			i += expand_dollar_question(tk->value[i], &res, sh);
 		else
 			i = look_for_env_variable(&res, tk, i, env);
 		begin = i;

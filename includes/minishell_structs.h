@@ -58,6 +58,7 @@ typedef struct s_minishell
 	t_token		**token_list;
 	t_ast_node	*ast;
 	int			*pids;
+	int			process_pid;
 	int			pid_count;
 	int			pipe_count;
 	int			*pipe_fds;

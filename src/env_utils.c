@@ -12,6 +12,23 @@
 
 #include "minishell.h"
 
+void	update_shlvl(t_env_list *envl)
+{
+	char	*shlvl_char;
+	int		shlvl;
+
+	shlvl_char = ft_getenv("SHLVL", envl);
+	if (shlvl_char)
+	{
+		shlvl = ft_atoi(shlvl_char) + 1;
+		shlvl_char = ft_itoa(shlvl);
+		ft_setenv("SHLVL", shlvl_char, 1, envl);
+		free(shlvl_char);
+	}
+	else
+		ft_setenv("SHLVL", "1", 1, envl);
+}
+
 void	ft_unsetenv(char *name, t_env_list *env)
 {
 	t_env_node	*node;

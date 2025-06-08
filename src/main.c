@@ -24,7 +24,7 @@ void	minishell_start(void)
 	ft_printf("\\_|  |_/_|_| |_|_\\____/|_| |_|\\___|_|_|\n\n");
 }
 
-t_minishell	*init_shell(t_env_list *env_list)
+t_minishell	*init_shell(t_env_list *env_list, int pid)
 {
 	t_minishell	*sh;
 
@@ -40,6 +40,7 @@ t_minishell	*init_shell(t_env_list *env_list)
 	sh->line = NULL;
 	sh->ast = NULL;
 	sh->pids = NULL;
+	sh->process_pid = pid;
 	sh->pid_count = 0;
 	sh->last_command_type = -1;
 	sh->heredoc_interrupted = 0;
@@ -49,23 +50,6 @@ t_minishell	*init_shell(t_env_list *env_list)
 	sh->original_stdin = dup(STDIN_FILENO);
 	sh->original_stdout = dup(STDOUT_FILENO);
 	return (sh);
-}
-
-void	update_shlvl(t_env_list *envl)
-{
-	char	*shlvl_char;
-	int		shlvl;
-
-	shlvl_char = ft_getenv("SHLVL", envl);
-	if (shlvl_char)
-	{
-		shlvl = ft_atoi(shlvl_char) + 1;
-		shlvl_char = ft_itoa(shlvl);
-		ft_setenv("SHLVL", shlvl_char, 1, envl);
-		free(shlvl_char);
-	}
-	else
-		ft_setenv("SHLVL", "1", 1, envl);
 }
 
 void	init_env_variables(t_env_list *env)
@@ -79,16 +63,33 @@ void	init_env_variables(t_env_list *env)
 	free(cwd);
 }
 
+int	get_start_pid(void)
+{
+	int	pid;
+
+	pid = fork();
+	if (pid == 0)
+		exit(0);
+	else if (pid > 0)
+	{
+		waitpid(pid, NULL, 0);
+		return (pid - 1);
+	}
+	return (-1);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_env_list	*env_list;
 	t_minishell	*sh;
+	int			pid;
 
 	(void)ac;
 	(void)av;
 	minishell_start();
+	pid = get_start_pid();
 	env_list = populate_env(env, -1);
-	sh = init_shell(env_list);
+	sh = init_shell(env_list, pid);
 	init_env_variables(env_list);
 	minishell(sh);
 	return (0);

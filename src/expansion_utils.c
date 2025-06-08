@@ -39,7 +39,7 @@ int	handle_tilde(char **res, t_token *tk, t_env_list *env)
 	int		i;
 	char	*home;
 
-	if (tk->value[0] != '~')
+	if (tk->value[0] != '~' || tk->quote_mask[0] != 'N')
 		return (0);
 	if (tk->value[1] && tk->value[1] != '/')
 		return (0);
@@ -53,4 +53,13 @@ int	handle_tilde(char **res, t_token *tk, t_env_list *env)
 	if (i > 1)
 		*res = append_str(*res, ft_substr(tk->value, 1, i + 1));
 	return (i);
+}
+
+int	expand_dollar_question(char c, char **res, t_minishell *sh)
+{
+	if (c == '?')
+		*res = append_str(*res, ft_itoa(sh->last_exit));
+	else if (c == '$')
+		*res = append_str(*res, ft_itoa(sh->process_pid));
+	return (1);
 }

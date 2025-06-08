@@ -79,7 +79,7 @@ int	is_valid_env_name(char *str)
 	return (1);
 }
 
-void	export_var(char *str, t_env_list *env, int overwrite)
+int	export_var(char *str, t_env_list *env, int overwrite)
 {
 	char	*pos;
 	char	*key;
@@ -90,25 +90,22 @@ void	export_var(char *str, t_env_list *env, int overwrite)
 	if (!pos)
 	{
 		ft_setenv(str, NULL, overwrite, env);
-		env->size++;
+		return (env->size++);
 	}
+	if (*(pos - 1) == '+')
+		overwrite = 0;
+	key = ft_substr(str, 0, pos - str + overwrite - 1);
+	value = init_str();
+	if (!(*(pos + 1)))
+		ft_setenv(key, value, overwrite, env);
 	else
 	{
-		if (*(pos - 1) == '+')
-			overwrite = 0;
-		key = ft_substr(str, 0, pos - str + overwrite - 1);
-		value = init_str();
-		if (!(*(pos + 1)))
-			ft_setenv(key, value, overwrite, env);
-		else
-		{
-			free(value);
-			value = ft_substr(pos + 1, 0, ft_strlen(pos - 1));
-			trimed = ft_strtrim(value, " ");
-			(ft_setenv(key, trimed, overwrite, env), free(trimed));
-		}
-		(free(key), free(value));
+		free(value);
+		value = ft_substr(pos + 1, 0, ft_strlen(pos - 1));
+		trimed = ft_strtrim(value, " ");
+		(ft_setenv(key, trimed, overwrite, env), free(trimed));
 	}
+	return ((free(key), free(value), 1));
 }
 
 void	export_no_args(t_env_list *env)
