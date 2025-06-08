@@ -32,6 +32,7 @@
 # define UNEXPECTED_S "syntax error near unexpected token `%s'\n"
 # define NO_FDS "Too many open files\n"
 # define EXEC_ER "Exec format error\n"
+# define NO_SPACE ": No space left on device\n"
 
 # define HDW "here-document at line %d delimited by end-of-file (wanted `%s')\n"
 

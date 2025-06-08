@@ -94,3 +94,4 @@ int	main(int ac, char **av, char **env)
 	minishell(sh);
 	return (0);
 }
+// check full dans le cas d'un builtin qui redirige out vers une sortie full

@@ -45,7 +45,7 @@ t_token		**append_to_lst(t_token **l, t_token *new_s);
 // builtins_utils.c
 int			is_n_option(char *s);
 int			change_directories(char *path, t_env_list *env);
-void		export_no_args(t_env_list *env);
+int			export_no_args(t_env_list *env);
 int			is_valid_env_name(char *str);
 int			export_var(char *str, t_env_list *env, int overwrite);
 
@@ -57,6 +57,7 @@ int			ft_export(int ac, char **args, t_env_list *env);
 int			ft_unset(int ac, char **args, t_env_list *env);
 int			ft_env(t_env_list *env);
 void		ft_exit(int ac, char **args, t_minishell *sh);
+int			test_write(void);
 
 // expansion.c
 char		**expand_cmd(t_token **tk_list, t_minishell *sh);

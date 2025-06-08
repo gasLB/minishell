@@ -108,10 +108,15 @@ int	export_var(char *str, t_env_list *env, int overwrite)
 	return ((free(key), free(value), 1));
 }
 
-void	export_no_args(t_env_list *env)
+int	export_no_args(t_env_list *env)
 {
 	t_env_node	*node;
 
+	if (!test_write())
+	{
+		printf_fd(2, "minishell: export " NO_SPACE);
+		return (1);
+	}
 	node = env->head;
 	while (node)
 	{
@@ -121,4 +126,5 @@ void	export_no_args(t_env_list *env)
 			ft_printf(EXP_VALUE, node->key, node->value);
 		node = node->next;
 	}
+	return (0);
 }

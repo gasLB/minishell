@@ -18,13 +18,12 @@ int	ft_echo(int ac, char **args)
 	int	i;
 	int	n_option;
 
+	if (!test_write())
+		return (printf_fd(2, "minishell: echo " NO_SPACE), 1);
 	n_option = 0;
 	i = 0;
 	if (ac == 0)
-	{
-		ft_printf("\n");
-		return (0);
-	}
+		return (ft_printf("\n"), 0);
 	while (i < ac && is_n_option(args[i]))
 	{
 		i++;
@@ -46,6 +45,8 @@ int	ft_pwd(void)
 {
 	char	*cwd;
 
+	if (!test_write())
+		return (printf_fd(2, "minishell: pwd " NO_SPACE), 1);
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
@@ -72,6 +73,9 @@ int	ft_cd(int ac, char **args, t_env_list *env)
 	}
 	else if (ft_strlen(args[0]) == 1 && args[0][0] == '-')
 	{
+		if (!test_write())
+			return (printf_fd(2, "minishell: cd " NO_SPACE), 1);
+		ft_pwd();
 		path = ft_getenv("OLDPWD", env);
 		if (!path)
 			return (printf_fd(2, "minishell: cd: " NO_OLDPWD), 1);
@@ -90,10 +94,7 @@ int	ft_export(int ac, char **args, t_env_list *env)
 	i = 0;
 	res = 0;
 	if (ac == 0)
-	{
-		export_no_args(env);
-		return (1);
-	}
+		return (export_no_args(env));
 	while (i < ac)
 	{
 		if (is_valid_env_name(args[i]))

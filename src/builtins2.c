@@ -37,6 +37,8 @@ int	ft_env(t_env_list *env)
 {
 	t_env_node	*node;
 
+	if (!test_write())
+		return (printf_fd(2, "minishell: env " NO_SPACE), 1);
 	node = env->head;
 	while (node)
 	{
@@ -78,4 +80,14 @@ void	ft_exit(int ac, char **args, t_minishell *sh)
 	}
 	else
 		exit_with_number((int)(ft_atoll(args[1]) % 256), args, sh);
+}
+
+int	test_write(void)
+{
+	int	res;
+
+	res = write(1, "", 0);
+	if (res == -1 && errno == ENOSPC)
+		return (0);
+	return (1);
 }
