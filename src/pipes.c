@@ -74,6 +74,7 @@ int	dup_pipe(t_ast_node *n, int fd[2], int or_std[2], t_minishell *sh)
 			return (printf_fd(2, "pipe error: " NO_FDS));
 	}
 	wait_if_heredoc(n->left);
+	sh->last_command_type = -1;
 	if (sh->heredoc_interrupted)
 		return (1);
 	if (n->right && !(n->right->visited))

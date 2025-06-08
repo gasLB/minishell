@@ -100,7 +100,7 @@ void	wait_all_pids(t_minishell *sh)
 		if (sh->last_command_type == EXTERNAL)
 			sh->last_exit = 128 + sig;
 	}
-	if (WIFEXITED(status) && sh->last_command_type == EXTERNAL)
+	if (WIFEXITED(status) && sh->last_command_type != BUILTIN)
 		sh->last_exit = WEXITSTATUS(status);
 }
 
