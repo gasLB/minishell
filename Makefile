@@ -47,6 +47,7 @@ SRC := builtins.c \
 	   tree_utils.c \
 	   utils.c \
 	   pipes.c \
+	   wait.c \
 	   wildcards.c \
 	   wildcards_matching.c \
 	   wildcards_tokens.c \

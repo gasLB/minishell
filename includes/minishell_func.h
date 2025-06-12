@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/04 16:58:11 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/06/12 16:21:06 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,6 @@ int			check_heredoc_signal(void);
 
 // minishell.c
 void		minishell(t_minishell *sh);
-void		wait_all_pids(t_minishell *sh);
 
 // pipes.c
 int			dup_pipe(t_ast_node *n, int fd[2], int or_std[2], t_minishell *sh);
@@ -198,6 +197,10 @@ void		close_pipe_safely(int *fd);
 int			check_op_commands(char *has_cp, int type);
 int			check_redirections(char *exp_fp, char *has_cp, int type);
 int			check_parenthesis(t_token *tkn, char *par_lp, char has_c, int type);
+
+// wait.c
+
+void		wait_all_pids(t_minishell *sh);
 
 // wildcards.c
 

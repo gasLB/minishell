@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 16:27:04 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/04 14:35:26 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/06/12 16:16:32 by gfontagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,35 +73,6 @@ void	free_in_loop(t_minishell *sh)
 	sh->pipe_count = 0;
 	sh->pid_count = 0;
 	g_signal = 0;
-}
-
-void	wait_all_pids(t_minishell *sh)
-{
-	int	status;
-	int	sig;
-	int	i;
-
-	if (sh->pid_count == 0)
-		return ;
-	i = 0;
-	status = 0;
-	while (i < sh->pid_count)
-	{
-		waitpid(sh->pids[i], &status, 0);
-		i++;
-	}
-	if (WIFSIGNALED(status))
-	{
-		sig = WTERMSIG(status);
-		if (sig == SIGINT)
-			ft_printf("\n");
-		else if (sig == SIGQUIT)
-			ft_printf("Quit (core dumped)\n");
-		if (sh->last_command_type == EXTERNAL)
-			sh->last_exit = 128 + sig;
-	}
-	if (WIFEXITED(status) && sh->last_command_type != BUILTIN)
-		sh->last_exit = WEXITSTATUS(status);
 }
 
 void	minishell(t_minishell *sh)
