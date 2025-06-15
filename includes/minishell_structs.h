@@ -6,7 +6,7 @@
 /*   By: walter <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 16:51:37 by walter            #+#    #+#             */
-/*   Updated: 2025/06/03 20:48:35 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/15 10:56:18 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ typedef struct s_minishell
 	int			current_hd_input;
 	int			current_hd_output;
 	char		*line;
+	char		*line_arg;
+	char		self_path[256];
 }	t_minishell;
 
 typedef struct s_idx	t_idx;

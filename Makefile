@@ -36,6 +36,7 @@ SRC := builtins.c \
 	   parsing_utils.c \
 	   signals_set.c \
 	   signals_handle.c \
+	   subshell.c \
 	   syntax.c \
 	   syntax_utils.c \
 	   tokenization.c \
