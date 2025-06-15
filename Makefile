@@ -34,6 +34,7 @@ SRC := builtins.c \
 	   minishell.c \
 	   parsing.c \
 	   parsing_utils.c \
+	   self_path.c \
 	   signals_set.c \
 	   signals_handle.c \
 	   subshell.c \

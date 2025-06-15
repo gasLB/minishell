@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/15 12:21:01 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/15 13:13:51 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ char		**convert_envp_to_array(t_env_list *envl);
 char		*find_path(char *name, t_minishell *sh);
 
 // exec_redirection.c
-int			set_redirections(char **args, t_redir_node *redir, \
+int			set_redirections(char **args, t_redir_node *redir,\
 			t_minishell *sh);
 void		reset_redirections(t_redir_node *redir, t_minishell *sh);
 
@@ -139,6 +139,9 @@ void		add_pipe_fd(int fd1, int fd2, t_minishell *sh);
 void		close_all_pipes(t_minishell *sh);
 void		close_pipe_safely(int *fd);
 
+// self_path.c
+void	get_self_path(t_minishell *sh);
+
 // signals_handle.c
 
 void		handle_sigint_interactive(int sig);
@@ -179,7 +182,7 @@ void		set_one_redir(t_redir_node **redir, t_token ***tkp);
 int			cmd_node(t_ast_node *node, t_minishell *sh);
 int			pipe_node(t_ast_node *node, t_minishell *sh);
 void		dfs_ast(t_ast_node *node, t_minishell *sh);
-void		function_dfs_ast(t_ast_node *node, t_minishell *sh, \
+void		function_dfs_ast(t_ast_node *node, t_minishell *sh,\
 		int (*f)(t_ast_node *, t_minishell *));
 
 // tree_traverse_utils.c

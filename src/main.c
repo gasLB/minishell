@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:02:07 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/15 11:10:00 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/15 13:14:20 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ int	main(int ac, char **av, char **env)
 	env_list = populate_env(env, -1);
 	sh = init_shell(env_list, pid);
 	init_env_variables(env_list);
+	get_self_path(sh);
 	if (ac == 2)
 		return (subshell(sh, av[1]));
 	minishell_start();
