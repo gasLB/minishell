@@ -6,7 +6,7 @@
 /*   By: walter <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 16:51:37 by walter            #+#    #+#             */
-/*   Updated: 2025/06/15 10:56:18 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/15 13:39:35 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct s_ast_node
 typedef struct s_minishell
 {
 	t_env_list	*env_list;
+	t_env_list	*sub_list;
 	t_token		**token_list;
 	t_ast_node	*ast;
 	int			*pids;

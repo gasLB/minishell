@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/15 13:13:51 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/16 01:07:40 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,10 @@ void		set_ignore_signals(void);
 
 // subshell.c
 int			subshell(t_minishell *sh, char *line);
+int			add_shell_command(t_minishell *sh);
+
+// subshell_env.c
+int			get_subshell_env(t_minishell *sh);
 
 // syntax_utils.c
 

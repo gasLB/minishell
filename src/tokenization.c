@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 12:50:10 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/04 16:52:31 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/06/16 02:10:32 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 char	get_quote_character(char c, char new, int i, int *last)
 {
-	if ((c == 'D' && new == '"') || (c == 'S' && new == '\''))
+	if ((c == 'D' && new == '"') || (c == 'S' && new == '\'')
+		|| (c == 'P' && new == ')'))
 	{
 		if (last)
 			*last = i;
@@ -24,6 +25,8 @@ char	get_quote_character(char c, char new, int i, int *last)
 		return ('D');
 	else if (c == 'N' && new == '\'')
 		return ('S');
+	else if (c == 'N' && new == '(')
+		return ('P');
 	return (c);
 }
 

@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 16:13:29 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/27 14:44:31 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/06/16 02:18:13 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	determine_type(int type, int *grp)
 		final_type = type;
 		if (is_redirect(type))
 			*grp = REDIRECT;
-		else if (!(is_open_par(type) || is_close_par(type)))
+		else
 			*grp = -1;
 	}
 	else if (*grp == REDIRECT)
