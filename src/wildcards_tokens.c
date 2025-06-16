@@ -6,7 +6,7 @@
 /*   By: seetwoo <waltibee@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 17:19:40 by seetwoo           #+#    #+#             */
-/*   Updated: 2025/06/04 16:51:02 by wbeschon         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:02:43 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ t_token	*init_wild_token(char *entry)
 	if (!token->transition_mask)
 		return (free_token(token));
 	token->next = NULL;
-	init_quote_n_value(token->value, token->quote_mask,
-		token->transition_mask, entry);
+	init_quote_n_value(token, entry);
 	return (token);
 }
 

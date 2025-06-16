@@ -6,7 +6,7 @@
 /*   By: seetwoo <waltibee@gmail.com>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 10:48:11 by seetwoo           #+#    #+#             */
-/*   Updated: 2025/06/16 02:42:49 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/16 14:33:34 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,6 @@ t_token	*shell_command_tok(char *self_path, size_t path_size)
 	new->transition_mask[path_size] = '\0';
 	return (new);
 }
-
-	/*while (sh->token_list[i])
-	{
-		new_toks[i + 1] = sh->token_list[i];
-		i++;
-	}
-	new_toks[i + 1] = NULL;*/
 
 int	insert_shell_tok(t_minishell *sh, int i)
 {
@@ -92,6 +85,7 @@ int	subshell(t_minishell *sh, char *line)
 	if (only_space(&(sh->line_arg)))
 		return (0);
 	sh->token_list = init_token_list(sh->line_arg);
+	add_shell_command(sh);
 	set_each_token_type(&(sh->token_list));
 	globbing(sh);
 	if (check_syntax(sh->token_list, sh) != 0)

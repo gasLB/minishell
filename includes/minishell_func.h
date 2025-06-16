@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:59:45 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/16 01:07:40 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/16 12:59:44 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,8 +171,7 @@ int			check_parenthesis(t_token *tkn, char *par_lp, char has_c, int type);
 
 // tokenization.c
 t_token		*init_token(char *str);
-void		init_quote_n_value(char *val,
-				char *q_mask, char *tr_mask, char *str);
+void		init_quote_n_value(t_token *token, char *str);
 
 // tree.c
 void		print_ast_node(t_ast_node *ast);
@@ -212,6 +211,7 @@ char		*append_str(char *dest, char *src);
 int			is_a_number(char *str);
 int			token_lstlen(t_token **l);
 t_token		**init_list(void);
+void		fill_subshell_tok(t_token *tokken, char *str);
 t_token		**append_to_lst(t_token **l, t_token *new_s);
 
 // wildcards.c

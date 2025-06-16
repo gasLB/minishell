@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 16:36:03 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/16 02:41:58 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/16 14:13:54 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,20 @@ char	*correct_substr(char *line, int start, int end)
 
 int	subshell_len(char *line, int end)
 {
-	while (line[end] && line[end] != ')')
+	int	paren;
+
+	paren = 1;
+	end++;
+	while (1)
+	{
+		if (!line[end] || paren == 0)
+			break ;
+		if (line[end] == '(')
+			paren++;
+		if (line[end] == ')')
+			paren--;
 		end++;
-	if (line[end] == ')')
-		end++;
+	}
 	return (end);
 }
 

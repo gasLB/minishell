@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:04:50 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/05/27 21:08:46 by gfontagn         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:46:59 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,22 @@ t_token	**init_list(void)
 	res[0] = NULL;
 	res[1] = NULL;
 	return (res);
+}
+
+void	fill_subshell_tok(t_token *token, char *str)
+{
+	int	i;
+
+	i = 1;
+	while (str[i + 1])
+	{
+		token->value[i - 1] = str[i];
+		token->quote_mask[i - 1] = 'P';
+		token->transition_mask[i - 1] = 'd';
+		i++;
+	}
+	token->value[i - 1] = '\0';
+	token->quote_mask[i - 1] = '\0';
+	token->transition_mask[i - 1] = '\0';
+	//printf("value is %s\n", token->value);
 }

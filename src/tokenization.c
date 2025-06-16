@@ -6,7 +6,7 @@
 /*   By: gfontagn <gfontagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 12:50:10 by gfontagn          #+#    #+#             */
-/*   Updated: 2025/06/16 02:10:32 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/16 13:02:07 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,31 +49,29 @@ char	get_transition(char *str, int i, int last)
 	return ('n');
 }
 
-void	init_quote_n_value(char *val, char *q_mask, char *tr_mask, char *str)
+void	init_quote_n_value(t_token *token, char *str)
 {
-	int		i;
-	int		j;
-	char	c;
-	char	new;
-	int		last_end;
+	t_idx	i;
 
-	last_end = -1;
-	i = 0;
-	j = 0;
-	c = 'N';
-	while (str[i])
+	i.last_end = -1;
+	i.i = 0;
+	i.j = 0;
+	i.c = 'N';
+	if (str[0] == '(')
+		return (fill_subshell_tok(token, str));
+	while (str[i.i])
 	{
-		new = get_quote_character(c, str[i], i, &last_end);
-		if (new != c)
-			c = new;
+		i.new = get_quote_character(i.c, str[i.i], i.i, &(i.last_end));
+		if (i.new != i.c)
+			i.c = i.new;
 		else
 		{
-			q_mask[j] = c;
-			val[j] = str[i];
-			tr_mask[j] = get_transition(str, i, last_end);
-			j++;
+			token->quote_mask[i.j] = i.c;
+			token->value[i.j] = str[i.i];
+			token->transition_mask[i.j] = get_transition(str, i.i, i.last_end);
+			i.j++;
 		}
-		i++;
+		i.i++;
 	}
 }
 
@@ -94,8 +92,7 @@ t_token	*init_token(char *str)
 	token->transition_mask = ft_calloc(ft_strlen(str) + 1, sizeof(char));
 	if (!token->transition_mask)
 		return (free_token(token));
-	init_quote_n_value(token->value, token->quote_mask,
-		token->transition_mask, str);
+	init_quote_n_value(token, str);
 	free(str);
 	return (token);
 }

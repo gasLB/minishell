@@ -6,7 +6,7 @@
 /*   By: walter <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 16:51:37 by walter            #+#    #+#             */
-/*   Updated: 2025/06/15 13:39:35 by seetwoo          ###   ########.fr       */
+/*   Updated: 2025/06/16 13:01:20 by seetwoo          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,11 @@ typedef struct s_idx	t_idx;
 
 struct s_idx
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
+	char	c;
+	char	new;
+	int		last_end;
 };
 
 enum e_command_types
